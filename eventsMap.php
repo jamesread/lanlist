@@ -77,7 +77,7 @@ if (empty($currentLocation)) {
 
 require_once 'includes/widgets/infoboxNextEvent.php';
 
-$tpl->display('infobox.otherFormats.tpl');
+$tpl->display('infobox.addEvents.tpl');
 
 require_once 'includes/widgets/footer.php'; 
 
