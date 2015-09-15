@@ -7,6 +7,7 @@
 			<tr>
 				<th>Title</th>
 				<th>Venue</th>
+				<th>Country</th>
 				<th>Organizer</th>
 				<th>Start date</th>
 				<th>Number of Seats</th>
@@ -18,6 +19,7 @@
 		<tr>
 			<td><a href = "viewEvent.php?id={$itemEvent.id}">{$itemEvent.title}</a></td>
 			<td>{$itemEvent.venueTitle}</td>
+			<td>{$itemEvent.country}</td>
 			<td><a href = "viewOrganizer.php?id={$itemEvent.organizerId}">{$itemEvent.organizerTitle}</a></td>
 			<td>{$itemEvent.dateStart}</td>
 			<td>{$itemEvent.numberOfSeats}</td>
