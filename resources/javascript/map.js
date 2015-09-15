@@ -103,7 +103,7 @@ function addEvent(eventObject) {
 	if (new Date(eventObject.dateStart) < window.now) {
 		var icon = "resources/images/eventMarkerGray.png";
 	} else {
-		var icon = "resources/images/eventMarkerRed.png";
+		var icon = "resources/images/eventMarkerLogo.png";
 	}
 
 	var marker = addMarker(eventObject.lat, eventObject.lng, icon);
