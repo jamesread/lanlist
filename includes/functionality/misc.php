@@ -149,7 +149,7 @@ function getListOfNextEvents($count = 5) {
 
 	$count = intval($count);
 
-	$sql = 'SELECT e.id, e.title, e.dateStart FROM events e WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
+	$sql = 'SELECT e.id, e.title, e.dateStart, v.country FROM events e LEFT JOIN venues v ON e.venue = v.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
 	return $db->query($sql)->fetchAll();
 }
 

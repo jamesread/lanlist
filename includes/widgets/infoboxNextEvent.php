@@ -9,7 +9,7 @@
 		$date = strtotime($event['dateStart']);
 		$date = date('Y-m-d', $date);
 
-		echo '<li>' . $date . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a></li>';
+		echo '<li>' . $date . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>, ' . $event['country'] . '</li>';
 	}
 
 	echo '</ul>';
