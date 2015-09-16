@@ -1,6 +1,9 @@
 <?php
 
 require_once 'includes/common.php';
+
+define('TITLE', 'Site Checks' . $organizer['title']);
+
 require_once 'includes/widgets/header.php';
 require_once 'includes/classes/EventsChecker.php';
 
