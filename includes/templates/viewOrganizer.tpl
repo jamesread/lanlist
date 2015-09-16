@@ -2,8 +2,8 @@
 
 <div class = "paralellContainer">
 	<strong>Website: </strong> {$organizer.websiteUrl|externUrl}<br />
-	<strong>Steam Group:</strong> {$organizer.steamGroupUrl|externUrlOr}
-	<strong>Stale?:</strong> {$organizer.assumedStale}
+	<strong>Steam Group:</strong> {$organizer.steamGroupUrl|externUrlOr}<br />
+	<strong>Stale?:</strong> {$organizer.assumedStale|boolToString}
 </div>
 
 <div class = "paralellContainer">
