@@ -18,7 +18,7 @@ $events = $checker->getEventsList();
 $tpl->assign('listEventsWithIssues', $events);
 $tpl->display('eventsWithIssues.tpl');
 
-$sql = 'SELECT o.id, o.title, o.websiteUrl, o.lastChecked, count(u.id) assUserCount FROM organizers o LEFT JOIN users u ON u.organization = o.id AND u.email IS NOT NULL LEFT JOIN events e ON o.id = e.organizer AND e.dateFinish > now() WHERE e.id IS null GROUP BY o.id ORDER BY o.title';
+$sql = 'SELECT o.id, o.title, o.websiteUrl, o.lastChecked, count(u.id) assUserCount, o.assumedStale FROM organizers o LEFT JOIN users u ON u.organization = o.id AND u.email IS NOT NULL LEFT JOIN events e ON o.id = e.organizer AND e.dateFinish > now() WHERE e.id IS null GROUP BY o.id ORDER BY o.title';
 $result = $db->query($sql);
 $orgies = $result->fetchAll();
 

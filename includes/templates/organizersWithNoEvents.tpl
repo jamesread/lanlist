@@ -12,7 +12,11 @@
 		</tr>
 	</thead>
 	{foreach from = "$listOrganizers" item = "itemOrganizer"}
+		{if empty($itemOrganizer.assumedStale)}
 		<tr>
+		{else}
+		<tr class = "stale">
+		{/if}
 			<td>{$itemOrganizer.id}</td>
 			<td><a href = "viewOrganizer.php?id={$itemOrganizer.id}">{$itemOrganizer.title}</a></td>
 			<td><a href = "{$itemOrganizer.websiteUrl}" target = "_new">{$itemOrganizer.websiteUrl}</a></td>

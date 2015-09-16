@@ -13,6 +13,7 @@ class FormEditOrganizer extends Form {
 		$this->addElement(Element::factory('text', 'title', 'Title', $organizer['title']));
 		$this->addElement(Element::factory('hidden', 'id', null, $organizer['id']));
 		$this->addElement(Element::factory('text', 'websiteUrl', 'Website', $organizer['websiteUrl']));
+		$this->addElement(Element::factory('text', 'assumedStale', 'Assumed stale since', $organizer['assumedStale']));
 		$this->addElement(Element::factory('text', 'steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
 		$this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
 		$this->addElement(Element::factory('textarea', 'blurb', 'Blurb', $organizer['blurb']));
@@ -36,6 +37,7 @@ class FormEditOrganizer extends Form {
 		$stmt->bindValue(':id', $this->getElementValue('id'));
 		$stmt->bindValue(':title', $this->getElementValue('title'));
 		$stmt->bindValue(':websiteUrl', $this->getElementValue('websiteUrl'));
+		$stmt->bindValue(':assumedStale', $this->getElementValue('assumedStale'));
 		$stmt->bindValue(':steamGroupUrl', $this->getElementValue('steamGroupUrl'));
 		$stmt->bindValue(':blurb', $this->getElementValue('blurb'));
 

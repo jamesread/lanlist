@@ -62,6 +62,7 @@ SELECT
 	o.title,
 	o.published,
 	o.websiteUrl,
+	o.assumedStale,
 	o.steamGroupUrl,
 	o.blurb,
 	count(v.id) AS venueCount
