@@ -4,7 +4,7 @@
 <html>
 
 <head>
-	<title>lanlist.org &bull; {$title|default:"A List of LAN Parties"}</title>
+	<title>{$title|default:"A List of LAN Parties"} &bull; lanlist.org</title>
 
 	<meta name = "author" content = "lanlist.org Admin Team" />
 	<meta name = "description" content = "A list of LAN Parties" />
