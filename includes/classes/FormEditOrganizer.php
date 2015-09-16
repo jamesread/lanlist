@@ -32,7 +32,7 @@ class FormEditOrganizer extends Form {
 	public function process() {
 		global $db;
 
-		$sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, steamGroupUrl = :steamGroupUrl, blurb = :blurb WHERE id = :id LIMIT 1';
+		$sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, steamGroupUrl = :steamGroupUrl, blurb = :blurb WHERE id = :id LIMIT 1';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':id', $this->getElementValue('id'));
 		$stmt->bindValue(':title', $this->getElementValue('title'));
