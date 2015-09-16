@@ -3,7 +3,10 @@
 <div class = "paralellContainer">
 	<strong>Website: </strong> {$organizer.websiteUrl|externUrl}<br />
 	<strong>Steam Group:</strong> {$organizer.steamGroupUrl|externUrlOr}<br />
-	<strong>Stale?:</strong> {$organizer.assumedStale|boolToString}
+
+	{if not empty($organizer.assumedStale}
+	<p class = "bad">This organizer seems stale since <strong>{$organizer.assumedStale}</strong></p>
+	{/if}
 </div>
 
 <div class = "paralellContainer">
