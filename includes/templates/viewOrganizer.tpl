@@ -45,7 +45,7 @@
 	<ul>
 		{foreach from = $associatedUsers item = user} 
 			{if $userlist}
-		<li><a href = "viewUser.php?id={$user.id}">{$user.username}</a></li>
+		<li><a href = "viewUser.php?id={$user.id}">{$user.username}</a>, Last login: {$user.lastLogin}</li>
 			{else}
 		<li>{$user.username}</li>
 			{/if}
