@@ -5,7 +5,7 @@
 	<strong>Steam Group:</strong> {$organizer.steamGroupUrl|externUrlOr}<br />
 
 	{if not empty($organizer.assumedStale)}
-	<p class = "bad">This organizer seems stale since <strong>{$organizer.assumedStale}</strong></p>
+	<p class = "alert">This organizer seems stale, or has gone out of business or something. We've been ignoring them since <strong>{$organizer.assumedStale}</strong></p>
 	{/if}
 </div>
 
