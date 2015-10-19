@@ -35,7 +35,7 @@ $issuesChecker = new EventsChecker();
 $issuesChecker->checkAllEvents();
 $eventIssuesNotification = $issuesChecker->getCount();
 $eventIssuesNotification = empty($eventIssuesNotification) ? null : '<strong>(' . $eventIssuesNotification . ')</strong>';
-$menuSystem->add('siteChecks.php', 'Site checks ' . $eventIssuesNotification);
+$menuSystem->addIfPriv('SITE_CHECKS', 'siteChecks.php', 'Site checks ' . $eventIssuesNotification);
 $menuSystem->add('listSchedulerTasks.php', 'Scheduler', 'time.png');
 $menuSystem->add('listUsers.php', 'Users', 'system-users.png');
 $menuSystem->add('listGroups.php', 'Groups', 'system-users.png');
