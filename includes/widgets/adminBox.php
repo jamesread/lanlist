@@ -28,8 +28,6 @@ $menuEvents->addIf(!empty($organizer), 'viewOrganizer.php?id=' . $organizer, 'My
 $menuEvents->add('eventsList.php', 'List events', 'edit-find.png');
 $menuEvents->add('formHandler.php?formClazz=FormNewEvent', 'Create event', 'create.png');
 
-Session::getUser()->updatePrivileges();
-var_dump(Session::getUser()->getPrivs());
 $ll->addIfPriv('SYSTEM_MENU', null, 'System', 'emblem-system.png');
 $menuSystem = $ll->addChildCollection('System');
 
