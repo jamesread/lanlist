@@ -28,7 +28,7 @@ $menuEvents->addIf(!empty($organizer), 'viewOrganizer.php?id=' . $organizer, 'My
 $menuEvents->add('eventsList.php', 'List events', 'edit-find.png');
 $menuEvents->add('formHandler.php?formClazz=FormNewEvent', 'Create event', 'create.png');
 
-$ll->addIfPriv('ADMIN_SYSTEM', null, 'System', 'emblem-system.png');
+$ll->addIfPriv('SYSTEM_MENU', null, 'System', 'emblem-system.png');
 $menuSystem = $ll->addChildCollection('System');
 
 $issuesChecker = new EventsChecker();
