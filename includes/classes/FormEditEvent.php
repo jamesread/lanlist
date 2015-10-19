@@ -9,7 +9,7 @@ class FormEditEvent extends Form {
 
 		$event = $this->getEvent();
 
-		$isAdmin = Session::getUser()->hasPriv('SUPERUSER');
+		$isAdmin = Session::getUser()->hasPriv('MODERATE_EVENTS');
 		$isOwner = Session::getUser()->getData('organization') == $event['organizer'];
 
 		if (!$isAdmin && !$isOwner) {
@@ -23,7 +23,7 @@ class FormEditEvent extends Form {
 		$this->addElement(Element::factory('hidden', 'id', 'event id', $event['id']));
 		$this->addElement(Element::factory('text', 'title', 'Title', $event['title']));
 
-		if (Session::getUser()->hasPriv('SUPERUSER')) {
+		if ($isAdmin) {
 				$this->addElement(FormHelpers::getVenueListElement(null, true));
 		} else {
 				$this->addElement(FormHelpers::getVenueListElement(Session::getUser()->getData('organization'), true));
@@ -137,7 +137,7 @@ class FormEditEvent extends Form {
 		$stmt->bindValue(':blurb', $this->getElementValue('blurb'));
 		$stmt->bindValue(':venue', $this->getElementValue('venue'));
 
-		if (Session::getUser()->hasPriv('SUPERUSER')) {
+		if (Session::getUser()->hasPriv('MODERATE_EVENTS')) {
 			$stmt->bindValue(':organizer', $this->getElementvalue('organizer'));
 		} else {
 			$event = $this->getEvent();

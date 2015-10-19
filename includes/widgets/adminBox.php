@@ -28,6 +28,8 @@ $menuEvents->addIf(!empty($organizer), 'viewOrganizer.php?id=' . $organizer, 'My
 $menuEvents->add('eventsList.php', 'List events', 'edit-find.png');
 $menuEvents->add('formHandler.php?formClazz=FormNewEvent', 'Create event', 'create.png');
 
+Session::getUser()->updatePrivileges();
+var_dump(Session::getUser()->getPrivs());
 $ll->addIfPriv('SYSTEM_MENU', null, 'System', 'emblem-system.png');
 $menuSystem = $ll->addChildCollection('System');
 
@@ -36,10 +38,10 @@ $issuesChecker->checkAllEvents();
 $eventIssuesNotification = $issuesChecker->getCount();
 $eventIssuesNotification = empty($eventIssuesNotification) ? null : '<strong>(' . $eventIssuesNotification . ')</strong>';
 $menuSystem->addIfPriv('SITE_CHECKS', 'siteChecks.php', 'Site checks ' . $eventIssuesNotification);
-$menuSystem->add('listSchedulerTasks.php', 'Scheduler', 'time.png');
-$menuSystem->add('listUsers.php', 'Users', 'system-users.png');
-$menuSystem->add('listGroups.php', 'Groups', 'system-users.png');
-$menuSystem->add('listNews.php', 'News', 'news.png');
+$menuSystem->addIfPriv('SCHEDULER_VIEW', 'listSchedulerTasks.php', 'Scheduler', 'time.png');
+$menuSystem->addIfPriv('USERLIST', 'listUsers.php', 'Users', 'system-users.png');
+$menuSystem->addIfPriv('GROUPLIST', 'listGroups.php', 'Groups', 'system-users.png');
+$menuSystem->addIfPriv('NEWSLIST', 'listNews.php', 'News', 'news.png');
 
 $newLogNotification = getCountUnreadLogs();
 $newLogNotification = empty($newLogNotification) ? null : '<strong>(' . $newLogNotification . ')</strong>';
