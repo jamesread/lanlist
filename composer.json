@@ -1,0 +1,12 @@
+{
+    "name": "jamesread/lanlist.org",
+    "authors": [
+        {
+            "name": "jamesread",
+            "email": "contact@jwread.com"
+        }
+    ],
+    "require": {
+        "jwread/lib-allure": "^1.0"
+    }
+}
