@@ -42,7 +42,7 @@ if (strpos($logoUrl, "default") == false) {
 	<p>Or, you might want a <a href = "listOrganizers.php">list of organizers</a>.</p>
 </div>
 <?php
-if (Session::isLoggedIn() && (Session::getUser()->hasPriv('SUPERUSER') || ($event['organizerId'] == Session::getUser()->getData('organization') && !empty($event['organizerId'])))) {
+if (Session::isLoggedIn() && (Session::getUser()->hasPriv('MODERATE_EVENTS') || ($event['organizerId'] == Session::getUser()->getData('organization') && !empty($event['organizerId'])))) {
 	echo '<div class = "infobox"><h2>Admin</h2>';
 	echo '<p>With great power, comes great responsibility...</p><p>';
 	echo '<strong>Created on:</strong> ' . $event['createdDate'] . '<br />';

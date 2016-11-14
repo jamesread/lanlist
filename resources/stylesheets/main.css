@@ -448,3 +448,7 @@ p.notification {
 dt:after {
 	content: ':';
 }
+
+tr.stale {
+	text-decoration: line-through;
+}

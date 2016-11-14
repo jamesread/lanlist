@@ -14,7 +14,7 @@ $events = fetchEventsFromOrganizerId($organizer['id']);
 $tpl->assign('events', $events);
 
 if (Session::isLoggedIn() && (Session::getUser()->hasPriv('SUPERUSER') || Session::getUser()->getData('organization') == $organizer['id'])) {
-	$sql = 'SELECT u.id, u.username FROM users u WHERE u.organization = :organizer';
+	$sql = 'SELECT u.id, u.username, u.lastLogin FROM users u WHERE u.organization = :organizer';
 	$stmt = $db->prepare($sql);
 	$stmt->bindValue(':organizer', $organizer['id']);
 	$stmt->execute();

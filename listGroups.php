@@ -2,6 +2,8 @@
 
 require_once 'includes/widgets/header.php';
 
+requirePriv('GROUPLIST');
+
 $sql = 'SELECT g.id, g.title FROM groups g';
 $stmt = DatabaseFactory::getInstance()->prepare($sql);
 $stmt->execute();

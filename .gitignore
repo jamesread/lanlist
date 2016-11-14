@@ -1,4 +1,5 @@
 includes/config.php
 resources/images/organizer-logos/
-
 /vendor/
+*.swo
+*.swp

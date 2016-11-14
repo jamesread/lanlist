@@ -46,7 +46,7 @@ function getDirections(eventObject) {
 function onEventMarkerClicked(eventObject) {
 	var content = '';
 	content += '<div class = "infoPopup">';
-	content += '<h2>' + eventObject.organizerTitle + ' - ' + eventObject.eventTitle + '</h2>';
+	content += '<h2><a href = "viewEvent.php?id=' + eventObject.id + '">' + eventObject.organizerTitle + ' - ' + eventObject.eventTitle + '</a></h2>';
 	content += '<strong>Start:</strong> ' + eventObject.dateStart + '<br />';
 	content += '<strong>Finish:</strong> ' + eventObject.dateFinish + '<br /><br />';
 	content += '<strong>Seats:</strong> ' + eventObject.numberOfSeats + '<br />';

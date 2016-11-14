@@ -2,7 +2,11 @@
 
 <div class = "paralellContainer">
 	<strong>Website: </strong> {$organizer.websiteUrl|externUrl}<br />
-	<strong>Steam Group:</strong> {$organizer.steamGroupUrl|externUrlOr}
+	<strong>Steam Group:</strong> {$organizer.steamGroupUrl|externUrlOr}<br />
+
+	{if not empty($organizer.assumedStale)}
+	<p class = "alert">This organizer seems stale, or has gone out of business or something. We've been ignoring them since <strong>{$organizer.assumedStale}</strong></p>
+	{/if}
 </div>
 
 <div class = "paralellContainer">
@@ -41,7 +45,7 @@
 	<ul>
 		{foreach from = $associatedUsers item = user} 
 			{if $userlist}
-		<li><a href = "viewUser.php?id={$user.id}">{$user.username}</a></li>
+		<li><a href = "viewUser.php?id={$user.id}">{$user.username}</a>, Last login: {$user.lastLogin}</li>
 			{else}
 		<li>{$user.username}</li>
 			{/if}

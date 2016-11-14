@@ -13,6 +13,7 @@ class FormEditOrganizer extends Form {
 		$this->addElement(Element::factory('text', 'title', 'Title', $organizer['title']));
 		$this->addElement(Element::factory('hidden', 'id', null, $organizer['id']));
 		$this->addElement(Element::factory('text', 'websiteUrl', 'Website', $organizer['websiteUrl']));
+		$this->addElement(Element::factory('date', 'assumedStale', 'Assumed stale since', $organizer['assumedStale']));
 		$this->addElement(Element::factory('text', 'steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
 		$this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
 		$this->addElement(Element::factory('textarea', 'blurb', 'Blurb', $organizer['blurb']));
@@ -31,11 +32,12 @@ class FormEditOrganizer extends Form {
 	public function process() {
 		global $db;
 
-		$sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, steamGroupUrl = :steamGroupUrl, blurb = :blurb WHERE id = :id LIMIT 1';
+		$sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, steamGroupUrl = :steamGroupUrl, blurb = :blurb WHERE id = :id LIMIT 1';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':id', $this->getElementValue('id'));
 		$stmt->bindValue(':title', $this->getElementValue('title'));
 		$stmt->bindValue(':websiteUrl', $this->getElementValue('websiteUrl'));
+		$stmt->bindValue(':assumedStale', $this->getElementValue('assumedStale'));
 		$stmt->bindValue(':steamGroupUrl', $this->getElementValue('steamGroupUrl'));
 		$stmt->bindValue(':blurb', $this->getElementValue('blurb'));
 
