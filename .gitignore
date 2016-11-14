@@ -3,3 +3,4 @@ resources/images/organizer-logos/
 /vendor/
 *.swo
 *.swp
+composer.lock
