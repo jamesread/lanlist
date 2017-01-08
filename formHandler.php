@@ -1,7 +1,6 @@
 <?php
 
 require_once 'includes/common.php';
-require_once 'jwrCommonsPhp/Form.php';
 
 function getFormUsingMagic() {
 	foreach ($_REQUEST as $key => $value) {
@@ -31,7 +30,7 @@ function getFormUsingMagic() {
 
 	$form = new $form();
 
-	if (!($form instanceof Form)) {
+	if (!($form instanceof \libAllure\Form)) {
 		throw new Exception('After all the work I went to of instanciating a form, it was not a Form.');
 	}
 

@@ -1,5 +1,8 @@
 <?php
 
+use \libAllure\Form;
+use \libAllure\Session;
+
 class FormEditOrganizer extends Form {
 	public function __construct() {
 		parent::__construct('formEditOrganizer', 'Edit Organizer');

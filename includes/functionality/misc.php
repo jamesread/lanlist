@@ -1,5 +1,8 @@
 <?php
 
+use \libAllure\Session;
+use \libAllure\DatabaseFactory;
+
 function getCountJoinRequests() {
 	$sql = 'SELECT count(j.id) as count FROM organization_join_requests j';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);

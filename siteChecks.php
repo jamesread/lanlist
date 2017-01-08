@@ -2,6 +2,8 @@
 
 require_once 'includes/common.php';
 
+use \libAllure\Session;
+
 define('TITLE', 'Site Checks');
 
 require_once 'includes/widgets/header.php';

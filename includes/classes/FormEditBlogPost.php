@@ -1,5 +1,8 @@
 <?php
 
+use \libAllure\Form;
+use \libAllure\Session;
+
 class FormEditBlogPost extends Form {
 	public function __construct($id, $isNewArticle = false) {
 		$this->id = $id;

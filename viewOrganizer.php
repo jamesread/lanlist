@@ -2,6 +2,8 @@
 
 require_once 'includes/common.php';
 
+use \libAllure\Session;
+
 $organizer = fetchOrganizer(fromRequestRequireInt('id'));
 
 define('TITLE', 'Organizer: ' . $organizer['title']);

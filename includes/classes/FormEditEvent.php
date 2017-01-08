@@ -3,6 +3,9 @@
 require_once 'includes/classes/ElementDateTime.php';
 require_once 'includes/classes/FormHelpers.php';
 
+use \libAllure\Form;
+use \libAllure\Session;
+
 class FormEditEvent extends Form {
 	public function __construct() {
 		parent::__construct('formEditEvent', 'Edit Event');

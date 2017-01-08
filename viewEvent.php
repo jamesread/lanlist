@@ -11,7 +11,7 @@ $tpl->assign('event', $event);
 
 $marker = jsMapMarker($event['venueLat'], $event['venueLng'], true); 
 $tpl->assign('markers', array($marker));
-$tpl->registerFunction('boolToString', 'tplBoolToString');
+//$tpl->registerFunction('boolToString', 'tplBoolToString');
 $tpl->display('viewEvent.tpl');
 
 /*

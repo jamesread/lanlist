@@ -4,6 +4,9 @@ require_once 'jwrCommonsPhp/Form.php';
 require_once 'includes/classes/FormHelpers.php';
 require_once 'includes/classes/ElementDateTime.php';
 
+use \libAllure\Form;
+use \libAllure\Session;
+
 class FormNewEvent extends Form {
 	public function __construct() {
 		parent::__construct('formNewEvent', 'New Event');

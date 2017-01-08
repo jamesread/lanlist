@@ -1,5 +1,8 @@
 <?php
 
+use \libAllure\Form;
+use \libAllure\Session;
+
 class FormJoinOrganizer extends Form {
 	public function __construct() {
 		parent::__construct('formJoinOrganizer', 'Join organization');

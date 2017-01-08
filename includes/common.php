@@ -1,47 +1,58 @@
 <?php
 
 require_once 'includes/config.php';
+require_once 'vendor/autoload.php';
 
-require_once 'jwrCommonsPhp/Exceptions.php';
+require_once 'libAllure/Exceptions.php';
 require_once 'includes/classes/SiteErrorHandler.php';
 
 $eh = new SiteErrorHandler();
 $eh->beGreedy();
 
-require_once 'jwrCommonsPhp/Database.php';
+require_once 'libAllure/Database.php';
 
-require_once 'jwrCommonsPhp/Logger.php';
+require_once 'libAllure/Logger.php';
 require_once 'includes/classes/LocalEventType.php';
+
+use \libAllure\Logger;
 
 Logger::setLogName('lanlist.org');
 Logger::open();
-Logger::addListener('syslogListener');
 Logger::addListener('logMessageToDatabase');
 
 require_once 'includes/functionality/misc.php';
 require_once 'includes/functionality/dbal.php';
 
+use \libAllure\Database;
+use \libAllure\DatabaseFactory;
+
 $db = new Database(DB_DSN, DB_USER, DB_PASS);
 DatabaseFactory::registerInstance($db);
 
-require_once 'jwrCommonsPhp/User.php';
-require_once 'jwrCommonsPhp/AuthBackend.php';
-require_once 'jwrCommonsPhp/AuthBackendDatabase.php';
-require_once 'jwrCommonsPhp/HtmlLinksCollection.php';
+require_once 'libAllure/User.php';
+require_once 'libAllure/AuthBackend.php';
+require_once 'libAllure/AuthBackendDatabase.php';
+require_once 'libAllure/HtmlLinksCollection.php';
+
+use \libAllure\AuthBackendDatabase;
 
 $authBackend = new AuthBackendDatabase();
 $authBackend->registerAsDefault();
 
-require_once 'jwrCommonsPhp/Session.php';
+require_once 'libAllure/Session.php';
 
+use \libAllure\Session;
 
 Session::setSessionName('lanlistUser');
 Session::start();
 
-require_once 'jwrCommonsPhp/Template.php';
+require_once 'libAllure/Template.php';
+
+use \libAllure\Template;
 
 $tpl = new Template('/var/cache/apache2/smarty/lanlist.org/');
+$tpl->registerModifier('externUrl', 'externUrl');
 
-require_once 'jwrCommonsPhp/Sanitizer.php';
+require_once 'libAllure/Sanitizer.php';
 
 ?>

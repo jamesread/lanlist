@@ -1,7 +1,6 @@
 <?php
 
 require_once 'includes/widgets/header.php';
-require_once 'jwrCommonsPhp/Exceptions.php';
 
 switch ($_REQUEST['action']) {
 	case 'toggleEvent':

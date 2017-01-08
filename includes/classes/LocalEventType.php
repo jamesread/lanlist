@@ -1,5 +1,7 @@
 <?php
 
+use \libAllure\LogEventType;
+
 abstract class LocalEventType extends LogEventType {
 	const CREATE_EVENT = 2001;
 	const CREATE_USER = 2002;

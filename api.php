@@ -5,6 +5,8 @@ Warning: This file is a massive mess.
 
 require_once 'includes/common.php';
 
+use \libAllure\Sanitizer;
+
 $sanitizer = new Sanitizer();
 
 if (!isset($_REQUEST['function'])) {

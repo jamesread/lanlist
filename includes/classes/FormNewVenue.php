@@ -2,14 +2,18 @@
 
 require_once 'includes/classes/FormHelpers.php';
 
+use \libAllure\Form;
+use \libAllure\Session;
+use \libAllure\ElementHtml;
+
 class FormNewVenue extends Form {
 	public function __construct() {
 		parent::__construct('newVenue', 'New Venue');
 
-		$this->addElement(Element::factory('html', 'desc', null, 'A venue is a physical place where an event will be hosted, this may be a convention centre, a hall or just your house. You can specify detail such as sleeping arangements when the event is created.'));
-		$this->addElement(Element::factory('text', 'title', 'Title', null, 'eg: Budleigh Salterton town hall, Cheltenham Racecourse, etc.'));
+		$this->addElement(new ElementHtml('desc', null, 'A venue is a physical place where an event will be hosted, this may be a convention centre, a hall or just your house. You can specify detail such as sleeping arangements when the event is created.'));
+		$this->addElement(new ElementInput('title', 'Title', null, 'eg: Budleigh Salterton town hall, Cheltenham Racecourse, etc.'));
 		$this->addElement(FormHelpers::getElementCountry('United Kingdom'));
-		$this->addElement(Element::factory('html', 'locationDesc', null, '<br />The geodetic (WGS84) latitude/longitude of your venue. This can be awkward, but it allows us to put a pin on the map. We cannot use post/zip codes because many countries do not have them! <a href = "http://www.getlatlon.com/">http://getlatlong.com</a> will convert an address to a rough lat/lng. '));
+		$this->addElement(new ElementHtml('locationDesc', null, '<br />The geodetic (WGS84) latitude/longitude of your venue. This can be awkward, but it allows us to put a pin on the map. We cannot use post/zip codes because many countries do not have them! <a href = "http://www.getlatlon.com/">http://getlatlong.com</a> will convert an address to a rough lat/lng. '));
 		$this->addElement(Element::factory('numeric', 'lat', 'Latitude'))->setAllowNegative(true);
 		$this->addElement(Element::factory('numeric', 'lng', 'Longitude'))->setAllowNegative(true);
 

@@ -1,5 +1,9 @@
 <?php
 
+use \libAllure\Form;
+use \libAllure\Element;
+use \libAllure\Session;
+
 class FormDeleteUser extends Form {
 	public function __construct() {
 		parent::__construct('formDeleteUser', 'Delete user?');

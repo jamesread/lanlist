@@ -2,6 +2,9 @@
 
 require_once 'includes/classes/FormHelpers.php';
 
+use \libAllure\Form;
+use \libAllure\Session;
+
 class FormEditUser extends Form {
 	public function __construct() {
 		parent::__construct('formEditUser', 'Edit User');

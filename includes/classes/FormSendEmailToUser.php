@@ -1,5 +1,8 @@
 <?php
 
+use \libAllure\Form;
+use \libAllure\Session;
+
 class FormSendEmailToUser extends Form {
 	public function __construct() {
 		parent::__construct('formSendEmailToUser', 'Send email to user');

@@ -2,6 +2,9 @@
 
 require_once 'includes/classes/EventsChecker.php';
 
+use \libAllure\Session;
+use \libAllure\HtmlLinksCollection;
+
 $organizer = Session::getUser()->getData('organization');
 
 $ll = new HtmlLinksCollection('Super Menu v2.1');

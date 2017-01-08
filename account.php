@@ -2,6 +2,8 @@
 
 require_once 'includes/common.php';
 
+use \libAllure\Session;
+
 if (!Session::isLoggedIn()) {
 	redirect('loginregister.php', 'You need to login to view your account.');
 }

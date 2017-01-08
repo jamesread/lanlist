@@ -3,6 +3,8 @@
 require_once 'includes/common.php';
 require_once 'includes/classes/FormSetLocation.php';
 
+use \libAllure\Session;
+
 $f = new FormSetLocation();
 
 if ($f->validate()) {
@@ -62,7 +64,7 @@ require_once 'includes/functionality/misc.php';
 $currentLocation = htmlentities($currentLocation, ENT_QUOTES);
 
 if (empty($currentLocation)) {
-	$f->display();
+	$tpl->displayForm($f);
 	echo '<small>Currently set to <strong>(nothing)</strong></small>';
 } else {
 	echo '<div id = "formSetLocationContainer" style = "display: none">';

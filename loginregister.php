@@ -4,6 +4,8 @@ require_once 'includes/common.php';
 require_once 'includes/classes/FormLogin.php';
 require_once 'includes/classes/FormRegister.php';
 
+use \libAllure\Session;
+
 $fRegister = new FormRegister();
 
 if ($fRegister->validate()) {
@@ -42,11 +44,11 @@ define('TITLE', 'Login to, or Register an account');
 require_once 'includes/widgets/header.php';
 
 echo '<div class = "paralellContainer">';
-$f->display();
+$tpl->displayForm($f);
 echo '</div>';
 
 echo '<div class = "paralellContainer">';
-$fRegister->display();
+$tpl->displayForm($fRegister);
 echo '</div>';
 
 startSidebar();

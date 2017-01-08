@@ -1,5 +1,7 @@
 <?php
 
+use \libAllure\DatabaseFactory;
+
 class EventsChecker {
 	private $eventsList;
 	private $countProblems = 0;

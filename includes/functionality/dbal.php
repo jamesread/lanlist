@@ -1,5 +1,8 @@
 <?php
 
+use \libAllure\Session;
+use \libAllure\Database;
+
 function fetchEventsFromOrganizerId($id) {
 	global $db;
 

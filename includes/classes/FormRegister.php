@@ -1,15 +1,18 @@
 <?php
 
-require_once 'jwrCommonsPhp/Form.php';
+use \libAllure\Form;
+use \libAllure\Session;
+use \libAllure\ElementInput;
+use \libAllure\ElementPassword;
 
 class FormRegister extends Form {
 	public function __construct() {
 		parent::__construct('formRegister', 'Register a new account');
 
-		$this->addElement(Element::factory('alphanumeric', 'username', 'Username'));
-		$this->addElement(Element::factory('password', 'password1', 'Password'));
-		$this->addElement(Element::factory('password', 'password2', 'Password (confirm)'));
-		$this->addElement(Element::factory('text', 'email', 'E-Mail address'));
+		$this->addElement(new ElementInput('username', 'Username'));
+		$this->addElement(new ElementPassword('password1', 'Password'));
+		$this->addElement(new ElementPassword('password2', 'Password (confirm)'));
+		$this->addElement(new ElementInput('email', 'E-Mail address'));
 
 		$this->addButtons(Form::BTN_SUBMIT);
 	}
