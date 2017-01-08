@@ -3,6 +3,8 @@
 require_once 'includes/config.php';
 require_once 'vendor/autoload.php';
 
+set_include_path(__DIR__ . "/..//vendor/jwread/lib-allure/src/main/php/" . PATH_SEPARATOR . get_include_path());
+
 require_once 'libAllure/Exceptions.php';
 require_once 'includes/classes/SiteErrorHandler.php';
 
@@ -45,8 +47,6 @@ use \libAllure\Session;
 
 Session::setSessionName('lanlistUser');
 Session::start();
-
-require_once 'libAllure/Template.php';
 
 use \libAllure\Template;
 
