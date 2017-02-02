@@ -10,6 +10,8 @@
 	<meta name = "description" content = "A list of LAN Parties" />
 	<meta name = "keywords" content = "lan party, lan, list" />
 
+	<meta name = "viewport" content = "width=device-width" />
+
 	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
 	<link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />
 	<link rel = "alternate" type = "application/rss+xml" title = "lanlist.org - A list of LAN Parties" href = "api.php?function=events&amp;format=rss" />
