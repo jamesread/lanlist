@@ -4,6 +4,11 @@ require_once 'includes/classes/FormHelpers.php';
 
 use \libAllure\Form;
 use \libAllure\Session;
+use \libAllure\ElementInput;
+use \libAllure\ElementHidden;
+use \libAllure\ElementSelect;
+use \libAllure\ElementHtml;
+use \libAllure\ElementPassword;
 
 class FormEditUser extends Form {
 	public function __construct() {
@@ -12,19 +17,19 @@ class FormEditUser extends Form {
 		$user = $this->getUser();
 
 		$this->addElementReadOnly('Username', $user['username']);
-		$this->addElement(Element::factory('text', 'email', 'Email Address', $user['email']));
+		$this->addElement(new ElementInput('email', 'Email Address', $user['email']));
 		$this->getElement('email')->setMinMaxLengths(0, 64);
-		$this->addElement(Element::factory('text', 'usernameSteam', 'Steam Username', $user['usernameSteam'], 'Plaese do include your Steam username - its a good way for us to get in contact.'));
+		$this->addElement(new ElementInput('usernameSteam', 'Steam Username', $user['usernameSteam'], 'Plaese do include your Steam username - its a good way for us to get in contact.'));
 		$this->getElement('usernameSteam')->setMinMaxLengths(0, 64);
-		$this->addElement(Element::factory('hidden', 'uid', null, $user['id']));
+		$this->addElement(new ElementHidden('uid', null, $user['id']));
 
 		if (Session::hasPriv('EDIT_USER')) {
-			$this->addElement(Element::factory('html', null, null, 'Admin fields'));
+			$this->addElement(new ElementHtml(null, null, 'Admin fields'));
 
 			$this->addElement($this->getGroupSelectionElement($user['group']));
 			$this->addElement(FormHelpers::getOrganizerList(true));
 			$this->getElement('organizer')->setValue($user['organization']);
-			$this->addElement(Element::factory('password', 'password', 'New Password'));
+			$this->addElement(new ElementPassword('password', 'New Password'));
 			$this->getElement('password')->setOptional(true);
 		}
 
@@ -34,7 +39,7 @@ class FormEditUser extends Form {
 	private function getGroupSelectionElement($currentGroup) {
 		global $db;
 
-		$el = Element::factory('select', 'group', 'Primary group');
+		$el = new ElementSelect('group', 'Primary group');
 
 		$sql = 'SELECT g.id, g.title FROM groups g';
 		$stmt = $db->prepare($sql);

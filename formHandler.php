@@ -2,6 +2,8 @@
 
 require_once 'includes/common.php';
 
+use \libAllure\ElementHidden;
+
 function getFormUsingMagic() {
 	foreach ($_REQUEST as $key => $value) {
 		if (strpos($key, 'formClazz') !== false) {
@@ -38,7 +40,7 @@ function getFormUsingMagic() {
 }
 
 $f = getFormUsingMagic();
-$f->addElement(Element::factory('hidden', 'formClazz', null, get_class($f)));
+$f->addElement(new ElementHidden('formClazz', null, get_class($f)));
 
 if ($f->validate()) {
 	$f->process();
@@ -49,7 +51,7 @@ if ($f->validate()) {
 define('TITLE', 'Form: ' . $f->getTitle());
 require_once 'includes/widgets/header.php';
 
-$f->display();
+$tpl->displayForm($f);
 
 require_once 'includes/widgets/footer.php';
 

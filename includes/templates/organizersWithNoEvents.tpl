@@ -11,7 +11,7 @@
 			<th>Last Checked, Reset link</td>
 		</tr>
 	</thead>
-	{foreach from = "$listOrganizers" item = "itemOrganizer"}
+	{foreach from = $listOrganizers item = "itemOrganizer"}
 		{if empty($itemOrganizer.assumedStale)}
 		<tr>
 		{else}

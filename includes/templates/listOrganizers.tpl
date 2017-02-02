@@ -10,7 +10,7 @@
 	</thead>
 
 	<tbody>
-	{foreach from = "$listOrganizers" item = "itemOrganizer"}
+	{foreach from = $listOrganizers item = "itemOrganizer"}
 		<tr>
 			<td><a href = "viewOrganizer.php?id={$itemOrganizer.id}">{$itemOrganizer.title}</a></td>
 			<td><a href = "{$itemOrganizer.websiteUrl}" target = "_new">{$itemOrganizer.websiteUrl}</a></td>

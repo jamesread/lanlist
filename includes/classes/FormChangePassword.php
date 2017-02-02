@@ -2,6 +2,7 @@
 
 use \libAllure\Form;
 use \libAllure\Session;
+use \libAllure\ElementPassword;
 
 class FormChangePassword extends Form {
 	public function __construct() {
@@ -11,8 +12,8 @@ class FormChangePassword extends Form {
 			throw new Exception('You need to be logged in to change your password.');
 		}
 
-		$this->addElement(Element::factory('password', 'password1', 'New password'));
-		$this->addElement(Element::factory('password', 'password2', 'Password (confirm)'));
+		$this->addElement(new ElementPassword('password1', 'New password'));
+		$this->addElement(new ElementPassword('password2', 'Password (confirm)'));
 		
 		$this->addButtons(Form::BTN_SUBMIT);
 	}

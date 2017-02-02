@@ -2,6 +2,9 @@
 
 require_once 'includes/widgets/header.php';
 
+use \libAllure\Session;
+use \libAllure\ErrorHandler;
+
 switch ($_REQUEST['action']) {
 	case 'toggleEvent':
 		requirePriv('TOGGLE_EVENT_PUBLISHED');

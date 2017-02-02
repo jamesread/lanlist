@@ -2,7 +2,11 @@
 
 require_once 'includes/common.php';
 
+use \libAllure\Session;
+
 $event = fetchEvent(fromRequestRequireInt('id'));
+
+addHistoryLink('viewEvent.php?id=' . $event['id'], 'View event: ' . $event['eventTitle']);
 
 define('TITLE', 'Event: ' . $event['organizerTitle'] . ' - ' . $event['eventTitle']);
 require_once 'includes/widgets/header.php';

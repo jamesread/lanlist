@@ -30,7 +30,7 @@
 	<h3>Facilities</h3>
 	<strong>Sleeping: </strong> {$event.sleeping} <br />
 	<strong>Showers?: </strong> {$event.showers|boolToString} <br />
-	<strong>Smoking area?: </strong> {boolToString test = "$event.smoking"} <br />
+	<strong>Smoking area?: </strong> {$event.smoking|boolToString} <br />
 	<strong>Alcohol allowed?: </strong> {$event.alcohol|boolToString} <br />
 	<strong>Number of seats: </strong> {if $event.numberOfSeats < 1}Unknown{else}{$event.numberOfSeats}{/if} <br />
 	<strong>Network connection (mbps): </strong> {$event.networkMbps|default:"None"}<br />
@@ -49,8 +49,9 @@
 	<script type = "text/javascript">
 		renderMap();
 
-		{foreach from = $markers item = "marker} 
+		{foreach from = $markers item = "marker"} 
 			{$marker}
 		{/foreach}
+
 	</script>
 {/if}

@@ -2,6 +2,13 @@
 
 use \libAllure\Form;
 use \libAllure\Session;
+use \libAllure\Logger;
+use \libAllure\ElementInput;
+use \libAllure\ElementDate;
+use \libAllure\ElementFile;
+use \libAllure\ElementCheckbox;
+use \libAllure\ElementHidden;
+use \libAllure\ElementTextbox;
 
 class FormEditOrganizer extends Form {
 	public function __construct() {
@@ -10,17 +17,17 @@ class FormEditOrganizer extends Form {
 		$organizer = fetchOrganizer($_REQUEST['formEditOrganizer-id']);
 
 		if (Session::getUser()->hasPriv('PUBLISH_ORGANIZERS')) {
-			$this->addElement(Element::factory('checkbox', 'published', 'Published', $organizer['published']));
+			$this->addElement(new ElementCheckbox('published', 'Published', $organizer['published']));
 		}
 
-		$this->addElement(Element::factory('text', 'title', 'Title', $organizer['title']));
-		$this->addElement(Element::factory('hidden', 'id', null, $organizer['id']));
-		$this->addElement(Element::factory('text', 'websiteUrl', 'Website', $organizer['websiteUrl']));
-		$this->addElement(Element::factory('date', 'assumedStale', 'Assumed stale since', $organizer['assumedStale']));
-		$this->addElement(Element::factory('text', 'steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
+		$this->addElement(new ElementInput('title', 'Title', $organizer['title']));
+		$this->addElement(new ElementHidden('id', null, $organizer['id']));
+		$this->addElement(new ElementInput('websiteUrl', 'Website', $organizer['websiteUrl']));
+		$this->addElement(new ElementDate('assumedStale', 'Assumed stale since', $organizer['assumedStale']));
+		$this->addElement(new ElementInput('steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
 		$this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
-		$this->addElement(Element::factory('textarea', 'blurb', 'Blurb', $organizer['blurb']));
-		$this->addElement(Element::factory('file', 'banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG, maximum image size is 468x160'));
+		$this->addElement(new ElementTextbox('blurb', 'Blurb', $organizer['blurb']));
+		$this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG, maximum image size is 468x160'));
 		$this->getElement('banner')->destinationDir = 'resources/images/organizer-logos/';
 		$this->getElement('banner')->destinationFilename = $organizer['id'] . '.jpg';
 		$this->getElement('banner')->setMaxImageBounds(468, 160);

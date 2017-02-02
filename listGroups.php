@@ -2,6 +2,8 @@
 
 require_once 'includes/widgets/header.php';
 
+use \libAllure\DatabaseFactory;
+
 requirePriv('GROUPLIST');
 
 $sql = 'SELECT g.id, g.title FROM groups g';

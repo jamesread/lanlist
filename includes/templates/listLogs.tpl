@@ -9,7 +9,7 @@
 	</thead>
 
 	<tbody>
-	{foreach from = "$listLogs" item = "itemLog"}
+	{foreach from = $listLogs item = "itemLog"}
 	<tr>
 		<td>{$itemLog.id}</td>
 		<td>{$itemLog.eventType}</td>

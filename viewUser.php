@@ -2,6 +2,9 @@
 
 require_once 'includes/common.php';
 
+use \libAllure\Session;
+use \libAllure\HtmlLinksCollection;
+
 requirePriv('USERLIST');
 
 $id = fromRequestRequireInt('id');
@@ -28,11 +31,13 @@ echo 'Email: ' . issetor($user['email']) . '<br />';
 
 if (!empty($user['organizerId'])) {
 	echo 'Organizer: <a href = "viewOrganizer.php?id=' . $user['organizerId'] . '">' . $user['organizerTitle'] . '</a>';
+} else {
+	echo 'Organizer: None<br />';
 }
 
 if (Session::getUser()->hasPriv('USER_EMAIL_LOG')) {
 	$sql = 'SELECT l.id, l.sent, l.subject FROM email_log l WHERE l.emailAddress = :emailAddress ORDER BY l.sent DESC LIMIT 10';
-	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt = stmt($sql);
 	$stmt->bindValue(':emailAddress', $user['email']);
 	$stmt->execute();
 

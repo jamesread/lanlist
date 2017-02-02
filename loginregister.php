@@ -5,6 +5,7 @@ require_once 'includes/classes/FormLogin.php';
 require_once 'includes/classes/FormRegister.php';
 
 use \libAllure\Session;
+use \libAllure\Logger;
 
 $fRegister = new FormRegister();
 

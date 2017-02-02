@@ -2,6 +2,7 @@
 
 use \libAllure\Session;
 use \libAllure\DatabaseFactory;
+use \libAllure\ErrorHandler;
 
 function getCountJoinRequests() {
 	$sql = 'SELECT count(j.id) as count FROM organization_join_requests j';
@@ -278,4 +279,20 @@ function jsMapMarker($lat, $lng, $focus = false) {
 	return "addMarker({$lat}, {$lng}, '', {$focus});";
 }
 
+function addHistoryLink($url, $title) {
+	if (!Session::isLoggedIn()) {
+		return;
+	}
+
+	if (!isset($_SESSION['history'])) {
+		$_SESSION['history'] = array();
+	}
+
+	$_SESSION['history'] = array_slice($_SESSION['history'], -7, 7);
+
+	$_SESSION['history'][] = array(
+		"url" => $url,
+		"title" => $title
+	);
+}
 ?>

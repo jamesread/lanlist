@@ -2,6 +2,10 @@
 
 require_once 'includes/classes/FormHelpers.php';
 
+use \libAllure\ElementInput;
+use \libAllure\ElementHidden;
+use \libAllure\ElementPassword;
+
 use \libAllure\Form;
 use \libAllure\Session;
 
@@ -15,24 +19,24 @@ class FormEditVenue extends Form {
 			Session::requirePriv('EDIT_VENUE');
 		}
 
-		$this->addElement(Element::factory('hidden', 'id', null, $venue['id']));
-		$this->addElement(Element::factory('text', 'title', 'Title', $venue['title']));
-		$this->addElement(Element::factory('text', 'lat', 'Lat', $venue['lat']));
+		$this->addElement(new ElementHidden('id', null, $venue['id']));
+		$this->addElement(new ElementInput('title', 'Title', $venue['title']));
+		$this->addElement(new ElementInput('lat', 'Lat', $venue['lat']));
 		$this->getElement('lat')->setMinMaxLengths(1, 10);
-		$this->addElement(Element::factory('text', 'lng', 'Lng', $venue['lng']));
+		$this->addElement(new ElementInput('lng', 'Lng', $venue['lng']));
 		$this->getElement('lng')->setMinMaxLengths(1, 10);
 		$this->addElement(FormHelpers::getElementCountry($venue['country']));
 		$this->addElement(FormHelpers::getOrganizerList());
 		$this->getElement('organizer')->setValue($venue['organizer']);
 
-		$this->addButtons(Form::BTN_SUBMIT);
+		$this->addDefaultButtons();
 	}
 
 	private function getVenue() {
-		if ($this->isSubmitted()) {
-			$id = intval($this->getElementValue('id'));
-		} else {
+		if (isset($_REQUEST['formEditVenue-id'])) {
 			$id = intval($_REQUEST['formEditVenue-id']); 
+		} else {
+			$id = intval($this->getElementValue('id'));
 		}
 		
 		$venue = fetchVenue($id);

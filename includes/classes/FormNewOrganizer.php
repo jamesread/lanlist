@@ -2,13 +2,16 @@
 
 use \libAllure\Form;
 use \libAllure\Session;
+use \libAllure\ElementHtml;
+use \libAllure\ElementInput;
+use \libAllure\ElementTextbox;
 
 class FormNewOrganizer extends Form {
 	public function __construct() {
 		parent::__construct('newOrganizer', 'New Organizer');
 
 		if (Session::getUser()->hasPriv('CREATE_ORGANIZERS')) {
-			$this->addElement(Element::factory('html', 'description', null, 'This will appear in the organizers list as soon as you submit the form.'));
+			$this->addElement(new ElementHtml('description', null, 'This will appear in the organizers list as soon as you submit the form.'));
 		} else {
 			$currentOrganizer = Session::getUser()->getData('organization');
 
@@ -16,12 +19,12 @@ class FormNewOrganizer extends Form {
 				throw new PermissionException('Cannot create another organizer, you already have one aginst your account');
 			}
 
-			$this->addElement(Element::factory('html', 'description', null, 'This will not appear in the organizers list immidiately, it will first have to be approved by one of our smiling friendly admins - they accept bribes in the form of cake.'));
+			$this->addElement(new ElementHtml('description', null, 'This will not appear in the organizers list immidiately, it will first have to be approved by one of our smiling friendly admins - they accept bribes in the form of cake.'));
 		}
 
-		$this->addElement(Element::factory('text', 'title', 'Title'));
-		$this->addElement(Element::factory('text', 'websiteUrl', 'Website URL'));
-		$this->addElement(Element::factory('textarea', 'blurb', 'Blurb', null, 'A blurb describes the organizer, prehaps the year you started, how experienced you are, or if you like cake. Its best to leave event specific information to when you go to create events.'));
+		$this->addElement(new ElementInput('title', 'Title'));
+		$this->addElement(new ElementInput('websiteUrl', 'Website URL'));
+		$this->addElement(new ElementTextbox('blurb', 'Blurb', null, 'A blurb describes the organizer, prehaps the year you started, how experienced you are, or if you like cake. Its best to leave event specific information to when you go to create events.'));
 
 		$this->addButtons(Form::BTN_SUBMIT);
 	}
@@ -57,6 +60,8 @@ class FormNewOrganizer extends Form {
 		if (Session::getUser()->hasPriv('CREATE_ORGANIZERS')) {
 			$stmt->bindValue(':published', 1);
 			$stmt->execute();
+
+			addHistoryLink('viewOrganizer.php?id='. $db->lastInsertId(), 'Created org: ' . $this->getElementValue('title'));
 
 			redirect('account.php', 'Organizer created.');
 		} else {

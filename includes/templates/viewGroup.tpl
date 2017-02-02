@@ -13,7 +13,7 @@ ID: {$itemGroup.id}
 
 	<tbody>
 
-		{foreach from = "$listMembers" item = "itemMember"}
+		{foreach from = $listMembers item = "itemMember"}
 		<tr>
 			<td>{$itemMember.id}</td>
 			<td>{$itemMember.source}</td>
@@ -34,7 +34,7 @@ ID: {$itemGroup.id}
 
 	<tbody>
 
-		{foreach from = "$listPrivileges" item = "itemPermission"}
+		{foreach from = $listPrivileges item = "itemPermission"}
 		<tr>
 			<td>{$itemPermission.key}</td>
 			<td>{$itemPermission.description}</td>

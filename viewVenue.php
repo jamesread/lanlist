@@ -2,8 +2,13 @@
 
 require_once 'includes/widgets/header.php';
 
+use \libAllure\Session;
+use \libAllure\HtmlLinksCollection;
+
 $id = fromRequestRequireInt('id');
 $venue = fetchVenue($id);
+
+addHistoryLink('viewVenue.php?id=' . $id, 'View venue: ' . $venue['title']);
 
 $tpl->assign('organizersAtVenue', fetchOrganizersFromVenueId($id));
 $tpl->assign('eventsAtVenue', fetchEventsFromVenueId($id));

@@ -1,5 +1,7 @@
 <?php
 
+use \libAllure\ElementSelect;
+
 abstract class FormHelpers {
 	public static function getVenueListElement($orgie = null, $includeNull = false) {
 		global $db;
@@ -15,7 +17,7 @@ abstract class FormHelpers {
 
 		$stmt->execute();
 
-		$el = Element::factory('select', 'venue', 'Venue');
+		$el = new ElementSelect('venue', 'Venue');
 
 		if ($includeNull) {
 			$el->addOption('(null)', '');
@@ -34,7 +36,7 @@ abstract class FormHelpers {
 
 
 	public static function getElementCountry($currentValue = null) {
-		$el = Element::factory('select', 'country', 'Country');
+		$el = new ElementSelect('country', 'Country');
 
 	$country_list = array(
 		"Afghanistan",
@@ -249,7 +251,7 @@ abstract class FormHelpers {
 		$stmt = $db->prepare($sql);
 		$stmt->execute();
 
-		$el = Element::factory('select', 'organizer', 'Organizer');
+		$el = new ElementSelect('organizer', 'Organizer');
 
 		foreach ($stmt->fetchAll() as $orgie) {
 			$el->addOption($orgie['title'], $orgie['id']);

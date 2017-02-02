@@ -11,6 +11,8 @@ $stmt->execute();
 $tpl->assign('listUsers', $stmt->fetchAll());
 $tpl->display('listUsers.tpl');
 
+startSidebar();
+require_once 'includes/widgets/adminBox.php';
 require_once 'includes/widgets/footer.php';
 
 ?>

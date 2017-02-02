@@ -10,7 +10,7 @@
 	</thead>
 
 	<tbody>
-	{foreach from = "$listScheduledTasks" item = "itemScheduledTask"}
+	{foreach from = $listScheduledTasks item = "itemScheduledTask"}
 		<tr>
 			<td>{$itemScheduledTask.className}</td>
 			<td>{$itemScheduledTask.frequency}</td>

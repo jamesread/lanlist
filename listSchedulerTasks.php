@@ -2,6 +2,8 @@
 
 require_once 'includes/widgets/header.php';
 
+use \libAllure\Session;
+
 Session::requirePriv('SCHEDULER_LIST');
 
 $sql = 'SELECT className, frequency, lastRunTime FROM scheduler_tasks';

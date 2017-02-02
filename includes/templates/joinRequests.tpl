@@ -16,7 +16,7 @@
 		</thead>
 
 		<tbody>
-		{foreach from = "$requests" item = "request"}
+		{foreach from = $requests item = "request"}
 			<tr>
 				<td>{$request.id}</td>
 				<td><a href = "viewUser.php?id={$request.userId}">{$request.username}</a></td>

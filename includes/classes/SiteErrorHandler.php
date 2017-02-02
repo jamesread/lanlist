@@ -1,8 +1,6 @@
 <?php
 
-require_once 'jwrCommonsPhp/ErrorHandler.php';
-
-class SiteErrorHandler extends ErrorHandler {
+class SiteErrorHandler extends \libAllure\ErrorHandler {
 	protected function renderSfe(SimpleFatalError $e) {
 		require_once 'includes/widgets/header.php';
 		echo '<p><span class = "karmaBad">Error! ' . $e->getMessage() . '</span></p>';

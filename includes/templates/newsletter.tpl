@@ -27,7 +27,7 @@ h1 {
 
 {if $listNewUsers|@count gt 0}
 	<ul>
-	{foreach from = "$listNewUsers" item = "item"}
+	{foreach from = $listNewUsers item = "item"}
 		<li>User "{$item.username}" registered.</li>
 	{/foreach}
 	</ul>
@@ -35,7 +35,7 @@ h1 {
 
 {if $listNewEvents|@count gt 0}
 	<ul>
-	{foreach from = "$listNewEvents" item = "item"}
+	{foreach from = $listNewEvents item = "item"}
 		<li>Event "{$item.title}" created by "{$item.createdBy}"</li>
 	{/foreach}
 	</ul>
@@ -43,7 +43,7 @@ h1 {
 
 {if $listNewOrganizers|@count gt 0}
 	<ul>
-	{foreach from = "$listNewOrganizers" item = "item"}
+	{foreach from = $listNewOrganizers item = "item"}
 		<li>New organizer "{$item.title}" registered.</li>
 	{/foreach}
 	</ul>
@@ -55,7 +55,7 @@ h1 {
 
 {if $listJoinRequests|@count gt 0}
 	<ul>
-	{foreach from = "$listJoinRequests" item = "item"}
+	{foreach from = $listJoinRequests item = "item"}
 		<li class = "bad">The user "{$item.username}" wants to join organizer "{$item.organizerName}".</li>
 	{/foreach}
 	</ul>
@@ -65,7 +65,7 @@ h1 {
 <h1>Issues ({$issuesList|@count})</h1>
 
 	<ul>
-	{foreach from = "$issuesList" item = "issue"}
+	{foreach from = $issuesList item = "issue"}
 		<li><a href = "http://lanlist.org/viewEvent.php?id={$issue.id}">{$issue.title}</a>: {$issue.issueDescription}</li>
 	{/foreach}
 	</ul>

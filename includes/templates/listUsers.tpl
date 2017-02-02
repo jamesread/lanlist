@@ -11,7 +11,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{foreach from = "$listUsers" item = "itemUser"}
+		{foreach from = $listUsers item = "itemUser"}
 		<tr>
 			<td><a href = "viewUser.php?id={$itemUser.id}">{$itemUser.username}</a></td>
 			<td>{$itemUser.groupTitle}</td>

@@ -5,6 +5,7 @@ require_once 'includes/common.php';
 use \libAllure\Session;
 
 $organizer = fetchOrganizer(fromRequestRequireInt('id'));
+addHistoryLink('viewOrganizer.php?id=' . $organizer['id'], 'Viewed: ' . $organizer['title']);
 
 define('TITLE', 'Organizer: ' . $organizer['title']);
 require_once 'includes/widgets/header.php';

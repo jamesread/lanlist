@@ -1,5 +1,7 @@
 <?php
 
+use \libAllure\ElementDate;
+
 class ElementDateTime extends ElementDate {
 	public function __construct($name, $caption, $value = null) {
 		parent::__construct($name, 'dateType', $caption, $value, '', '');

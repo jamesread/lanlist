@@ -5,6 +5,9 @@ require_once 'includes/classes/FormHelpers.php';
 use \libAllure\Form;
 use \libAllure\Session;
 use \libAllure\ElementHtml;
+use \libAllure\ElementInput;
+use \libAllure\ElementNumeric;
+use \libAllure\Logger;
 
 class FormNewVenue extends Form {
 	public function __construct() {
@@ -14,8 +17,8 @@ class FormNewVenue extends Form {
 		$this->addElement(new ElementInput('title', 'Title', null, 'eg: Budleigh Salterton town hall, Cheltenham Racecourse, etc.'));
 		$this->addElement(FormHelpers::getElementCountry('United Kingdom'));
 		$this->addElement(new ElementHtml('locationDesc', null, '<br />The geodetic (WGS84) latitude/longitude of your venue. This can be awkward, but it allows us to put a pin on the map. We cannot use post/zip codes because many countries do not have them! <a href = "http://www.getlatlon.com/">http://getlatlong.com</a> will convert an address to a rough lat/lng. '));
-		$this->addElement(Element::factory('numeric', 'lat', 'Latitude'))->setAllowNegative(true);
-		$this->addElement(Element::factory('numeric', 'lng', 'Longitude'))->setAllowNegative(true);
+		$this->addElement(new ElementNumeric('lat', 'Latitude'))->setAllowNegative(true);
+		$this->addElement(new ElementNumeric('lng', 'Longitude'))->setAllowNegative(true);
 
 		if (Session::hasPriv('NEW_VENUE')) {
 			$this->addElement(FormHelpers::getOrganizerList());

@@ -13,7 +13,7 @@
 		</thead>
 
 		<tbody>
-		{foreach from = "$listEventsWithIssues" item = "issueEvent"}
+		{foreach from = $listEventsWithIssues item = "issueEvent"}
 			<tr>
 				<td><a href = "viewEvent.php?id={$issueEvent.id}">{$issueEvent.title}</a></td>
 				<td><a href = "viewOrganizer.php?id={$issueEvent.organizerId}">{$issueEvent.organizerTitle}</a></td>

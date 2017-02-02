@@ -3,6 +3,8 @@
 define('TITLE', 'Event log');
 require_once 'includes/common.php';
 
+use \libAllure\Session;
+
 if (!Session::isLoggedIn() || !Session::getUser()->hasPriv('SUPERUSER')) {
 	throw new PermissionsException('You cannot view the logs!');
 }

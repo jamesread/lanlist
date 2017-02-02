@@ -3,7 +3,7 @@
 
 	<h2>{$linkCollection->getTitle()}</h2>
 	<ul style = "list-style-type: none; padding-left: 1em;">
-	{foreach from = "$linkCollection" item = "link"} 
+	{foreach from = $linkCollection item = "link"} 
 		<li>
 			{if not empty($link.iconUrl)}
 			<img class = "imageIcon" src = "resources/images/icons/{$link.iconUrl}" alt = "linkIcon" /> 
