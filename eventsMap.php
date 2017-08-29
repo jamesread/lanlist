@@ -49,8 +49,11 @@ require_once 'includes/functionality/misc.php';
 <?php startSidebar(); ?>
 
 <script type = "text/javascript">
+	$(document).ready(function() {
 	renderMap();
 	<?php echo jsForEvents(); ?>
+	});
+
 </script>
 
 <div class = "infobox">
@@ -68,7 +71,7 @@ if (empty($currentLocation)) {
 	echo '<small>Currently set to <strong>(nothing)</strong></small>';
 } else {
 	echo '<div id = "formSetLocationContainer" style = "display: none">';
-	$f->display();
+	$tpl->displayForm($f);
 	echo '</div>';
 	echo '<small>Currently set to <strong>', $currentLocation, '</strong><span class = "dummyLink" onclick = "javascript:showSetLocationForm()" id = "linkShowSetLocationForm">change...</span></small>';
 }

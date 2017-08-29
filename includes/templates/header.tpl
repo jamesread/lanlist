@@ -16,19 +16,15 @@
 	<link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />
 	<link rel = "alternate" type = "application/rss+xml" title = "lanlist.org - A list of LAN Parties" href = "api.php?function=events&amp;format=rss" />
 
-	<script src="http://www.google.com/jsapi?key=ABQIAAAA438OJ5Nhur1zE7_BrT72IhRNJbQ-5Mnks4UW1hfBhX-CsLUwHRSkW8jJPua_v3UqNmMoUbt1VH022Q" type="text/javascript"></script>
-	<script type = "text/javascript">
-	{literal}
-	google.load('jquery', '1.4.2');
-	google.load('jqueryui', '1.8.7')
-	google.load('maps', '3', {other_params: "sensor=false" });
-	{/literal}
-	</script>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	<script type = "text/javascript" src = "resources/javascript/jquery.dataTables.min.js"></script>
 	<script type = "text/javascript" src = "resources/javascript/jquery.ui.datetime.src.js"></script>
+
 	<script type = "text/javascript" src = "resources/javascript/map.js"></script>
 	<script type = "text/javascript" src = "resources/javascript/common.js"></script>
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR2HQth0T-LwBf4vwmfFWlg_lQC5pFkw0"></script>
 
 	<script type="text/javascript">
 		{literal}
