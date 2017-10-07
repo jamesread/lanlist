@@ -452,6 +452,22 @@ tr.stale {
 	text-decoration: line-through;
 }
 
+.subtle {
+	color: gray;
+}
+
+#monthHeader {
+	text-align: center;
+}
+
+#calPrev {
+	text-align: right;
+}
+
+#dayNames {
+	font-weight: bold;
+}
+
 @media screen and (max-device-width: 1024px) {
 html {
 }
@@ -480,6 +496,7 @@ div#content {
 div#sidebar {
 	margin-left: auto;
 	width: 100%;
+	display: block;
 }
 
 div.paralellContainer {

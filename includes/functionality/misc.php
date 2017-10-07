@@ -261,11 +261,12 @@ function array_flatten($array) {
 function jsForEvents() {
 	global $db;
 
-	$sql = 'SELECT e.id, o.title AS organizerTitle, e.numberOfSeats, e.title AS eventTitle, v.lat, v.lng, e.dateStart, e.dateFinish FROM events e LEFT JOIN (venues v) ON e.venue = v.id LEFT JOIN (organizers o) ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY e.dateStart DESC';
+	$sql = 'SELECT e.id, o.id AS organizerId, o.title AS organizerTitle, e.numberOfSeats, e.title AS eventTitle, v.lat, v.lng, e.dateStart, e.dateFinish FROM events e LEFT JOIN (venues v) ON e.venue = v.id LEFT JOIN (organizers o) ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY e.dateStart DESC';
 	$stmt = $db->prepare($sql);
 	$stmt->execute();
 	
 	foreach ($stmt->fetchAll() as $event) {
+		$event['bannerUrl'] = getOrganizerLogoUrl($event['organizerId']);
 		$json = json_encode($event);
 
 		echo "addEvent({$json});\n";

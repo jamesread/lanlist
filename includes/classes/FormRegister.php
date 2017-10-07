@@ -4,6 +4,7 @@ use \libAllure\Form;
 use \libAllure\Session;
 use \libAllure\ElementInput;
 use \libAllure\ElementPassword;
+use \libAllure\Logger;
 
 class FormRegister extends Form {
 	public function __construct() {

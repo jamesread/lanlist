@@ -1,6 +1,6 @@
 <?php
 
-require_once 'jwrCommonsPhp/Inflector.php';
+use \libAllure\Inflector;
 
 $sql = 'SELECT v.country, count(v.id) AS venueCount, count(e.id) AS eventCount FROM venues v LEFT JOIN (events e) ON e.venue = v.id AND e.dateStart > now() GROUP BY v.country ORDER BY v.country';
 $stmt = $db->prepare($sql);

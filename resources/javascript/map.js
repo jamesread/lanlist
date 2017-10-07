@@ -43,7 +43,9 @@ function getDirections(eventObject) {
 		});
 }
 
-function onEventMarkerClicked(eventObject) {
+function onEventMarkerClicked(eventObject, marker) {
+	window.lastEvent = eventObject;
+
 	var content = '';
 	content += '<div class = "infoPopup">';
 	content += '<h2><a href = "viewEvent.php?id=' + eventObject.id + '">' + eventObject.organizerTitle + ' - ' + eventObject.eventTitle + '</a></h2>';
@@ -66,6 +68,29 @@ function onEventMarkerClicked(eventObject) {
 		$('#btnDirections').removeAttr('disabled');
 		$('#btnDirections').click(function () {getDirections(eventObject); });
 	}
+
+	showInfobox(eventObject, marker);
+}
+
+function showInfobox(eventObject, marker) {
+	if (window.infoBox != null) {
+		window.infoBox.close();
+	}
+
+	contentHtml = "";
+	contentHtml += '<img src = "' + eventObject.bannerUrl +'" />';
+	contentHtml += "<h2>" + eventObject.organizerTitle + " - " + eventObject.eventTitle + "</h2>";
+	contentHtml += '<p>';
+	contentHtml += 'Starts: ' + eventObject.dateStart + ', finishes: ' + eventObject.dateFinish + '<br />';
+	contentHtml += 'Seats: ' + eventObject.numberOfSeats + '<br /><br />';
+	contentHtml += '<a href = "viewEvent.php?id=' + eventObject.id + '">More info...</a>'
+	contentHtml += '</p>';
+
+	window.infoBox = new google.maps.InfoWindow({
+		content: contentHtml
+	});
+
+	window.infoBox.open(window.map, marker);
 }
 
 function renderMap() {
@@ -109,6 +134,6 @@ function addEvent(eventObject) {
 	var marker = addMarker(eventObject.lat, eventObject.lng, icon);
 
 	google.maps.event.addListener(marker, 'click', function() {
-		onEventMarkerClicked(eventObject);
+		onEventMarkerClicked(eventObject, marker);
 	});
 }
