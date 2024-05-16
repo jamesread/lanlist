@@ -15,7 +15,8 @@ class FormRegister extends Form {
 		$this->addElement(new ElementPassword('password2', 'Password (confirm)'));
 		$this->addElement(new ElementInput('email', 'E-Mail address'));
 
-		$this->addButtons(Form::BTN_SUBMIT);
+                $this->addButtons(Form::BTN_SUBMIT);
+		$this->getElement('submit')->setCaption('Register');
 	}
 
 	public function validateExtended() {

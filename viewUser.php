@@ -37,7 +37,7 @@ if (!empty($user['organizerId'])) {
 
 if (Session::getUser()->hasPriv('USER_EMAIL_LOG')) {
 	$sql = 'SELECT l.id, l.sent, l.subject FROM email_log l WHERE l.emailAddress = :emailAddress ORDER BY l.sent DESC LIMIT 10';
-	$stmt = stmt($sql);
+	$stmt = $db->prepare($sql);
 	$stmt->bindValue(':emailAddress', $user['email']);
 	$stmt->execute();
 

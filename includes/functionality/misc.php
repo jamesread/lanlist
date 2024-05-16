@@ -15,6 +15,10 @@ function getCountJoinRequests() {
 }
 
 function htmlify($input) {
+        if ($input == null) {
+            return '';
+        }
+
 	return htmlentities(stripslashes($input));
 }
 
@@ -120,7 +124,7 @@ function tplBoolToString($arguments, $smarty) {
 }
 
 function boolToString($test, $onTrue = 'Yes', $onFalse = 'No', $onNull = 'Unknown') {
-	if (strlen($test) == 0 || $test == null) {
+	if ($test == null || strlen($test) == 0) {
 		return $onNull;
 	}
 

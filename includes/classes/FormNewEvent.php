@@ -59,13 +59,12 @@ class FormNewEvent extends Form {
 	public function process() {
 		global $db;
 
-		$sql = 'INSERT INTO events (title, dateStart, dateFinish, organizer, venue, published, website, createdDate, createdBy) VALUES (:title, :dateStart, :dateFinish, :organizer, :venue, :published, :website, :createdDate, :createdBy)';
+		$sql = 'INSERT INTO events (title, dateStart, dateFinish, organizer, venue, published, website, createdDate, createdBy) VALUES (:title, :dateStart, :dateFinish, :organizer, :venue, :published, :website, now(), :createdBy)';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':title', $this->getElementValue('title'));
 		$stmt->bindValue(':dateStart', $this->getElementValue('dateStart'));
 		$stmt->bindValue(':dateFinish', $this->getElementValue('dateFinish'));
 		$stmt->bindValue(':website', $this->getElementValue('eventWebsite'));
-		$stmt->bindValue(':createdDate', date(DATE_ATOM));
 		$stmt->bindValue(':createdBy', Session::getUser()->getId());
 
 		if (Session::getUser()->hasPriv('CREATE_EVENTS')) {
@@ -89,9 +88,9 @@ class FormNewEvent extends Form {
 			}
 		} else {
 			$this->addElement(new ElementHtml('msg', null, 'You can create events, but they will not appear in public lists until approved.'));
-			$stmt->bindValue(':organizer', '');
+			$stmt->bindValue(':organizer', null);
 			$stmt->bindValue(':published', 0);
-			$stmt->bindValue(':venue', '');
+			$stmt->bindValue(':venue', null);
 		}
 
 		$stmt->execute();

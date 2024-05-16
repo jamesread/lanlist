@@ -49,8 +49,9 @@ require_once 'includes/functionality/misc.php';
 <?php startSidebar(); ?>
 
 <script type = "text/javascript">
-	$(document).ready(function() {
-	renderMap();
+        window.addEventListener('DOMContentLoaded', () => {
+        renderMap();
+
 	<?php echo jsForEvents(); ?>
 	});
 
@@ -64,7 +65,6 @@ require_once 'includes/functionality/misc.php';
 
 	<p><button id = "btnDirections" disabled = "disabled">Get directions!</button></p>
 <?php
-$currentLocation = htmlentities($currentLocation, ENT_QUOTES);
 
 if (empty($currentLocation)) {
 	$tpl->displayForm($f);

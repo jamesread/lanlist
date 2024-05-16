@@ -20,7 +20,7 @@ if ($f->validate()) {
 		$username = $f->getElementValue('username');
 		Session::checkCredentials($username, $f->getElementValue('password'));
 
-		setcookie('mylocation', Session::getUseR()->getData('location'));
+		//setcookie('mylocation', Session::getUser()->getData('location', ''));
 
 		redirect('index.php', 'You have logged in.');
 	} catch (IncorrectPasswordException $e) {

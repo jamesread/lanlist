@@ -7,7 +7,7 @@
         }
     ],
     "require": {
-        "jwread/lib-allure": "^1.0",
-        "smarty/smarty": "^3.1"
+        "jwread/lib-allure": "^8.1.22",
+        "smarty/smarty": "^4.3"
     }
 }

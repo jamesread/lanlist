@@ -2,8 +2,14 @@
 
 use \libAllure\Form;
 use \libAllure\Session;
+use \libAllure\ElementInput;
+use \libAllure\ElementHidden;
+use \libAllure\ElementTextbox;
 
 class FormSendEmailToUser extends Form {
+        private \libAllure\User $user;
+        private array $organizer;
+
 	public function __construct() {
 		parent::__construct('formSendEmailToUser', 'Send email to user');
 
@@ -11,10 +17,10 @@ class FormSendEmailToUser extends Form {
 
 		$uid = $_REQUEST['formSendEmailToUser-uid'];
 		$uid = intval($uid);
-		$this->user = User::getUserById($uid);
+		$this->user = \libAllure\User::getUserById($uid);
 
 		$sql = 'SELECT o.* FROM users u LEFT JOIN organizers o ON u.organization = o.id WHERE u.id = :userId LIMIT 1';
-		$stmt = DatabaseFactory::getInstance()->prepare($sql);
+		$stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':userId', $this->user->getId());
 		$stmt->execute();
 
@@ -24,10 +30,10 @@ class FormSendEmailToUser extends Form {
 			$this->organizer = array('title' => '???', 'id' => '0');
 		}
 
-		$this->addElement(Element::factory('hidden', 'uid', null, $uid));
-		$this->addElement(Element::factory('text', 'email', 'Send to', $this->user->getData('email'), 'User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ));
-		$this->addElement(Element::factory('text', 'subject', 'Subject', 'Message from a human!'));
-		$this->addElement(Element::factory('textarea', 'body', 'Body', 'Hey ' . $this->user->getUsername() . ', ' . "\n\n" . 'Your message here.' . "\n\n- lanlist.org ", 'No footer will be appended. From: mailer@lanlist.org'));
+		$this->addElement(new ElementHidden('uid', null, $uid));
+		$this->addElement(new ElementInput('Send to', $this->user->getData('email'), 'User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ));
+		$this->addElement(new ElementInput('subject', 'Subject', 'Message from a human!'));
+		$this->addElement(new ElementTextbox('body', 'Body', 'Hey ' . $this->user->getUsername() . ', ' . "\n\n" . 'Your message here.' . "\n\n- lanlist.org ", 'No footer will be appended. From: mailer@lanlist.org'));
 
 		$this->loadTemplate();
 
@@ -53,7 +59,7 @@ class FormSendEmailToUser extends Form {
 		preg_match('#^Subject: (.+)#', $content, $matches);
 
 		if (count($matches) == 2) {
-			$content = trim(str_replace($matches[0], null, $content));
+			$content = trim(str_replace($matches[0], '', $content));
 			$subject = $matches[1];
 		}
 

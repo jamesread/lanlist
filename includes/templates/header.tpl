@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -24,7 +22,7 @@
 	<script type = "text/javascript" src = "resources/javascript/map.js"></script>
 	<script type = "text/javascript" src = "resources/javascript/common.js"></script>
 
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR2HQth0T-LwBf4vwmfFWlg_lQC5pFkw0"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR2HQth0T-LwBf4vwmfFWlg_lQC5pFkw0" sync = "async"></script>
 
 	<script type="text/javascript">
 		{literal}

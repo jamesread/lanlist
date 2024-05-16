@@ -2,7 +2,8 @@
 
 use \libAllure\LogEventType;
 
-abstract class LocalEventType extends LogEventType {
+abstract class LocalEventType {
+        const USER_LOGIN = 1001;
 	const CREATE_EVENT = 2001;
 	const CREATE_USER = 2002;
 	const CREATE_VENUE = 2003;

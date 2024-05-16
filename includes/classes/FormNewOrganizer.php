@@ -50,12 +50,11 @@ class FormNewOrganizer extends Form {
 	public function process() {
 		global $db;
 
-		$sql = 'INSERT INTO organizers (title, websiteUrl, published, blurb, created) VALUES (:title, :websiteUrl, :published, :blurb, :created) ';
+		$sql = 'INSERT INTO organizers (title, websiteUrl, published, blurb, created) VALUES (:title, :websiteUrl, :published, :blurb, now()) ';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':title', $this->getElementValue('title'));
 		$stmt->bindValue(':websiteUrl', $this->getElementValue('websiteUrl'));
 		$stmt->bindValue(':blurb', $this->getElementValue('blurb'));
-		$stmt->bindValue(':created', date(DATE_ATOM));
 
 		if (Session::getUser()->hasPriv('CREATE_ORGANIZERS')) {
 			$stmt->bindValue(':published', 1);

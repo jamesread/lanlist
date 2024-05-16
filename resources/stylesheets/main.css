@@ -54,7 +54,7 @@ td {
 fieldset {
 	border: 1px solid LightGray;
 	border-radius: 1em;
-	-moz-border-radius: 1em;
+	border-radius: 1em;
 	padding: 1%;
 	display: inline-block;
 	vertical-align: top;
@@ -70,7 +70,7 @@ form fieldset {
 form {
 	background-color: white;
 	padding: 1em;
-	-moz-border-radius: 1em;
+	border-radius: 1em;
 }
 
 p.description {
@@ -102,7 +102,7 @@ button, .dataTables_paginate * {
 	text-align: left;
 	border: 1px solid black;
 	border-radius: .2em;
-	-moz-border-radius: .2em;
+	border-radius: .2em;
 	padding: .2em;
 	margin-right: .5em;
 	display: inline-block;
@@ -195,7 +195,7 @@ div#content {
 	display: inline-block;
 	vertical-align: top;
 	background-color: beige;
-	-moz-border-radius: 1em;
+	border-radius: 1em;
 	border-radius: 1em;
 }
 
@@ -217,7 +217,7 @@ div#content.minimal {
 
 .infobox {
 	padding: 1em;
-	-moz-border-radius: 1em;
+	border-radius: 1em;
 	border-radius: 1em;
 	background-color: #efefef;
 	margin-bottom: 1em;
@@ -240,7 +240,7 @@ div#navigation {
 	background-color: #efefef;
 	padding: 1em 2em .5em 2em;
 	margin: 0 auto 2em auto;
-	-moz-border-radius: 0 0 1em 1em;
+	border-radius: 0 0 1em 1em;
 	border-radius: 0 0 1em 1em;
 	text-align: center;
 	display: inline-block;
@@ -254,7 +254,7 @@ div#advertisingBanner {
 	background-color: #efefef;
 	padding: 1em 2em .5em 2em;
 	margin: 0 auto 2em auto;
-	-moz-border-radius: 0 0 1em 1em;
+	border-radius: 0 0 1em 1em;
 	border-radius: 0 0 1em 1em;
 	text-align: center;
 	display: inline-block;
@@ -318,7 +318,7 @@ div.paralellContainer {
 	font-size: 8pt;
 	display: inline-block;
 	padding-right: 1em;
-	font-color: gray;
+	color: gray;
 }
 
 .dataTables_paginate {
@@ -413,7 +413,7 @@ a.ui-datepicker-next, a.ui-datepicker-next {
 .alert {
 	background-color: salmon;
 	padding: .4em;
-	-moz-border-radius: 1em;
+	border-radius: 1em;
 }
 
 li.iconCreate {

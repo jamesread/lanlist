@@ -6,8 +6,6 @@ require_once 'vendor/autoload.php';
 set_include_path(__DIR__ . "/..//vendor/jwread/lib-allure/src/main/php/" . PATH_SEPARATOR . get_include_path());
 set_include_path(__DIR__ . "/..//vendor/smarty/" . PATH_SEPARATOR . get_include_path());
 
-require_once 'libAllure/Exceptions.php';
-require_once 'libAllure/util/shortcuts.php';
 require_once 'includes/classes/SiteErrorHandler.php';
 
 $eh = new SiteErrorHandler();
@@ -53,6 +51,10 @@ Session::start();
 use \libAllure\Template;
 
 $tpl = new Template('/var/cache/httpd/smarty/lanlist.org/');
+$tpl->registerModifier('count', 'count');
+$tpl->registerModifier('floatToMoney', 'floatToMoney');
+$tpl->registerModifier('stripslashes', 'stripslashes');
+$tpl->registerModifier('boolToString', 'boolToString');
 
 require_once 'libAllure/Sanitizer.php';
 

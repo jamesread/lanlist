@@ -78,7 +78,7 @@ CREATE TABLE `events` (
   `organizer` int(11) DEFAULT NULL,
   `dateStart` datetime NOT NULL,
   `dateFinish` datetime NOT NULL,
-  `venue` int(11) NOT NULL,
+  `venue` int(11) DEFAULT NULL,
   `urlImage` varchar(1024) DEFAULT NULL,
   `website` longtext,
   `priceOnDoor` float(10,2) DEFAULT NULL,
@@ -140,7 +140,7 @@ CREATE TABLE `logs` (
   `content` varchar(2048) DEFAULT NULL,
   `isread` tinyint(4) DEFAULT '0',
   `priority` varchar(8) DEFAULT NULL,
-  `eventType` int(11) DEFAULT '0',
+  `eventType` varchar(64) DEFAULT '',
   `relatedUser` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=64242 DEFAULT CHARSET=latin1;

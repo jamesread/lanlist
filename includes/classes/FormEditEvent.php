@@ -45,7 +45,8 @@ class FormEditEvent extends Form {
 		$this->addElement(new ElementInput('dateFinish', 'Finish', $event['dateFinish']));
 		$this->addScript('$("#formEditEvent-dateStart").datetime({"firstDay": 1 })');
 		$this->addScript('$("#formEditEvent-dateFinish").datetime({"firstDay": 2 })');
-		$this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
+                $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
+
 		$this->addElement(new ElementNumeric('priceInAdv', 'Ticket price in advance', $event['priceInAdv']));
 		$this->addElement($this->getElementCurrency($event['currency']));
 		$this->addElement(new ElementInput('website', 'Event website', $event['website']));
@@ -61,7 +62,15 @@ class FormEditEvent extends Form {
 		$this->getElement('internetMbps')->addSuggestedValue('2', '2mbps');
 		$this->getElement('internetMbps')->addSuggestedValue('8', '8mbps');
 		$this->addElement(new ElementNumeric('numberOfSeats', 'Number of seats', $event['numberOfSeats']));
-		$this->addElement(new ElementTextbox('blurb', 'Additional blurb', htmlify($event['blurb'])));
+                $this->addElement(new ElementTextbox('blurb', 'Additional blurb', htmlify($event['blurb'])));
+
+                $this->requireFields(
+                    'priceOnDoor',
+                    'priceInAdv',
+                    'internetMbps',
+                    'networkMbps',
+                );
+
 		$this->addButtons(Form::BTN_SUBMIT);
 	}
 
