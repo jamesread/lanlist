@@ -44,16 +44,17 @@ class FormNewEvent extends Form {
 		}
 
 		$this->addElement(new ElementInput('title', 'Title', null, 'eg: MyLan 2011'));
+                $this->getElement('title')->setMinMaxLengths(5, 128);
+
 		$this->addElement(new ElementInput('eventWebsite', 'Event specific URL', null, 'A URL to the event webpage on the organizer website would be useful.'));
 		$this->getElement('eventWebsite')->setMinMaxLengths(0, 256);
 		$this->addElement(new ElementDate('dateStart', 'Start date', 'YYYY-MM-DD'));
 		$this->addElement(new ElementDate('dateFinish', 'Finish date', 'YYYY-MM-DD'));
 		$this->addElement(new ElementHtml('protip', null, '<strong style = "text-decoration: blink; color: red;">Protip:</strong> You can edit this event and add much more detail after you have created it. '));
 
-		$this->addScript('$("#formNewEvent-dateStart").datetime({chainTo: "#formNewEvent-dateFinish", stepMins: 15, first: 3})');
+                $this->requireFields('title', 'dateStart', 'dateFinish');
 
-		$this->addButtons(Form::BTN_SUBMIT);
-		$this->requireFields(array('title'));
+		$this->addDefaultButtons('Create event');
 	}
 
 	public function process() {

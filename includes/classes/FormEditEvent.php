@@ -33,6 +33,7 @@ class FormEditEvent extends Form {
 
 		$this->addElement(new ElementHidden('id', 'event id', $event['id']));
 		$this->addElement(new ElementInput('title', 'Title', $event['title']));
+                $this->getElement('title')->setMinMaxLengths(5, 128);
 
 		if ($isAdmin) {
 				$this->addElement(FormHelpers::getVenueListElement(null, true));

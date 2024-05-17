@@ -74,7 +74,7 @@ DROP TABLE IF EXISTS `events`;
 CREATE TABLE `events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `published` tinyint(4) DEFAULT '0',
-  `title` varchar(32) DEFAULT NULL,
+  `title` varchar(128) DEFAULT NULL,
   `organizer` int(11) DEFAULT NULL,
   `dateStart` datetime NOT NULL,
   `dateFinish` datetime NOT NULL,
