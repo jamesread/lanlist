@@ -21,7 +21,7 @@
 			<td>{$itemEvent.venueTitle}</td>
 			<td>{$itemEvent.country}</td>
 			<td><a href = "viewOrganizer.php?id={$itemEvent.organizerId}">{$itemEvent.organizerTitle}</a></td>
-			<td>{$itemEvent.dateStart}</td>
+			<td>{$itemEvent.dateStartHuman}</td>
 			<td>{$itemEvent.numberOfSeats}</td>
 		</tr>
 		{/foreach}
