@@ -41,10 +41,11 @@ switch ($_REQUEST['action']) {
 			}
 		}
 
-		$sql = 'INSERT INTO events (title, organizer, venue, urlImage, website, priceOnDoor, priceInAdv, showers, sleeping, currency, alcohol, smoking, numberOfSeats, networkMbps, internetMbps, blurb) ';
-		$sql .= 'SELECT title, organizer, venue, urlImage, website, priceOnDoor, priceInAdv, showers, sleeping, currency, alcohol, smoking, numberOfSeats, networkMbps, internetMbps, blurb FROM events e2 WHERE e2.id = :id ';
+		$sql = 'INSERT INTO events (title, organizer, venue, urlImage, website, priceOnDoor, priceInAdv, showers, sleeping, currency, alcohol, smoking, numberOfSeats, networkMbps, internetMbps, blurb, dateStart, dateFinish, createdDate, createdBy) ';
+		$sql .= 'SELECT title, organizer, venue, urlImage, website, priceOnDoor, priceInAdv, showers, sleeping, currency, alcohol, smoking, numberOfSeats, networkMbps, internetMbps, blurb, now(), now(), now(), :uid FROM events e2 WHERE e2.id = :id ';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':id', $event['id']);
+		$stmt->bindValue(':uid', Session::getUser()->getId());
 		$stmt->execute();
 
 		$newEventId = $db->lastInsertId();
