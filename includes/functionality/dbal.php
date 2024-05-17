@@ -172,9 +172,13 @@ SQL;
 
 	if ($stmt->numRows() == 0) {
 		throw new Exception('Event not found.');
-	}
+        }
 
-	return $stmt->fetchRow();
+        $event = $stmt->fetchRow();
+        $event['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS M Y g:ia');
+        $event['dateFinishHuman'] = date_format(date_create($event['dateFinish']), 'D jS M Y g:ia');
+
+	return $event;
 }
 
 ?>
