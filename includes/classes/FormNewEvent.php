@@ -97,7 +97,7 @@ class FormNewEvent extends Form {
 		$stmt->execute();
 		$eventId = $db->lastInsertId();
 
-		Logger::messageDebug('Event ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), LocalEventType::CREATE_EVENT);
+		Logger::messageDebug('Event ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_EVENT');
 		redirect('viewEvent.php?id=' . $eventId, 'Event created.');
 	}
 }

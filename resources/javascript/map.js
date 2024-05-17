@@ -46,29 +46,6 @@ function getDirections(eventObject) {
 function onEventMarkerClicked(eventObject, marker) {
 	window.lastEvent = eventObject;
 
-	var content = '';
-	content += '<div class = "infoPopup">';
-	content += '<h2><a href = "viewEvent.php?id=' + eventObject.id + '">' + eventObject.organizerTitle + ' - ' + eventObject.eventTitle + '</a></h2>';
-	content += '<strong>Start:</strong> ' + eventObject.dateStart + '<br />';
-	content += '<strong>Finish:</strong> ' + eventObject.dateFinish + '<br /><br />';
-	content += '<strong>Seats:</strong> ' + eventObject.numberOfSeats + '<br />';
-	content += '<a href = "viewEvent.php?id=' + eventObject.id + '">more details...</a>';
-	content += '</div>';
-	content = $(content);
-
-	$('.infoPopup').remove();
-	$('#eventInfo').append(content)
-	content.show('clip')
-	content.effect('highlight');
-//	document.getElementById('eventInfo').innerHTML = content;
-
-	if (getCookieContent('mylocation') === null) {
-		$('#btnDirections').attr('disabled', 'disabled');
-	} else {
-		$('#btnDirections').removeAttr('disabled');
-		$('#btnDirections').click(function () {getDirections(eventObject); });
-	}
-
 	showInfobox(eventObject, marker);
 }
 
@@ -78,7 +55,7 @@ function showInfobox(eventObject, marker) {
 	}
 
 	contentHtml = "";
-	contentHtml += '<img src = "' + eventObject.bannerUrl +'" />';
+	contentHtml += '<img class = "bannerSmall" src = "' + eventObject.bannerUrl +'" />';
 	contentHtml += "<h2>" + eventObject.organizerTitle + " - " + eventObject.eventTitle + "</h2>";
 	contentHtml += '<p>';
 	contentHtml += 'Starts: ' + eventObject.dateStart + ', finishes: ' + eventObject.dateFinish + '<br />';
@@ -93,26 +70,37 @@ function showInfobox(eventObject, marker) {
 	window.infoBox.open(window.map, marker);
 }
 
-function renderMap() {
-		window.map = new google.maps.Map(document.getElementById("map"));
-		window.map.setCenter(new google.maps.LatLng(55.729639,4.603271));
-		window.map.setZoom(5);
-		window.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+async function renderMap() {
+    const { Map } = await google.maps.importLibrary("maps");
 
-		$('#btnDirections').attr('disabled', 'disabled');
+    window.mapCenter = { lat: 55.729639, lng: 4.603271 }
+    
+		window.map = new Map(document.getElementById('map'), {
+      center: mapCenter,
+      zoom: 5,
+      mapId: 'lanlist.org'
+    })
 }
 
 function focusOnMarker(marker) {
 	
 }
 
-function addMarker(lat, lng, icon, focus) {
-	var position = new google.maps.LatLng(lat, lng);
+async function addMarker(lat, lng, icon, focus, eventTitle) {
+	var position = { lat: lat, lng: lng }
 
-	var marker = new google.maps.Marker({
-		map: window.map,
+  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
+
+  const img = document.createElement('img')
+  img.src = icon
+
+	const marker = new AdvancedMarkerElement({
 		position: position,
-		icon: (icon == null) ? null : icon,
+		map: window.map,
+    title: eventTitle,
+    content: img,
+    gmpClickable: true
+//		icon: (icon == null) ? null : icon,
 	});
 
 	if (focus) {
@@ -131,9 +119,9 @@ function addEvent(eventObject) {
 		var icon = "resources/images/eventMarkerLogo.png";
 	}
 
-	var marker = addMarker(eventObject.lat, eventObject.lng, icon);
-
-	google.maps.event.addListener(marker, 'click', function() {
-		onEventMarkerClicked(eventObject, marker);
-	});
+	addMarker(eventObject.lat, eventObject.lng, icon, eventObject.eventTitle).then(marker => {
+    marker.addListener('click', function() {
+      onEventMarkerClicked(eventObject, marker);
+    });
+  })
 }

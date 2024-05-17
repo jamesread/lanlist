@@ -472,6 +472,10 @@ tr.stale {
 	font-weight: bold;
 }
 
+img.bannerSmall {
+  width: 200px;
+}
+
 @media screen and (max-device-width: 1024px) {
 html {
 }
@@ -512,3 +516,4 @@ form {
 	margin: .5em;
 }
 }
+

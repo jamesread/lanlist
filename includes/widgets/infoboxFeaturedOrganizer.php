@@ -1,8 +1,20 @@
-<div class = "infobox">
-	<h2>Featured organizer: WestLAN</h2>
-	<p style = "text-align: middle">
-		<a href = "viewOrganizer.php?id=1"><img width = "240px" src = "resources/images/organizer-logos/1.jpg" /></a>
-	</p>
+<?php 
 
-	<p><a href = "viewOrganizer.php?id=1">WestLAN</a> are an organizer in the south west UK with a daunting legacy of over 45 successful events, with numbers reaching up to 64 seats. They enjoy a really friendly community and atmosphere, with plenty of gaming, socializing, film watching and pizza eating. Recommended for all.</p>
+$sql = 'SELECT o.title, o.id, o.blurb FROM organizers o ORDER BY rand() LIMIT 1';
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$org = $stmt->fetchRow();
+
+?>
+
+<div class = "infobox">
+        <h2>Featured organizer: <a href = "viewOrganizer.php?id=<?php echo $org['id']; ?>"><?php echo $org['title']; ?></a></h2>
+
+<?php
+    $tpl->assign('organizerId', $org['id']);
+    $tpl->assign('logoUrl', 'resources/images/organizer-logos/' . $org['id'] . '.jpg');
+
+    $tpl->display('infobox.organizerLogo.tpl');
+?>
+        <p><?php echo $org['blurb']; ?></p>
 </div>

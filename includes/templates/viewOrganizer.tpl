@@ -1,4 +1,5 @@
 <h2>Organizer: {$organizer.title}</h2>
+<img alt = "Organizer logo" title = "Organizer logo for {$organizer.title}" src = "{$organizer.logoUrl}" border = "1" /><br />
 
 <div class = "paralellContainer">
 	<strong>Website: </strong> {$organizer.websiteUrl|externUrl}<br />
@@ -10,7 +11,6 @@
 </div>
 
 <div class = "paralellContainer">
-	<img alt = "Organizer logo" title = "Organizer logo for {$organizer.title}" src = "{$organizer.logoUrl}" border = "1" /><br />
 
 	{if empty($organizer.blurb)}	
 	<p>Not much is known about this organizer. If you are the organizer of this event, <a href = "loginregister.php">get a user account</a> and request to <a href = "formHandler.php?formClazz=FormJoinOrganizer">join an existing organizer</a> to edit this page.</p>

@@ -74,6 +74,14 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
 	$stmt->execute();
 }
 
+function normalizeEvents($events) {
+    foreach ($events as $k => $event) {
+        $events[$k]['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS M Y g:ia');
+    }
+
+    return $events;
+}
+
 function getOrganizerLogoUrl($organizerId) {
 	$organizerId = intval($organizerId);
 	$baseUrl = 'resources/images/organizer-logos/';
@@ -149,8 +157,12 @@ function getListOfNextEvents($count = 5) {
 
 	$count = intval($count);
 
-	$sql = 'SELECT e.id, e.title, e.dateStart, v.country FROM events e LEFT JOIN venues v ON e.venue = v.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
-	return $db->query($sql)->fetchAll();
+        $sql = 'SELECT e.id, e.title, e.dateStart, v.country FROM events e LEFT JOIN venues v ON e.venue = v.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
+
+        $events = $db->query($sql)->fetchAll();
+        $events = normalizeEvents($events);
+
+	return $events;
 }
 
 function getNextEvent($organizerId = null) {

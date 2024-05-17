@@ -14,34 +14,17 @@
 	<link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />
 	<link rel = "alternate" type = "application/rss+xml" title = "lanlist.org - A list of LAN Parties" href = "api.php?function=events&amp;format=rss" />
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-	<script type = "text/javascript" src = "resources/javascript/jquery.dataTables.min.js"></script>
-	<script type = "text/javascript" src = "resources/javascript/jquery.ui.datetime.src.js"></script>
-
 	<script type = "text/javascript" src = "resources/javascript/map.js"></script>
-	<script type = "text/javascript" src = "resources/javascript/common.js"></script>
-
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR2HQth0T-LwBf4vwmfFWlg_lQC5pFkw0" sync = "async"></script>
 
 	<script type="text/javascript">
+		const key = "{$mapsApiKey}";
 		{literal}
-		  var _gaq = _gaq || [];
-//		  _gaq.push(['_setAccount', 'UA-17036308-2']);
-		  _gaq.push(['_setAccount', 'AIzaSyDpW05SsGFJQZnu3AQ8oAb842EAGVy33po']);
-		  _gaq.push(['_setDomainName', 'none']);
-		  _gaq.push(['_setAllowLinker', true]);
-		  _gaq.push(['_trackPageview']);
 
-		  (function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		  })();
+  (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+    key: key,
+    v: "weekly",
+  });
 
-		$(document).ready(function() {
-			setupSortableTables();
-		});
 		{/literal}
 	</script>
 </head>

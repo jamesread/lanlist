@@ -49,34 +49,23 @@ require_once 'includes/functionality/misc.php';
 <?php startSidebar(); ?>
 
 <script type = "text/javascript">
+renderMap();
         window.addEventListener('DOMContentLoaded', () => {
-        renderMap();
 
 	<?php echo jsForEvents(); ?>
 	});
 
 </script>
 
-<div class = "infobox">
-	<div id = "eventInfo">
-		<h2>Event info</h2>
-		<p>Click an event on the map to get started...</p>
-	</div>
-
-	<p><button id = "btnDirections" disabled = "disabled">Get directions!</button></p>
-<?php
-
-if (empty($currentLocation)) {
-	$tpl->displayForm($f);
-	echo '<small>Currently set to <strong>(nothing)</strong></small>';
-} else {
-	echo '<div id = "formSetLocationContainer" style = "display: none">';
-	$tpl->displayForm($f);
-	echo '</div>';
-	echo '<small>Currently set to <strong>', $currentLocation, '</strong><span class = "dummyLink" onclick = "javascript:showSetLocationForm()" id = "linkShowSetLocationForm">change...</span></small>';
-}
-?>
-</div>
+<template id = "tplEventPopup">
+    <div class = "infoPopup">';
+	<h2><a href = "viewEvent.php?id=">?</a></h2>';
+	<strong>Start:</strong><span id = "eventPopupStart"></span><br />
+	<strong>Finish:</strong><span id = "eventPopupFinish"></span><br /><br />
+	<strong>Seats:</strong><span id = "eventPopupSeats"></span><br />
+	<a href = "viewEvent.php?id=' + eventObject.id + '">more details...</a>';
+    </div>
+</template>
 
 	<?php
 

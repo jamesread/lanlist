@@ -1,15 +1,11 @@
 <div class = "infobox">
-	<h2>Next LAN Parties in the world...</h2>
+	<h2>Next LAN Parties in the UK...</h2>
 
 	<?php 
 	
-	echo '<p>The next few events in the world are; </p>';
 	echo '<ul>';
 	foreach (getListOfNextEvents() as $event) {
-		$date = strtotime($event['dateStart']);
-		$date = date('Y-m-d', $date);
-
-		echo '<li>' . $date . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>, ' . $event['country'] . '</li>';
+		echo '<li>' . $event['dateStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>, ' . $event['country'] . '</li>';
 	}
 
 	echo '</ul>';

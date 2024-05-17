@@ -4,6 +4,7 @@ define('TITLE', 'Event log');
 require_once 'includes/common.php';
 
 use \libAllure\Session;
+use \libAllure\Logger;
 
 if (!Session::isLoggedIn() || !Session::getUser()->hasPriv('SUPERUSER')) {
 	throw new PermissionsException('You cannot view the logs!');
@@ -19,7 +20,7 @@ if (isset($_REQUEST['ack'])) {
 }
 
 if (isset($_REQUEST['test'])) {
-	Logger::messageNormal('Testing message.', LocalEventType::TESTING);
+	Logger::messageNormal('Testing message.', 'Testing');
 }
 
 if (isset($_REQUEST['full'])) {

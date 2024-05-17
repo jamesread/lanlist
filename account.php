@@ -8,6 +8,7 @@ if (!Session::isLoggedIn()) {
 	redirect('loginregister.php', 'You need to login to view your account.');
 }
 
+define('TITLE', 'My Account');
 require_once 'includes/widgets/header.php';
 
 $organizer = Session::getUser()->getData('organization');

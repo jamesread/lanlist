@@ -54,7 +54,7 @@ class FormNewVenue extends Form {
 
 		$stmt->execute();
 
-		Logger::messageDebug('Venue ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), LocalEventType::CREATE_VENUE);
+		Logger::messageDebug('Venue ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_VENUE');
 		redirect('account.php', 'Venue created.');
 	}
 }

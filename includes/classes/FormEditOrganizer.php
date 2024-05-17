@@ -20,23 +20,24 @@ class FormEditOrganizer extends Form {
 			$this->addElement(new ElementCheckbox('published', 'Published', $organizer['published']));
 		}
 
-		$this->addElement(new ElementInput('title', 'Title', $organizer['title']));
+                $this->addElement(new ElementInput('title', 'Title', $organizer['title']));
 		$this->addElement(new ElementHidden('id', null, $organizer['id']));
 		$this->addElement(new ElementInput('websiteUrl', 'Website', $organizer['websiteUrl']));
 		$this->addElement(new ElementDate('assumedStale', 'Assumed stale since', $organizer['assumedStale']));
 		$this->addElement(new ElementInput('steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
 		$this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
 		$this->addElement(new ElementTextbox('blurb', 'Blurb', $organizer['blurb']));
-		$this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG, maximum image size is 468x160'));
+                $this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG, maximum image size is 468x160'));
+                $this->getElement('banner')->tempDir = UPLOAD_TEMP_DIR;
 		$this->getElement('banner')->destinationDir = 'resources/images/organizer-logos/';
 		$this->getElement('banner')->destinationFilename = $organizer['id'] . '.jpg';
-		$this->getElement('banner')->setMaxImageBounds(468, 160);
+		$this->getElement('banner')->setMaxImageBounds(810, 306);
 
 		if (!Session::hasPriv('EDIT_ORGANIZER') && Session::getUser()->getData('organization') != $organizer['id']) {
 			throw new PermissionsException();
 		}
 
-		$this->addButtons(Form::BTN_SUBMIT);
+                $this->addDefaultButtons('Save');
 	}
 
 	public function process() {
