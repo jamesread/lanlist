@@ -1,5 +1,5 @@
 body {
-	font-family: Verdana, sans-serif;
+	font-family: sans-serif;
 	font-size: small;
 	line-height: 1.5;
 	margin-top: 0;
@@ -82,7 +82,7 @@ input {
 }
 
 input,button, select, option  {
-	font-family: Verdana, sans-serif;
+	font-family: sans-serif;
 	font-size: inherit;
 }
 
@@ -100,16 +100,21 @@ button, .dataTables_paginate * {
 	background-color: white;
 	color: black;
 	text-align: left;
-	border: 1px solid black;
+	border: 1px solid #666;
 	border-radius: .2em;
 	border-radius: .2em;
-	padding: .2em;
+	padding: .6em;
 	margin-right: .5em;
 	display: inline-block;
 	min-height: 16px;
 	min-width: 16px;
 	background-repeat: no-repeat;
 	background-position: center center;
+	background-color: LightGreen;
+}
+
+button:hover {
+  background-color: white;
 }
 
 .paginate_enabled_next, .paginate_disabled_next {
@@ -128,7 +133,6 @@ button, .dataTables_paginate * {
 
 button:enabled, .paginate_enabled_next, .paginate_enabled_previous {
 	cursor: pointer;
-	background-color: LightGreen;
 }
 
 button:disabled, .paginate_disabled_previous, .paginate_disabled_next {

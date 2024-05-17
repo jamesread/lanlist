@@ -51,6 +51,7 @@ $menuSystem->addIfPriv('SITE_CHECKS', 'siteChecks.php', 'Site checks ' . $eventI
 $menuSystem->addIfPriv('SCHEDULER_VIEW', 'listSchedulerTasks.php', 'Scheduler', 'time.png');
 $menuSystem->addIfPriv('USERLIST', 'listUsers.php', 'Users', 'system-users.png');
 $menuSystem->addIfPriv('GROUPLIST', 'listGroups.php', 'Groups', 'system-users.png');
+$menuSystem->addIfPriv('SUPERUSER', 'formHandler.php?formClazz=FormCreatePermission', 'Create Permission');
 $menuSystem->addIfPriv('NEWSLIST', 'listNews.php', 'News', 'news.png');
 
 $newLogNotification = getCountUnreadLogs();

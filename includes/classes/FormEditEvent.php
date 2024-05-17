@@ -1,6 +1,5 @@
 <?php
 
-require_once 'includes/classes/ElementDateTime.php';
 require_once 'includes/classes/FormHelpers.php';
 
 use \libAllure\Form;
@@ -12,6 +11,7 @@ use \libAllure\ElementAutoSelect;
 use \libAllure\ElementCheckbox;
 use \libAllure\ElementSelect;
 use \libAllure\ElementTextbox;
+use \libAllure\ElementDate;
 use \libAllure\Logger;
 
 class FormEditEvent extends Form {
@@ -41,14 +41,14 @@ class FormEditEvent extends Form {
 		}
 
 		$this->getElement('venue')->setValue($event['venue']);
-		$this->addElement(new ElementInput('dateStart', 'Start', $event['dateStart']));
-		$this->addElement(new ElementInput('dateFinish', 'Finish', $event['dateFinish']));
+		$this->addElement(new ElementDate('dateStart', 'Start', $event['dateStart']));
+		$this->addElement(new ElementDate('dateFinish', 'Finish', $event['dateFinish']));
 		$this->addScript('$("#formEditEvent-dateStart").datetime({"firstDay": 1 })');
 		$this->addScript('$("#formEditEvent-dateFinish").datetime({"firstDay": 2 })');
                 $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
-
 		$this->addElement(new ElementNumeric('priceInAdv', 'Ticket price in advance', $event['priceInAdv']));
-		$this->addElement($this->getElementCurrency($event['currency']));
+                $this->addElement($this->getElementCurrency($event['currency']));
+                $this->addElementAgeRestrictions($event['ageRestrictions']);
 		$this->addElement(new ElementInput('website', 'Event website', $event['website']));
 		$this->addElement(new ElementCheckbox('showers', 'Showers', $event['showers']));
 		$this->addElement($this->getElementSleeping($event['sleeping']));
@@ -64,15 +64,17 @@ class FormEditEvent extends Form {
 		$this->addElement(new ElementNumeric('numberOfSeats', 'Number of seats', $event['numberOfSeats']));
                 $this->addElement(new ElementTextbox('blurb', 'Additional blurb', htmlify($event['blurb'])));
 
-                $this->requireFields(
-                    'priceOnDoor',
-                    'priceInAdv',
-                    'internetMbps',
-                    'networkMbps',
-                );
+                $this->addDefaultButtons('Save');
+        }
 
-		$this->addButtons(Form::BTN_SUBMIT);
-	}
+        protected function addElementAgeRestrictions($value) {
+            $el = $this->addElement(new ElementSelect('ageRestrictions', 'Age Restrictions'));
+            $el->addOption('Not known', '');
+            $el->addOption('Over 18s Only');
+            $el->addOption('Under 18s require parents consent');
+            $el->setValue($value);
+
+        }
 
 	protected function validateExtended() {
 		$this->validateCurrency();
@@ -90,7 +92,7 @@ class FormEditEvent extends Form {
 	}
 
 	private function getElementCurrency($val) {
-		$el = new ElementAutoSelect('currency', 'Currency', $val, '&pound;, $, etc');
+		$el = new ElementAutoSelect('currency', 'Currency', $val, 'GBP, USD, EUR, etc');
 		$el->addOption('GBP (&pound; - UK, etc)', 'GBP');
 		$el->addOption('USD ($ - America, etc)', 'USD');
 		$el->addOption('AUD ($ - Austrialia, etc)', 'AUD');
@@ -135,17 +137,24 @@ class FormEditEvent extends Form {
 	}
 
 	public function process() {
-		global $db;
+                global $db;
 
-		$sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, priceOnDoor = :priceOnDoor, priceInAdv = :priceInAdv, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
+                $priceOnDoor = $this->getElementvalue('priceOnDoor');
+
+                if ($priceOnDoor == '' || empty($priceOnDoor)) {
+                    $priceOnDoor = 0;
+                }
+
+		$sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, priceOnDoor = :priceOnDoor, priceInAdv = :priceInAdv, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':id', $this->getElementValue('id'));
 		$stmt->bindValue(':title', $this->getElementValue('title'));
 		$stmt->bindValue(':dateStart', $this->getElementValue('dateStart'));
 		$stmt->bindValue(':dateFinish', $this->getElementValue('dateFinish'));
-		$stmt->bindValue(':priceOnDoor', $this->getElementvalue('priceOnDoor'));
+                $stmt->bindValue(':priceOnDoor', $priceOnDoor);
 		$stmt->bindValue(':priceInAdv', $this->getElementvalue('priceInAdv'));
 		$stmt->bindValue(':currency', $this->getElementvalue('currency'));
+		$stmt->bindValue(':ageRestrictions', $this->getElementvalue('ageRestrictions'));
 		$stmt->bindValue(':website', $this->getElementvalue('website'));
 		$stmt->bindValue(':showers', $this->getElementvalue('showers'));
 		$stmt->bindValue(':sleeping', $this->getElementvalue('sleeping'));

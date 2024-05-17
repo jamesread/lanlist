@@ -10,7 +10,7 @@
 			<a href = "sitemap.php">Sitemap</a>
 		</p>
 		<p><small>{$queryCount} queries.</small></p>
-		<p>lanlist &copy; <a href = "contact.php">lanlist.org Admin Team</a></p>
+		<p>lanlist &copy; <a href = "contact.php">UKLANs Community</a></p>
 	</div>
 </body>
 

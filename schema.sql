@@ -91,9 +91,10 @@ CREATE TABLE `events` (
   `numberOfSeats` int(11) DEFAULT NULL,
   `networkMbps` int(11) DEFAULT '1000',
   `internetMbps` int(11) DEFAULT '0',
-  `blurb` varchar(2048) DEFAULT NULL,
+  `blurb` longtext DEFAULT NULL,
   `createdDate` datetime NOT NULL,
   `createdBy` int(11) NOT NULL,
+  `ageRestrictions` varchar(255) DEFAULT null,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=573 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

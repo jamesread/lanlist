@@ -3,6 +3,7 @@
 use \libAllure\Session;
 use \libAllure\DatabaseFactory;
 use \libAllure\ErrorHandler;
+use \libAllure\Logger;
 
 function getCountJoinRequests() {
 	$sql = 'SELECT count(j.id) as count FROM organization_join_requests j';
@@ -54,15 +55,6 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
 
 	ErrorHandler::getInstance()->beLazy();
 
-	require_once 'Mail.php';
-	require_once 'Mail/smtp.php';
-
-	$host = 'ssl://smtp.gmail.com';
-	$username = 'xconspirisist@lanlist.org';
-	$password = 'ionicflame312';
-
-	$smtp = new Mail_smtp(array('host' => $host, 'port' => 465, 'auth' => true, 'username' => $username, 'password' => $password));
-
 	$headers = array(
 		'From' => '"lanlist.org" <mailer@lanlist.org>',
 		'To' => '<' . $recipient . '>',
@@ -70,7 +62,7 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
 		'Content-Type' => 'text/html'
 	);
 
-	$smtp->send('<' . $recipient . '>', $headers, $content);
+##	$smtp->send('<' . $recipient . '>', $headers, $content);
 
 	ErrorHandler::getInstance()->beGreedy();
 	Logger::messageDebug('Sending email to ' . $recipient . ', subject: ' . $subject);

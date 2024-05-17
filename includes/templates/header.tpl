@@ -2,9 +2,9 @@
 <html>
 
 <head>
-	<title>{$title|default:"A List of LAN Parties"} &bull; lanlist.org</title>
+	<title>{$title|default:"A List of LAN Parties"} &bull; UKLans.net</title>
 
-	<meta name = "author" content = "lanlist.org Admin Team" />
+	<meta name = "author" content = "UKLans Community" />
 	<meta name = "description" content = "A list of LAN Parties" />
 	<meta name = "keywords" content = "lan party, lan, list" />
 
@@ -27,7 +27,8 @@
 	<script type="text/javascript">
 		{literal}
 		  var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', 'UA-17036308-2']);
+//		  _gaq.push(['_setAccount', 'UA-17036308-2']);
+		  _gaq.push(['_setAccount', 'AIzaSyDpW05SsGFJQZnu3AQ8oAb842EAGVy33po']);
 		  _gaq.push(['_setDomainName', 'none']);
 		  _gaq.push(['_setAllowLinker', true]);
 		  _gaq.push(['_trackPageview']);
@@ -49,8 +50,7 @@
 	<div id = "header">
 		<div id = "navigation">
 			<div id = "logo">
-				<img src = "resources/images/lanlist.org-banner.png" alt = "lanlist.org" />
-				<br /><small>A List Of LAN Parties</small>
+				<h1>list.uklans.net</h1>
 			</div>
 
 			<ul id = "mainNavigation">

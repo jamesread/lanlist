@@ -12,8 +12,9 @@
 
 	<strong>Starts: </strong> {$event.dateStart} <br />
 	<strong>Finishes: </strong> {$event.dateFinish} <br /><br />
-	<strong>Ticket price on door: </strong> {$event.priceOnDoor|floatToMoney:$event.currency} <br />
+	<strong>Ticket price on door: </strong> {if $event.priceOnDoor == 0}Not Applicable{else}{$event.priceOnDoor|floatToMoney:$event.currency}{/if} <br />
 	<strong>Ticket price in advance: </strong> {$event.priceInAdv|floatToMoney:$event.currency} <br /><br />
+	<strong>Age restrictions: </strong> {if $event.ageRestrictions == ''}Not known{else}{$event.ageRestrictions}{/if}<br /><br />
 	<strong>Additional details: </strong> {$event.blurb|default:"Nothing"|stripslashes|htmlify} <br />
 </div>
 
