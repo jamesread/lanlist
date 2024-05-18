@@ -20,7 +20,7 @@ function htmlify($input) {
             return '';
         }
 
-	return htmlentities(stripslashes($input));
+	return nl2br(htmlentities(stripslashes($input)));
 }
 
 function sendEmailToAdmins($content, $subject) {
@@ -152,7 +152,7 @@ function getCountUnreadLogs() {
 	}
 }
 
-function getListOfNextEvents($count = 5) {
+function getListOfNextEvents($count = 10) {
 	global $db;
 
 	$count = intval($count);
