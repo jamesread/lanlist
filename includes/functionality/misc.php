@@ -53,7 +53,7 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
         $content .= "\n\n- " . SITE_TITLE;
     }
 
-    ErrorHandler::getInstance()->beLazy();
+//    ErrorHandler::getInstance()->beLazy();
 
     if (SEND_EMAIL) {
         require_once 'Mail.php';
@@ -63,8 +63,8 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
             'host' => SMTP_HOST,
             'port' => SMTP_PORT,
             'auth' => true,
-            'username' => SMTP_USERNAME,
-            'password' => SMTP_PASSWORD,
+            'username' => SMTP_USER,
+            'password' => SMTP_PASS,
         ]);
 
         $headers = array(
@@ -74,11 +74,15 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
             'Content-Type' => 'text/html'
         );
 
-        $smtp->send('<' . $recipient . '>', $headers, $content);
+        $smtpResult = $smtp->send('<' . $recipient . '>', $headers, $content);
+
+        if (is_object($smtpResult) && get_class($smtpResult) == 'PEAR_Error') {
+            Logger::messageWarning('Email error ' . $smtpResult->message, 'SEND_EMAIL_ERROR');
+        }
     }
 
-    ErrorHandler::getInstance()->beGreedy();
-    Logger::messageDebug('Sending email to ' . $recipient . ', subject: ' . $subject);
+//    ErrorHandler::getInstance()->beGreedy();
+    Logger::messageDebug('Sending email to ' . $recipient . ', subject: ' . $subject, 'SEND_EMAIL');
 
     $sql = 'INSERT INTO email_log (subject, emailAddress, sent) VALUES (:subject, :emailAddress, now())';
     $stmt = DatabaseFactory::getInstance()->prepare($sql);

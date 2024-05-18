@@ -24,11 +24,11 @@ if ($f->validate()) {
 
 		redirect('index.php', 'You have logged in.');
 	} catch (IncorrectPasswordException $e) {
-		Logger::messageNormal('Failed login for ' . $username . ', password wrong.', LocalEventType::LOGIN_FAILURE_PASSWORD);
+		Logger::messageNormal('Failed login for ' . $username . ', password wrong.', 'LOGIN_FAILURE_PASSWORD');
 
 		$f->setElementError('password', 'Password wrong.');
 	} catch (UserNotFoundException $e) {
-		Logger::messageNormal('Failed login for ' . $username . ', nonexistant user.', LocalEventType::LOGIN_FAILURE_USERNAME);
+		Logger::messageNormal('Failed login for ' . $username . ', nonexistant user.', 'LOGIN_FAILURE_USERNAME');
 
 		$f->setElementError('username', 'User not found');
 	}

@@ -176,7 +176,7 @@ class FormEditEvent extends Form {
 
 		$stmt->execute();
 
-		Logger::messageDebug('Event ' . $this->getElementValue('title') . ' (' . $this->getElementValue('id') . ') edited by: ' . Session::getUser()->getUsername(), LocalEventType::EDIT_EVENT);
+		Logger::messageDebug('Event ' . $this->getElementValue('title') . ' (' . $this->getElementValue('id') . ') edited by: ' . Session::getUser()->getUsername(), 'EDIT_EVENT');
 
 		redirect('viewEvent.php?id=' . $this->getElementValue('id'), 'Event updated.');
 	}

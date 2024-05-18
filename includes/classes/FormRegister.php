@@ -67,7 +67,7 @@ class FormRegister extends Form {
 		$stmt->bindValue(':email', $this->getElementValue('email'));
 		$stmt->execute();
 
-		Logger::messageNormal('New user registration: ' . $this->getElementValue('username'), LocalEventType::CREATE_USER);
+		Logger::messageNormal('New user registration: ' . $this->getElementValue('username'), 'USER_REGISTERED');
 		sendEmailToAdmins('Username: ' . $this->getElementValue('username'), 'New user registration: ' . $this->getElementValue('username'));
 
 		redirect('loginregister.php?formLogin-username=' . $this->getElementValue('username'), 'Registeration complete!');

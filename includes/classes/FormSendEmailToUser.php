@@ -38,7 +38,7 @@ class FormSendEmailToUser extends Form {
 
 		$this->loadTemplate();
 
-		$this->addButtons(Form::BTN_SUBMIT);
+		$this->addDefaultButtons('Send email');
 	}
 
 	private function loadTemplate() {

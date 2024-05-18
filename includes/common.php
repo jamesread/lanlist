@@ -14,7 +14,6 @@ $eh->beGreedy();
 require_once 'libAllure/Database.php';
 
 require_once 'libAllure/Logger.php';
-require_once 'includes/classes/LocalEventType.php';
 
 use \libAllure\Logger;
 
