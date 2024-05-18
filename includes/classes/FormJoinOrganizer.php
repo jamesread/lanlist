@@ -2,24 +2,27 @@
 
 use \libAllure\Form;
 use \libAllure\Session;
+use \libAllure\ElementSelect;
+use \libAllure\ElementHtml;
+use \libAllure\ElementTextbox;
 
 class FormJoinOrganizer extends Form {
 	public function __construct() {
 		parent::__construct('formJoinOrganizer', 'Join organization');
 
-		$this->addElement(Element::factory('html', 'description', null, 'This will send a request to an administrator for you to join onto a LAN Party Organizer. We approve these manaully, but we will do it as quickly as possible.'));
+		$this->addElement(new ElementHtml('description', null, 'This will send a request to an administrator for you to join onto a LAN Party Organizer. We approve these manaully, but we will do it as quickly as possible.'));
 		$this->addElement($this->getElementOrganization());
-		$this->addElement(Element::factory('textarea', 'comments', 'Comments', null, 'Use the comments if there is anything you want to let us know about.'));
-		$this->addDefaultButtons();
+		$this->addElement(new ElementTextbox('comments', 'Comments', null, 'Use the comments if there is anything you want to let us know about.'));
+		$this->addDefaultButtons("Send Request");
 	}
 
 	private function getElementOrganization() {
 		global $db;
 
-		$sql = 'SELECT o.id, o.title FROM organizers o WHERE o.published = 1 ORDER BY o.title ASC';
+		$sql = 'SELECT o.id, o.title FROM organizers o ORDER BY o.title ASC';
 		$stmt = $db->query($sql);
 
-		$el = Element::factory('select', 'organization', 'Organization');
+		$el = new ElementSelect('organization', 'Organization');
 
 		foreach ($stmt->fetchAll() as $organization) {
 			$el->addOption($organization['title'], $organization['id']);
