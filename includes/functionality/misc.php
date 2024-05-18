@@ -55,25 +55,27 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
 
     ErrorHandler::getInstance()->beLazy();
 
-    require_once 'Mail.php';
-    require_once 'Mail/smtp.php';
+    if (SEND_EMAIL) {
+        require_once 'Mail.php';
+        require_once 'Mail/smtp.php';
 
-    $smtp = new Mail_smtp([
-        'host' => SMTP_HOST,
-        'port' => SMTP_PORT,
-        'auth' => true,
-        'username' => SMTP_USERNAME,
-        'password' => SMTP_PASSWORD,
-    ]);
+        $smtp = new Mail_smtp([
+            'host' => SMTP_HOST,
+            'port' => SMTP_PORT,
+            'auth' => true,
+            'username' => SMTP_USERNAME,
+            'password' => SMTP_PASSWORD,
+        ]);
 
-    $headers = array(
-        'From' => '"' . SITE_TITLE . '" <' . EMAIL_ADDRESS . '>',
-        'To' => '<' . $recipient . '>',
-        'Subject' => $subject,
-        'Content-Type' => 'text/html'
-    );
+        $headers = array(
+            'From' => '"' . SITE_TITLE . '" <' . EMAIL_ADDRESS . '>',
+            'To' => '<' . $recipient . '>',
+            'Subject' => $subject,
+            'Content-Type' => 'text/html'
+        );
 
-    $smtp->send('<' . $recipient . '>', $headers, $content);
+        $smtp->send('<' . $recipient . '>', $headers, $content);
+    }
 
     ErrorHandler::getInstance()->beGreedy();
     Logger::messageDebug('Sending email to ' . $recipient . ', subject: ' . $subject);

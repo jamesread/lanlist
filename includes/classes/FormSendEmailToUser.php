@@ -5,6 +5,7 @@ use \libAllure\Session;
 use \libAllure\ElementInput;
 use \libAllure\ElementHidden;
 use \libAllure\ElementTextbox;
+use \libAllure\ElementReadOnly;
 
 class FormSendEmailToUser extends Form {
         private \libAllure\User $user;
@@ -30,8 +31,8 @@ class FormSendEmailToUser extends Form {
 			$this->organizer = array('title' => '???', 'id' => '0');
 		}
 
-		$this->addElement(new ElementHidden('uid', null, $uid));
-		$this->addElement(new ElementInput('Send to', $this->user->getData('email'), 'User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ));
+                $sendTo = $this->addElementReadOnly('User', $uid, 'uid');
+                $sendTo->description = $this->user->getData('email') .  ', User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ;
 		$this->addElement(new ElementInput('subject', 'Subject', 'Message from a human!'));
 		$this->addElement(new ElementTextbox('body', 'Body', 'Hey ' . $this->user->getUsername() . ', ' . "\n\n" . 'Your message here.' . "\n\n- lanlist.org ", 'No footer will be appended. From: mailer@lanlist.org'));
 
@@ -73,7 +74,7 @@ class FormSendEmailToUser extends Form {
 
 		$subject = $this->getElementValue('subject');
 
-		sendEmail($this->getElementValue('email'), $content, $subject, false);
+		sendEmail($this->user->getData('email'), $content, $subject, false);
 				
 		redirect('listUsers.php?', 'Email sent.');
 	}
