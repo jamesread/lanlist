@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>{$title|default:"A List of LAN Parties"} &bull; UKLans.net</title>
+	<title>{$title|default:"A List of LAN Parties"} &bull; {$siteTitle}</title>
 
 	<meta name = "author" content = "UKLans Community" />
 	<meta name = "description" content = "A list of LAN Parties" />
@@ -12,7 +12,7 @@
 
 	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
 	<link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />
-	<link rel = "alternate" type = "application/rss+xml" title = "lanlist.org - A list of LAN Parties" href = "api.php?function=events&amp;format=rss" />
+	<link rel = "alternate" type = "application/rss+xml" title = "{$siteTitle} - A list of LAN Parties" href = "api.php?function=events&amp;format=rss" />
 
 	<script type = "text/javascript" src = "resources/javascript/map.js"></script>
 
@@ -30,12 +30,9 @@
 </head>
 
 <body>
-	<div id = "header">
-		<div id = "navigation">
-			<div id = "logo">
-				<h1>list.uklans.net</h1>
-			</div>
-
+	<header>
+		<h1><a href = "/">{$siteTitleDomain}<span class = "tld">{$siteTitleTld}</span></a></h1>
+		<nav>
 			<ul id = "mainNavigation">
 				<li><a href = "eventsMap.php">Map</a></li>
 				<li><a href = "eventsList.php">List</a></li>
@@ -45,17 +42,11 @@
 				<li><a href = "loginregister.php">Login/Register</a></li>
 			{/if}
 			</ul>
-		</div>
+		</nav>
+	</header>
 
-		{*
-		<div id = "advertisingBanner">
-		{include file = "banner.tpl"}
-		</div>
-		*}
-	</div>
-
-	{if 0}
-	<p class = "alert">The website is undergoing maintenance. Feel free to browse around, but things will probably be more broken than normal.</p>
+	{if !empty($alertMessage)}
+	<p class = "alert">{$alertMessage}</p>
 	{/if}
 
 	<div id = "content">

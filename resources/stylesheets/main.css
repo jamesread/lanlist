@@ -1,8 +1,12 @@
+:root {
+  --hover-color: black;
+}
 body {
 	font-family: sans-serif;
 	font-size: small;
 	line-height: 1.5;
 	margin-top: 0;
+  background-color: #f5f5f5;
 }
 
 img.imageIcon {
@@ -19,13 +23,19 @@ img.imageIcon {
 
 a, a:visited, .dummyLink {
 	text-decoration: none;
-	color: blue;
+	color: #007bff;
 	cursor: pointer;
+  font-weight: bold;
 }
 
 a:hover {
-	color: #DEE3E7;
-	background-color: #A764FE;
+	color: #007bff;
+  text-decoration: underline;
+}
+
+a:focus {
+  color: white;
+	background-color: var(--hover-color);
 }
 
 a[target="_new"] {
@@ -96,11 +106,11 @@ input:focus {
 	border: 1px solid black;
 }
 
-button, .dataTables_paginate * {
+button {
 	background-color: white;
 	color: black;
 	text-align: left;
-	border: 1px solid #666;
+	border: 0;
 	border-radius: .2em;
 	border-radius: .2em;
 	padding: .6em;
@@ -111,6 +121,8 @@ button, .dataTables_paginate * {
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-color: LightGreen;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 button:hover {
@@ -123,12 +135,6 @@ button:hover {
 
 .paginate_enabled_previous, .paginate_disabled_previous {
 	background-image: url(../images/icons/go-previous.png);
-}
-
-.dataTables_info {
-	display: inline-block;
-	float: right;
-	margin-right: 1em;
 }
 
 button:enabled, .paginate_enabled_next, .paginate_enabled_previous {
@@ -162,13 +168,17 @@ h1 {
 	font-size: 12pt;
 }
 
+h1 span.tld {
+  color: gray;
+}
+
 h2:first-child {
 	margin-top: 0;
 }
 
 h2 {
-	color: #646464;
-	font-size: 12pt;
+	color: #2f2f2f;
+	font-size: 13pt;
 }
 
 h3 {
@@ -189,8 +199,8 @@ th {
 
 th {
 	text-align: left;
-	background-color: SlateGray;
-	color: white;
+	background-color: #dee3e7;
+	color: black;
 }
 
 div#content {
@@ -198,9 +208,10 @@ div#content {
 	padding: 1%;
 	display: inline-block;
 	vertical-align: top;
-	background-color: beige;
+	background-color: #fff;
 	border-radius: 1em;
 	border-radius: 1em;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 div#content.minimal {
@@ -223,33 +234,43 @@ div#content.minimal {
 	padding: 1em;
 	border-radius: 1em;
 	border-radius: 1em;
-	background-color: #efefef;
+	background-color: #fff;
 	margin-bottom: 1em;
 	border: .3em solid #efefef;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 .infobox:hover {
-	border-color: purple;
+	border-color: black;
 }
 
 .infobox:hover h2{ 
 	color: black;
 }
 
-div#header {
-	text-align: center;
-}
-div#navigation {
-	width: 20em;
-	background-color: #efefef;
-	padding: 1em 2em .5em 2em;
+header {
+	background-color: #fff;
+	padding: 1em;
 	margin: 0 auto 2em auto;
 	border-radius: 0 0 1em 1em;
 	border-radius: 0 0 1em 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-transform: uppercase;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+h1 {
+  flex-grow: 1;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
 	text-align: center;
 	display: inline-block;
 	vertical-align: top;
-	margin-right: 5em;
 }
 
 div#advertisingBanner {
@@ -271,6 +292,7 @@ ul {
 
 ul#mainNavigation {
 	list-style: none; padding: 0;
+  margin: 0;
 }
 
 ul#mainNavigation li {
@@ -291,17 +313,6 @@ table {
 	width: 100%;
 }
 
-table.sortable th:hover  {
-	background-color: #A764FE;
-}
-
-table.sortable th {
-	cursor: pointer;
-	background-repeat: no-repeat;
-	background-position: right center;
-
-}
-
 th.sorting_asc {
 	background-image: url(../images/icons/go-up.png);
 }
@@ -317,57 +328,6 @@ div.paralellContainer {
 	vertical-align: top;
 }
 
-.dataTables_length, .dataTables_filter {
-	margin-bottom: .5em;
-	font-size: 8pt;
-	display: inline-block;
-	padding-right: 1em;
-	color: gray;
-}
-
-.dataTables_paginate {
-	display: inline-block;
-	float: right;
-}
-
-div.ui-datepicker, div.ui-datetime {
-	position: absolute;
-	background-color: white;
-	padding: .2em;
-	font-size: x-small;
-	border: 1px solid gray;
-	margin-top: -1px;
-	display: none;
-}
-
-.ui-datepicker-title, .ui-datetime-title {
-	display: block;
-	font-weight: bold;
-	text-align: center;
-}
-
-table.ui-datepicker-calendar, table.ui-datetime-calendar {
-	border-collapse: collapse;
-}
-
-.ui-datepicker-calendar td, 
-.ui-datepicker-calendar th,
-.ui-datetime-calendar td,
-.ui-datetime-calendar th 
-{
-	padding: .2em;
-	font-size: x-small;
-}
-
-a.ui-datepicker-prev, a.ui-datepicker-prev {
-	font-size: x-small;
-}
-
-a.ui-datepicker-next, a.ui-datepicker-next {
-	font-size: x-small;
-	float: right;
-}
-
 #licenseBlock {
 	padding: 2em;
 	background-color: white;
@@ -375,49 +335,11 @@ a.ui-datepicker-next, a.ui-datepicker-next {
 	border: 1px solid LightGray;
 }
 
-.ui-datetime-slider-handle, .ui-datetime-slider-handle:hover {
-	position: relative;
-	left: -3px;
-	width: 16px;
-	height: 10px;
-	background-color: LightGreen;
-	border: 1px solid black;
-	display: block;
-	position: relative;
-	cursor: n-resize;
-}
-
-.ui-datetime-slider {
-	background-color: beige;
-	width: 10px;
-	text-align: center;
-}
-
-.ui-datetime-calendar, .ui-datetime-clock {
-	display: inline-block;
-}
-
-.ui-datetime-prev {
-	float: left;
-}
-
-.ui-datetime-next {
-	float: right;
-}
-
-.ui-datetime-clock {
-	padding-left: 6em;
-}
-
-.ui-datetime-slider-hour, .ui-datetime-slider-mins {
-	padding-top: 0;
-	padding-bottom: 0;
-}
-
 .alert {
-	background-color: salmon;
+	background-color: beige;
 	padding: .4em;
 	border-radius: 1em;
+  text-align: center;
 }
 
 li.iconCreate {
@@ -442,10 +364,6 @@ p.notification {
 	padding: .2em;
 	border: 1px solid gray;
 	font-size: x-small;
-}
-
-.ui-autocomplete li:even {
-	background-color: #efefef;
 }
 
 dt:after {
@@ -476,44 +394,78 @@ img.bannerSmall {
   width: 200px;
 }
 
+ul.nextEvents {
+  list-style: none;
+  padding: 0;
+}
+
+ul.nextEvents li {
+  border-bottom: 1px solid #efefef;
+  margin-bottom: .8em;
+}
+
+h1 a, h1 a:visited {
+  color: black;
+}
+
+h1 a:focus {
+  color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: black;
+  }
+
+  header {
+    background-color: #444;
+  }
+
+  .infobox {
+    background-color: #444;
+  }
+
+  a {
+    color: midnightblue;
+  }
+}
+
 @media screen and (max-device-width: 1024px) {
-html {
-}
+  html {
+  }
 
-body {
-	font-size: 1em;
-	padding: 0;
-	margin: 0;
-}
+  body {
+    font-size: 1em;
+    padding: 0;
+    margin: 0;
+  }
 
-div#header {
-}
+  nav {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+  }
 
-div#navigation {
-	width: 100%;
-	margin-left: 0;
-	margin-right: 0;
-	padding: 0;
-}
+  div#content {
+    width: 100%;
+    padding: 0;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  }
 
-div#content {
-	width: 100%;
-	padding: 0;
-}
+  div#sidebar {
+    margin-left: auto;
+    width: 100%;
+    display: block;
+  }
 
-div#sidebar {
-	margin-left: auto;
-	width: 100%;
-	display: block;
-}
+  div.paralellContainer {
+    width: 100%;
+  }
 
-div.paralellContainer {
-	width: 100%;
-}
-
-form {
-	padding: .5em;
-	margin: .5em;
-}
+  form {
+    padding: .5em;
+    margin: .5em;
+  }
 }
 

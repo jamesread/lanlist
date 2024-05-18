@@ -78,7 +78,7 @@ async function renderMap() {
 		window.map = new Map(document.getElementById('map'), {
       center: mapCenter,
       zoom: 5,
-      mapId: 'lanlist.org'
+      mapId: 'lanlist'
     })
 }
 

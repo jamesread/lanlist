@@ -6,13 +6,12 @@ require_once 'includes/common.php';
 use \libAllure\Session;
 use \libAllure\Logger;
 
-if (!Session::isLoggedIn() || !Session::getUser()->hasPriv('SUPERUSER')) {
-	throw new PermissionsException('You cannot view the logs!');
-}
+requirePriv('VIEW_LOGS', 'You cannot view the logs!');
 
 require_once 'includes/widgets/header.php';
 
 if (isset($_REQUEST['ack'])) {
+        requirePriv('CLEAR_LOGS');
 	$sql = 'UPDATE logs l SET l.isread = 1 ';
 	$db->query($sql);
 
@@ -47,8 +46,14 @@ startSidebar();
 	<ul>
 		<li><a href = "listLogs.php?full">Full logs</a></li>
 		<li><a href = "api.php?function=logs&format=csv">CSV</a></li>
-		<li><a href = "listLogs.php">Unread</a></li>
-		<li><a href = "listLogs.php?ack">Dismiss new logs</a></li>
+                <li><a href = "listLogs.php">Unread</a></li>
+<?php 
+
+if (Session::hasPriv('CLEAR_LOGS')) {
+
+		echo '<li><a href = "listLogs.php?ack">Dismiss new logs</a></li>';
+}
+?>
 		<li><a href = "account.php">Return to account</a></li>
 		<li><a href = "listLogs.php?test">Test message</a></li>
 	</ul>

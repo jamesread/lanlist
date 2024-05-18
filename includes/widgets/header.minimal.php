@@ -8,6 +8,7 @@
 
     <link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
     <link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />
+    <meta name = "viewport" content = "width=device-width" />
 
 	<?php 
 	

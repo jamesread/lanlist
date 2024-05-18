@@ -3,7 +3,7 @@
 
 	<?php 
 	
-	echo '<ul>';
+	echo '<ul class = "nextEvents">';
 	foreach (getListOfNextEvents() as $event) {
 		echo '<li>' . $event['dateStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>, ' . $event['country'] . '</li>';
 	}
