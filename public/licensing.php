@@ -7,7 +7,7 @@ require_once 'includes/widgets/header.php';
 <p>The source code for this website fully open source, licensed AGPL-v3. You can find the code on <a href = "http://github.com/jamesread/lanlist/">GitHub</a>.</p>
 
 <h2>Licensing - Database</h2>
-<p>This site's content is it's database, which is built and maintained by the LAN Party Commumity.</p> 
+<p>This site's content is it's database, which is built and maintained by the LAN Party Community.</p> 
 <p>The list of LAN Parties on this website is licensed Creative Commons Attributution-Share-Alike 4.0. This license refers to the list in all forms - text, csv, ical, etc. Each format can be found on the <a href = "eventsList.php">list</a> page. PLEASE don't use a web-page scraping tool to hammer this webserver. For what you are allowed to do with the list, please <a href = "http://creativecommons.org/licenses/by-sa/4.0/">see the license</a>. </p>
 <div id = "licenseBlock">
 	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
