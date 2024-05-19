@@ -1,50 +1,54 @@
 <?php
 
-use \libAllure\Session;
-use \libAllure\Database;
+use libAllure\Session;
+use libAllure\Database;
 
-function fetchEventsFromOrganizerId($id) {
-	global $db;
+function fetchEventsFromOrganizerId($id)
+{
+    global $db;
 
-	if (Session::isLoggedIn() && (Session::getUser()->hasPriv('SUPERUSER') || Session::getUser()->getData('organization') == $id)) {
-		$sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published, e.organizer AS organizerId FROM events e WHERE e.organizer = :id ORDER BY e.dateStart';
-	} else {
-		$sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published, e.organizer AS organizerId FROM events e WHERE e.organizer = :id AND e.published = 1 ORDER BY e.dateStart';
-	}
+    if (Session::isLoggedIn() && (Session::getUser()->hasPriv('SUPERUSER') || Session::getUser()->getData('organization') == $id)) {
+        $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published, e.organizer AS organizerId FROM events e WHERE e.organizer = :id ORDER BY e.dateStart';
+    } else {
+        $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published, e.organizer AS organizerId FROM events e WHERE e.organizer = :id AND e.published = 1 ORDER BY e.dateStart';
+    }
 
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue(':id', $id);
-	$stmt->execute();
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':id', $id);
+    $stmt->execute();
 
         $events = normalizeEvents($stmt->fetchAll());
 
-	return $events;
+    return $events;
 }
 
-function fetchEventsFromVenueId($id) {
-	global $db;
+function fetchEventsFromVenueId($id)
+{
+    global $db;
 
-	$sql = 'SELECT e.title, e.dateStart, e.dateFinish, e.id, o.id AS organizerId FROM events e LEFT JOIN venues v ON v.id = e.venue LEFT JOIN organizers o ON e.organizer = o.id WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue('venueId', $id);
+    $sql = 'SELECT e.title, e.dateStart, e.dateFinish, e.id, o.id AS organizerId FROM events e LEFT JOIN venues v ON v.id = e.venue LEFT JOIN organizers o ON e.organizer = o.id WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue('venueId', $id);
         $stmt->execute();
 
         $events = normalizeEvents($stmt->fetchAll());
 
-	return $events;
+    return $events;
 }
 
-function fromRequestRequireInt($name) {
-	if (isset($_REQUEST[$name])) {
-		return intval($_REQUEST[$name]);
-	} else {
-		throw new Exception('Required variable not set.');
-	}
+function fromRequestRequireInt($name)
+{
+    if (isset($_REQUEST[$name])) {
+        return intval($_REQUEST[$name]);
+    } else {
+        throw new Exception('Required variable not set.');
+    }
 }
 
-function fetchOrganizer($id) {
-	global $db;
-	$sql = <<<SQL
+function fetchOrganizer($id)
+{
+    global $db;
+    $sql = <<<SQL
 SELECT 
 	o.id,
 	o.title,
@@ -62,21 +66,22 @@ GROUP BY
 	o.id
 LIMIT 1
 SQL;
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue(':id', intval($id));
-	$stmt->execute();
-	
-	if ($stmt->numRows() == 0) {
-		throw new Exception('Organizer not found');
-	} else {
-		return $stmt->fetchRow();
-	}
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':id', intval($id));
+    $stmt->execute();
+
+    if ($stmt->numRows() == 0) {
+        throw new Exception('Organizer not found');
+    } else {
+        return $stmt->fetchRow();
+    }
 }
 
-function fetchVenue($id) {
-	global $db;
+function fetchVenue($id)
+{
+    global $db;
 
-	$sql = <<<SQL
+    $sql = <<<SQL
 SELECT 
 	v.id,
 	v.title,
@@ -90,23 +95,24 @@ WHERE
 LIMIT 1
 SQL;
 
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue(':id', intval($id), Database::PARAM_INT);
-	$stmt->execute();
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':id', intval($id), Database::PARAM_INT);
+    $stmt->execute();
 
-	if ($stmt->numRows() == 0) {
-		throw new Exception('Venue not found ' . $id);
-	}
+    if ($stmt->numRows() == 0) {
+        throw new Exception('Venue not found ' . $id);
+    }
 
-	return $stmt->fetchRow();
+    return $stmt->fetchRow();
 }
 
-function fetchEvent($id) {
-	global $db;
+function fetchEvent($id)
+{
+    global $db;
 
-	$id = intval($id);
+    $id = intval($id);
 
-	$sql = <<<SQL
+    $sql = <<<SQL
 SELECT 
 	e.id, 
 	e.published, 
@@ -148,18 +154,16 @@ WHERE
 	e.id = :id LIMIT 1
 SQL;
 
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue(':id', $id, Database::PARAM_INT);
-	$stmt->execute();
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':id', $id, Database::PARAM_INT);
+    $stmt->execute();
 
-	if ($stmt->numRows() == 0) {
-		throw new Exception('Event not found.');
-        }
+    if ($stmt->numRows() == 0) {
+        throw new Exception('Event not found.');
+    }
 
         $event = $stmt->fetchRow();
         $event = normalizeEvent($event);
 
-	return $event;
+    return $event;
 }
-
-?>

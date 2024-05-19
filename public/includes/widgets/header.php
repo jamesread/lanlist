@@ -5,10 +5,10 @@ require_once 'includes/common.php';
 global $tpl;
 
 if (defined('TITLE')) {
-	$tpl->assign('title', TITLE);
+    $tpl->assign('title', TITLE);
 }
 
-use \libAllure\Session;
+use libAllure\Session;
 
 $tpl->assign('alertMessage', ALERT_MESSAGE);
 $tpl->assign('siteTitle', SITE_TITLE);
@@ -19,5 +19,3 @@ $tpl->assign('username', Session::isLoggedIn() ? Session::getUser()->getUsername
 $tpl->assign('mapsApiKey', MAPS_API_KEY);
 //$tpl->register_modifier('floatToMoney', 'floatToMoney');
 $tpl->display('header.tpl');
-
-?>

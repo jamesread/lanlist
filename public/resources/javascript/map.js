@@ -1,117 +1,126 @@
-function showSetLocationForm() {
-	$("#formSetLocationContainer").show();
-	$("#linkShowSetLocationForm").hide();
+function showSetLocationForm()
+{
+    $("#formSetLocationContainer").show();
+    $("#linkShowSetLocationForm").hide();
 }
 
-function getCookieContent(cookieSearch) {
-	var cookieList = document.cookie.split(';');
-	var theContent = null;
+function getCookieContent(cookieSearch)
+{
+    var cookieList = document.cookie.split(';');
+    var theContent = null;
 
-	$(cookieList).each(function(index, item) {
-		cookie = item.split('=');
+    $(cookieList).each(function (index, item) {
+        cookie = item.split('=');
 
-		if (cookie[0].trim() == cookieSearch) {
-			theContent = cookie[1];
-		}
-	});
+        if (cookie[0].trim() == cookieSearch) {
+            theContent = cookie[1];
+        }
+    });
 
-	return theContent;
+    return theContent;
 }
 
-function onEventMarkerClicked(eventObject, marker) {
-	window.lastEvent = eventObject;
+function onEventMarkerClicked(eventObject, marker)
+{
+    window.lastEvent = eventObject;
 
-	showInfobox(eventObject, marker);
+    showInfobox(eventObject, marker);
 }
 
-function showInfobox(eventObject, marker) {
-	if (window.infoBox != null) {
-		window.infoBox.close();
-	}
+function showInfobox(eventObject, marker)
+{
+    if (window.infoBox != null) {
+        window.infoBox.close();
+    }
 
-	contentHtml = "";
-	contentHtml += '<img class = "bannerSmall" src = "' + eventObject.bannerUrl +'" />';
-	contentHtml += "<h2><a href = \"viewEvent.php?id=" + eventObject.id + "\">" + eventObject.organizerTitle + " - " + eventObject.eventTitle + "</a></h2>";
-	contentHtml += '<p>';
-	contentHtml += '<strong>Starts:</strong> ' + eventObject.dateStartHuman + '<br />';
-  contentHtml += '<strong>Finishes:</strong> ' + eventObject.dateFinishHuman + '<br />';
-	contentHtml += '<strong>Seats:</strong> ' + eventObject.numberOfSeats + '<br /><br />';
-	contentHtml += '<a href = "viewEvent.php?id=' + eventObject.id + '">More info...</a>'
-	contentHtml += '</p>';
+    contentHtml = "";
+    contentHtml += '<img class = "bannerSmall" src = "' + eventObject.bannerUrl + '" />';
+    contentHtml += "<h2><a href = \"viewEvent.php?id=" + eventObject.id + "\">" + eventObject.organizerTitle + " - " + eventObject.eventTitle + "</a></h2>";
+    contentHtml += '<p>';
+    contentHtml += '<strong>Starts:</strong> ' + eventObject.dateStartHuman + '<br />';
+    contentHtml += '<strong>Finishes:</strong> ' + eventObject.dateFinishHuman + '<br />';
+    contentHtml += '<strong>Seats:</strong> ' + eventObject.numberOfSeats + '<br /><br />';
+    contentHtml += '<a href = "viewEvent.php?id=' + eventObject.id + '">More info...</a>'
+    contentHtml += '</p>';
 
-	window.infoBox = new google.maps.InfoWindow({
-		content: contentHtml
-	});
+    window.infoBox = new google.maps.InfoWindow({
+        content: contentHtml
+    });
 
-	window.infoBox.open(window.map, marker);
+    window.infoBox.open(window.map, marker);
 }
 
-async function renderMap() {
+async function renderMap()
+{
     const { Map } = await google.maps.importLibrary("maps");
 
     window.mapCenter = { lat: 55.729639, lng: 4.603271 }
-    
-		window.map = new Map(document.getElementById('map'), {
-      center: mapCenter,
-      zoom: 5,
-      mapId: 'lanlist'
+
+        window.map = new Map(document.getElementById('map'), {
+            center: mapCenter,
+            zoom: 5,
+            mapId: 'lanlist'
+        })
+}
+
+function focusOnMarker(marker)
+{
+
+}
+
+async function addMarker(lat, lng, title, iconUrl, clickable, focus)
+{
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
+
+    let markerSettings = {
+        position: { lat: lat, lng: lng},
+        map: window.map,
+        title: title,
+        gmpClickable: clickable
+    }
+
+    if (iconUrl != null) {
+        const img = document.createElement('img')
+        img.setAttribute('title', title)
+        img.setAttribute('alt', title)
+        img.setAttribute('width', '16')
+        img.setAttribute('height', '16')
+        img.src = iconUrl
+        img.classList.add('favicon')
+
+        markerSettings.content = img
+    }
+
+    const marker = new AdvancedMarkerElement(markerSettings);
+
+    if (focus) {
+        window.map.setZoom(8);
+        window.map.setCenter(markerSettings.position);
+    }
+
+    return marker
+}
+
+function addMarkerEvent(evt, focus)
+{
+    addMarker(evt.venueLat, evt.venueLng, evt.eventTitle, getEventIcon(evt), true, focus).then(marker => {
+        marker.addListener('click', function () {
+            onEventMarkerClicked(evt, marker);
+        });
     })
 }
 
-function focusOnMarker(marker) {
-	
-}
-
-async function addMarker(lat, lng, title, iconUrl, clickable, focus) {
-  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
-
-  let markerSettings = {
-    position: { lat: lat, lng: lng},
-		map: window.map,
-    title: title,
-    gmpClickable: clickable
-	}
-
-  if (iconUrl != null) {
-    const img = document.createElement('img')
-    img.setAttribute('title', title)
-    img.setAttribute('alt', title)
-    img.setAttribute('width', '16')
-    img.setAttribute('height', '16')
-    img.src = iconUrl
-    img.classList.add('favicon')
-
-    markerSettings.content = img
-  }
-
-	const marker = new AdvancedMarkerElement(markerSettings);
-
-	if (focus) {
-    window.map.setZoom(8);
-		window.map.setCenter(markerSettings.position);
-	}
-
-  return marker
-}
-
-function addMarkerEvent(evt, focus) {
-  addMarker(evt.venueLat, evt.venueLng, evt.eventTitle, getEventIcon(evt), true, focus).then(marker => {
-    marker.addListener('click', function() {
-      onEventMarkerClicked(evt, marker);
-    });
-  })
-}
-
-function getEventIcon(evt) {
-  if (evt.useFavicon) {
-    return 'resources/images/organizer-favicons/' + evt.organizerId + '.png'
-  } else {
-    if (new Date(evt.dateStart) < window.now) {
-      return "resources/images/eventMarkerGray.png";
+function getEventIcon(evt)
+{
+    if (evt.useFavicon) {
+        return 'resources/images/organizer-favicons/' + evt.organizerId + '.png'
     } else {
-      return "resources/images/eventMarkerLogo.png";
+        if (new Date(evt.dateStart) < window.now) {
+            return "resources/images/eventMarkerGray.png";
+        } else {
+            return "resources/images/eventMarkerLogo.png";
+        }
     }
-  }
 }
 
 window.now = new Date();

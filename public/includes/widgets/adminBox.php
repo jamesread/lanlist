@@ -2,8 +2,8 @@
 
 require_once 'includes/classes/EventsChecker.php';
 
-use \libAllure\Session;
-use \libAllure\HtmlLinksCollection;
+use libAllure\Session;
+use libAllure\HtmlLinksCollection;
 
 $organizer = Session::getUser()->getData('organization');
 
@@ -14,9 +14,9 @@ $ll->add('#', 'History');
 $menuHistory = $ll->addChildCollection('History');
 
 if (isset($_SESSION['history']) && is_array($_SESSION['history'])) {
-	foreach (array_reverse($_SESSION['history']) as $link) {
-		$menuHistory->add($link['url'], $link['title']);
-	}
+    foreach (array_reverse($_SESSION['history']) as $link) {
+        $menuHistory->add($link['url'], $link['title']);
+    }
 }
 
 $ll->addIfPriv('MODERATE_ORGANIZERS', 'listOrganizers.php', 'Organizers', 'system-users.png');
@@ -65,5 +65,3 @@ $menuExternalLinks->add('http://google.com/a/lanlist.org', 'lanlist.org Google A
 
 $tpl->assign('linkCollection', $ll);
 $tpl->display('linkCollection.tpl');
-
-?>

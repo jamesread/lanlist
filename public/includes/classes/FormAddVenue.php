@@ -1,13 +1,11 @@
 <?php
 
-use \libAllure\Form;
+use libAllure\Form;
 
-class FormAddVenue extends Form {
-	public function __construct() {
-		parent::__construct('formAddVenue', 'Add Venue');
-
-		
-	}
+class FormAddVenue extends Form
+{
+    public function __construct()
+    {
+        parent::__construct('formAddVenue', 'Add Venue');
+    }
 }
-
-?>

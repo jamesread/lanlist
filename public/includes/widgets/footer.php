@@ -1,15 +1,13 @@
-<?php 
+<?php
 
 if (!defined('SIDEBAROUTPUT')) {
-	startSidebar();
+    startSidebar();
 }
 
 global $db;
 global $tpl;
 
 $tpl->assign('queryCount', $db->queryCount);
-$tpl->display('footer.tpl');	
+$tpl->display('footer.tpl');
 
-exit; 
-
-?>
+exit;

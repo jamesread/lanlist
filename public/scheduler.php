@@ -7,16 +7,12 @@ require_once 'libAllure/Scheduler.php';
 require_once 'includes/classes/ScheduledTaskNewsletter.php';
 require_once 'includes/classes/ScheduledTaskKeepalive.php';
 
-use \libAllure\Scheduler;
+use libAllure\Scheduler;
 
 $s = new Scheduler($db);
 
 if (in_array('--force', $_SERVER['argv'])) {
-	$s->executeEverything();
+    $s->executeEverything();
 } else {
-	$s->executeOverdueJobs();
+    $s->executeOverdueJobs();
 }
-
-
-
-?>

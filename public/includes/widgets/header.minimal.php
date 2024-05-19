@@ -9,15 +9,15 @@
     <link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />
     <meta name = "viewport" content = "width=device-width" />
 
-	<?php 
-	
-	if (defined('REDIRECT')) {
-		echo '<meta http-equiv = "refresh" content = "3; url=' . REDIRECT . '"/>';
-	}
-	?>
+    <?php
+
+    if (defined('REDIRECT')) {
+        echo '<meta http-equiv = "refresh" content = "3; url=' . REDIRECT . '"/>';
+    }
+    ?>
 </head>
 
 <body>
-	<div id = "content" class = "minimal">
+    <div id = "content" class = "minimal">
 
-	<img src = "resources/images/lanlist.org-banner.png" /><br /><br />
+    <img src = "resources/images/lanlist.org-banner.png" /><br /><br />

@@ -1,9 +1,9 @@
 <?php
 
 require_once 'includes/widgets/header.php';
-use \libAllure\Shortcuts;
-use \libAllure\Session;
-use \libAllure\HtmlLinksCollection;
+use libAllure\Shortcuts;
+use libAllure\Session;
+use libAllure\HtmlLinksCollection;
 
 $groupId = \libAllure\Sanitizer::getInstance()->filterUint('id');
 
@@ -35,12 +35,10 @@ startSidebar();
 if (Session::getUser()->hasPriv('GROUP_ADMIN')) {
     $menu = new HtmlLinksCollection('Group management');
     $menu->add('formHandler.php?formClazz=FormAddPermissionToGroup&formPrivsAddGroup-usergroup=' . $groupId, 'Add Permission');
-    
+
     $tpl->assign('linkCollection', $menu);
     $tpl->display('linkCollection.tpl');
 }
 
 
 require_once 'includes/widgets/footer.php';
-
-?>

@@ -1,11 +1,12 @@
 <?php
 
-use \libAllure\Session;
-use \libAllure\DatabaseFactory;
-use \libAllure\ErrorHandler;
-use \libAllure\Logger;
+use libAllure\Session;
+use libAllure\DatabaseFactory;
+use libAllure\ErrorHandler;
+use libAllure\Logger;
 
-function getCountJoinRequests() {
+function getCountJoinRequests()
+{
     $sql = 'SELECT count(j.id) as count FROM organization_join_requests j';
     $stmt = DatabaseFactory::getInstance()->prepare($sql);
     $stmt->execute();
@@ -15,7 +16,8 @@ function getCountJoinRequests() {
     return $countJoinRequests;
 }
 
-function htmlify($input) {
+function htmlify($input)
+{
     if ($input == null) {
         return '';
     }
@@ -23,11 +25,13 @@ function htmlify($input) {
     return nl2br(htmlentities(stripslashes($input)));
 }
 
-function sendEmailToAdmins($content, $subject) {
+function sendEmailToAdmins($content, $subject)
+{
     return sendEmailToGroup(99, $content, $subject);
 }
 
-function sendEmailToGroup($groupId, $content, $subject) {
+function sendEmailToGroup($groupId, $content, $subject)
+{
     global $db;
 
     $sql = 'SELECT id, username, email FROM users WHERE `group` = :group';
@@ -37,10 +41,11 @@ function sendEmailToGroup($groupId, $content, $subject) {
 
     foreach ($stmt->fetchAll() as $user) {
         sendEmail($user['email'], $content, $subject);
-    }	
+    }
 }
 
-function sendEmail($recipient, $content, $subject = 'Notification', $includeStandardFooter = true) {
+function sendEmail($recipient, $content, $subject = 'Notification', $includeStandardFooter = true)
+{
     $subject = SITE_TITLE . ' - ' . $subject;
 
     if (empty($content)) {
@@ -91,7 +96,8 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
     $stmt->execute();
 }
 
-function normalizeEvents($events) {
+function normalizeEvents($events)
+{
     foreach ($events as $k => $event) {
         $events[$k] = normalizeEvent($event);
     }
@@ -99,7 +105,8 @@ function normalizeEvents($events) {
     return $events;
 }
 
-function normalizeEvent($event) {
+function normalizeEvent($event)
+{
     $dateStart = date_create($event['dateStart']);
     $dateFinish = date_create($event['dateFinish']);
 
@@ -113,14 +120,16 @@ function normalizeEvent($event) {
     return $event;
 }
 
-function getOrganizerLogoUrl($organizerId) {
+function getOrganizerLogoUrl($organizerId)
+{
     $organizerId = intval($organizerId);
     $baseUrl = 'resources/images/organizer-logos/';
 
     return $baseUrl . $organizerId . '.jpg';
 }
 
-function floatToMoney($value, $currency = '£') {
+function floatToMoney($value, $currency = '£')
+{
     if (empty($value) || $value == 0) {
         return '?';
     } else {
@@ -128,20 +137,22 @@ function floatToMoney($value, $currency = '£') {
     }
 
     switch ($currency) {
-    case '': 
-        $currency = 'GBP';
-    case 'SEK':
+        case '':
+            $currency = 'GBP';
+        case 'SEK':
         case 'GBP';
-    default:
-        return $value . ' ' . $currency;
+        default:
+            return $value . ' ' . $currency;
     }
 }
 
-function issetor(&$v, $default = 'Unknown') {
+function issetor(&$v, $default = 'Unknown')
+{
     return empty($v) ? $default : $v;
 }
 
-function tplBoolToString($arguments, $smarty) {
+function tplBoolToString($arguments, $smarty)
+{
     if (!isset($arguments['test'])) {
         $smarty->trigger_error('The test argument is required.');
     }
@@ -151,10 +162,10 @@ function tplBoolToString($arguments, $smarty) {
     $onNull = isset($arguments['onNull']) ? $arguments['onNull'] : 'Unknown';
 
     return boolToString($arguments['test'], $onTrue, $onFalse, $onNull);
-
 }
 
-function boolToString($test, $onTrue = 'Yes', $onFalse = 'No', $onNull = 'Unknown') {
+function boolToString($test, $onTrue = 'Yes', $onFalse = 'No', $onNull = 'Unknown')
+{
     if ($test == null || strlen($test) == 0) {
         return $onNull;
     }
@@ -166,7 +177,8 @@ function boolToString($test, $onTrue = 'Yes', $onFalse = 'No', $onNull = 'Unknow
     }
 }
 
-function getCountUnreadLogs() {
+function getCountUnreadLogs()
+{
     global $db;
 
     if (!Session::isLoggedIn()) {
@@ -183,7 +195,8 @@ function getCountUnreadLogs() {
     }
 }
 
-function getListOfNextEvents($count = 10) {
+function getListOfNextEvents($count = 10)
+{
     global $db;
 
     $count = intval($count);
@@ -208,7 +221,8 @@ function getListOfNextEvents($count = 10) {
     return $eventsByMonth;
 }
 
-function getNextEvent($organizerId = null) {
+function getNextEvent($organizerId = null)
+{
     global $db;
 
     if (empty($organizerId)) {
@@ -224,10 +238,10 @@ function getNextEvent($organizerId = null) {
 
         return $stmt->fetchRow();
     }
-
 }
 
-function getEventRating($eventId) {
+function getEventRating($eventId)
+{
     global $db;
 
     $sql = 'SELECT ((r.rat_venue + r.rat_vfm + r.rat_activities) / 3) AS avg FROM event_reviews r  WHERE r.event = :eventId';
@@ -247,7 +261,8 @@ function getEventRating($eventId) {
     return $average;
 }
 
-function logMessageToDatabase($priority, $content, $eventId) {
+function logMessageToDatabase($priority, $content, $eventId)
+{
     global $db;
 
     $stmtLog = $db->prepare('INSERT INTO logs (priority, content, eventType, timestamp) VALUES (:priority, :content, :eventType, now()) ');
@@ -257,7 +272,8 @@ function logMessageToDatabase($priority, $content, $eventId) {
     $stmtLog->execute();
 }
 
-function requirePriv($ident) {
+function requirePriv($ident)
+{
     if (Session::isLoggedIn()) {
         if (!Session::getUser()->hasPriv($ident)) {
             throw new Exception('You dont have the privs to do this.');
@@ -267,18 +283,20 @@ function requirePriv($ident) {
     }
 }
 
-function startSidebar() {
+function startSidebar()
+{
     define('SIDEBAROUTPUT', 1);
     echo '</div><div id = "sidebar">';
 }
 
-function redirect($url, $reason) {
+function redirect($url, $reason)
+{
     define('REDIRECT', $url);
     if (!in_array('includes/widgets/header.php', get_included_files())) {
         require_once 'includes/widgets/header.minimal.php';
     }
 
-    echo '<h1>Redirecting: '  . $reason.  '</h1>';
+    echo '<h1>Redirecting: '  . $reason .  '</h1>';
     echo '<p>You are being redirected to <a href = "' . $url . '">here</a>.</p>';
 
     require_once 'includes/widgets/footer.minimal.php';
@@ -291,7 +309,8 @@ function redirect($url, $reason) {
  *
  * a[x][y][z] becomes a[implode(sep, array(x,y,z))]
  */
-function array_flatten($array) {
+function array_flatten($array)
+{
     $result = array();
     $stack = array();
     array_push($stack, array("", $array));
@@ -313,7 +332,8 @@ function array_flatten($array) {
     return $result;
 }
 
-function jsForEvents() {
+function jsForEvents()
+{
     global $db;
 
     $sql = 'SELECT e.id, o.id AS organizerId, o.title AS organizerTitle, e.numberOfSeats, e.title AS eventTitle, v.lat as venueLat, v.lng as venueLng, e.dateStart, e.dateFinish, o.useFavicon FROM events e LEFT JOIN (venues v) ON e.venue = v.id LEFT JOIN (organizers o) ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY e.dateStart DESC';
@@ -330,7 +350,8 @@ function jsForEvents() {
 }
 
 
-function jsMapMarker($event, $focus = false) {
+function jsMapMarker($event, $focus = false)
+{
     $focus = intval($focus);
 
     $event = json_encode($event);
@@ -338,7 +359,8 @@ function jsMapMarker($event, $focus = false) {
     return "addMarkerEvent({$event}, {$focus});";
 }
 
-function addHistoryLink($url, $title) {
+function addHistoryLink($url, $title)
+{
     if (!Session::isLoggedIn()) {
         return;
     }
@@ -354,4 +376,3 @@ function addHistoryLink($url, $title) {
         "title" => $title
     );
 }
-?>
