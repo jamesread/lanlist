@@ -30,7 +30,7 @@
 {else}
 	<ul>
 	{foreach from = $events item = event}
-		<li>{$event.dateStart} - {$event.dateFinish} - <a href = "viewEvent.php?id={$event.id}">{$event.title}</a>{if not $event.published} - <span class = "alert">not published by admin!</span>{/if}</li>
+		<li><a href = "viewEvent.php?id={$event.id}">{$event.title}</a>, {$event.dateStartHuman} {if not $event.published} - <span class = "alert">not published by admin!</span>{/if}</li>
 	{/foreach}
 	</ul>
 {/if}

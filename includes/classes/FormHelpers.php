@@ -6,7 +6,7 @@ abstract class FormHelpers {
 	public static function getVenueListElement($includeNull = false) {
 		global $db;
 
-                $sql = 'SELECT v.id, v.title FROM venues v ORDER BY v.title ASC';
+                $sql = 'SELECT v.id, v.title, v.country FROM venues v ORDER BY v.country, v.title ASC';
                 $stmt = $db->prepare($sql);
 		$stmt->execute();
 
@@ -20,7 +20,7 @@ abstract class FormHelpers {
 			throw new Exception('No venues found for this organizer.');
 		} else {
 			foreach ($stmt->fetchAll() as $venue) {
-				$el->addOption($venue['title'], $venue['id']);
+				$el->addOption($venue['country'] . ', ' . $venue['title'], $venue['id']);
 			}
 		}
 
