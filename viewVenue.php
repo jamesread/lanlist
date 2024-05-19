@@ -10,7 +10,6 @@ $venue = fetchVenue($id);
 
 addHistoryLink('viewVenue.php?id=' . $id, 'View venue: ' . $venue['title']);
 
-$tpl->assign('organizersAtVenue', fetchOrganizersFromVenueId($id));
 $tpl->assign('eventsAtVenue', fetchEventsFromVenueId($id));
 $tpl->assign('venue', $venue);
 $tpl->display('viewVenue.tpl');

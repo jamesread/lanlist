@@ -23,13 +23,6 @@ if (Session::isLoggedIn() && (Session::getUser()->hasPriv('SUPERUSER') || Sessio
 	$stmt->execute();
 
 	$tpl->assign('associatedUsers', $stmt->fetchAll());
-
-	$sql = 'SELECT v.id, v.title, count(e.id) AS eventCount FROM venues v LEFT JOIN events e ON e.venue = v.id WHERE v.organizer = :organizer GROUP BY v.id';
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue(':organizer', $organizer['id']);
-	$stmt->execute();
-
-	$tpl->assign('associatedVenues', $stmt->fetchAll());
 }
 
 $tpl->assign('userlist', Session::hasPriv('USERLIST'));
@@ -53,13 +46,8 @@ if (Session::isLoggedIn() && Session::getUser()->hasPriv('EDIT_ORGANIZER') || Se
 	echo '<div class = "infobox">';
 	echo '<h2>Organizer admin</h2>';
 	echo '<ul>';
-	if ($organizer['venueCount'] == 0) {
-		echo '<li>New Event - <em>Make a venue first</em></li>';
-	} else {
-		echo '<li><a href = "formHandler.php?formClazz=FormNewEvent&formNewEvent-organizer=' . $organizer['id'] .  '">New Event</a></li>';
-	}
-
 	echo '<li><a href = "formHandler.php?formClazz=FormNewVenue&formNewVenue-organizer=' . $organizer['id'] .  '">New Venue</a></li>';
+        echo '<li><a href = "formHandler.php?formClazz=FormNewEvent&formNewEvent-organizer=' . $organizer['id'] .  '">New Event</a></li>';
 	echo '<li><a href = "formHandler.php?formClazz=FormEditOrganizer&amp;formEditOrganizer-id=' . $organizer['id'] . '">Edit organizer details</a></li>';
 	echo '<li><a href = "listOrganizers.php">Organizer list</a></li>';
 	echo '</ul></div>';

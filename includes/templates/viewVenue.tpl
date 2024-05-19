@@ -14,18 +14,7 @@
 {else}
 	<ul>
 	{foreach from = $eventsAtVenue item = "event"}
-		<li>{$event.title}</li>
-	{/foreach}
-	</ul>
-{/if}
-
-	<h3>Organizers that use this venue</h3>
-{if $organizersAtVenue|@count eq 0}
-	<p>No organizers use this venue... that is weird. hmm, we should fix that.</p>
-{else}
-	<ul>
-	{foreach from = $organizersAtVenue item = "organizer"}
-		<li><a href = "viewOrganizer.php?id={$organizer.id}">{$organizer.title}</a></li>
+		<li><a href = "viewEvent.php?id={$event.id}">{$event.title}</a></li>
 	{/foreach}
 	</ul>
 {/if}

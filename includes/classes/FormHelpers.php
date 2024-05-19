@@ -7,10 +7,10 @@ abstract class FormHelpers {
 		global $db;
 
 		if ($orgie == null) {
-			$sql = 'SELECT v.id, v.title, o.title AS organizerTitle FROM venues v LEFT JOIN organizers o ON v.organizer = o.id ORDER BY organizerTitle ASC';
+			$sql = 'SELECT v.id, v.title FROM venues v ORDER BY v.title ASC';
 			$stmt = $db->prepare($sql);
 		} else {
-			$sql = 'SELECT v.id, v.title, o.title AS organizerTitle FROM venues v LEFT JOIN organizers o ON v.organizer = o.id WHERE o.id = :orgie ORDER BY organizerTitle ASC';
+			$sql = 'SELECT v.id, v.title FROM venues v WHERE o.id = :orgie ORDER BY v.title ASC';
 			$stmt = $db->prepare($sql);
 			$stmt->bindValue(':orgie', $orgie);
 		}
@@ -27,7 +27,7 @@ abstract class FormHelpers {
 			throw new Exception('No venues found for this organizer.');
 		} else {
 			foreach ($stmt->fetchAll() as $venue) {
-				$el->addOption($venue['organizerTitle'] . ' - ' . $venue['title'], $venue['id']);
+				$el->addOption($venue['title'], $venue['id']);
 			}
 		}
 

@@ -20,11 +20,7 @@
 
 <div class = "paralellContainer">
 	<h3>Venue</h3>
-	<strong>Title:</strong> {$event.venueTitle|default:"???"} <br />
-	<strong>Location:</strong> lat: {$event.venueLat|default:"?"}, lng: {$event.venueLng|default:"?"}
-	{if $event.venueId neq ""}
-	, <a href = "viewVenue.php?id={$event.venueId} ">map of venue only</a>
-	{/if}
+	<a href = "viewVenue.php?id={$event.venueId}">{$event.venueTitle|default:"???"}</a> <br />
 
 	<br /><br />
 

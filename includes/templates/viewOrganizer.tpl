@@ -54,16 +54,3 @@
 </div>
 {/if}
 
-{if isset($associatedVenues)}
-<div class = "paralellContainer">
-	<h3>Associated venues</h3>
-
-	<p>There are {$associatedVenues|@count} associated venue(s).</p>
-
-	<ul>
-		{foreach from = $associatedVenues item = itemVenue}
-		<li><a href = "viewVenue.php?id={$itemVenue.id}">{$itemVenue.title}</a> - used by {$itemVenue.eventCount} events</li>
-		{/foreach}
-	</ul>
-</div>
-{/if}

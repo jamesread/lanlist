@@ -30,18 +30,7 @@ function fetchEventsFromOrganizerId($id) {
 function fetchEventsFromVenueId($id) {
 	global $db;
 
-	$sql = 'SELECT e.title FROM events e LEFT JOIN venues v ON v.id = e.venue WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue('venueId', $id);
-	$stmt->execute();
-
-	return $stmt->fetchAll();
-}
-
-function fetchOrganizersFromVenueId($id) {
-	global $db;
-
-	$sql = 'SELECT o.title, o.id FROM organizers o LEFT JOIN venues v ON v.organizer = o.id WHERE v.id = :venueId GROUP BY o.id ';
+	$sql = 'SELECT e.title, e.id FROM events e LEFT JOIN venues v ON v.id = e.venue WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
 	$stmt = $db->prepare($sql);
 	$stmt->bindValue('venueId', $id);
 	$stmt->execute();
@@ -68,13 +57,9 @@ SELECT
 	o.assumedStale,
 	o.steamGroupUrl,
 	o.blurb,
-        o.useFavicon,
-	count(v.id) AS venueCount
+        o.useFavicon
 FROM 
 	organizers o
-LEFT JOIN
-	venues v ON
-	v.organizer = o.id
 WHERE 
 	o.id = :id
 GROUP BY 

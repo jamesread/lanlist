@@ -5,7 +5,6 @@
 	<thead>
 		<tr>
 			<th>Venue name</th>
-			<th>Used by organizer</th>
 			<th># of upcomming events</th>
 			<th>Country</th>
 		</tr>
@@ -15,7 +14,6 @@
 	{foreach from = $listVenues item = "itemVenue"}
 		<tr>
 			<td><a href = "viewVenue.php?id={$itemVenue.id}">{$itemVenue.title}</a></td>
-			<td><a href = "viewOrganizer.php?id={$itemVenue.organizerId}">{$itemVenue.organizerTitle}</a></td>
 			<td>{$itemVenue.upcommingEvents}</td>
 			<td><a href = "listVenues.php?country={$itemVenue.country}">{$itemVenue.country}</a></td>
 		</tr>
