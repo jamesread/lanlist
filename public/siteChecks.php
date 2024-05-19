@@ -2,7 +2,7 @@
 
 require_once 'includes/common.php';
 
-use \libAllure\Session;
+use libAllure\Session;
 
 define('TITLE', 'Site Checks');
 
@@ -28,5 +28,3 @@ $tpl->display('organizersWithNoEvents.tpl');
 startSidebar();
 require_once 'includes/widgets/adminBox.php';
 require_once 'includes/widgets/footer.php';
-
-?>

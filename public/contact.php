@@ -9,5 +9,3 @@ startSidebar();
 require_once 'includes/widgets/infoboxFeaturedOrganizer.php';
 
 require_once 'includes/widgets/footer.php';
-
-?>

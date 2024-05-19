@@ -2,7 +2,7 @@
 
 require_once 'includes/widgets/header.php';
 
-use \libAllure\DatabaseFactory;
+use libAllure\DatabaseFactory;
 
 requirePriv('GROUPLIST');
 
@@ -15,5 +15,3 @@ $tpl->assign('listGroups', $listGroups);
 $tpl->display('listGroups.tpl');
 
 require_once 'includes/widgets/footer.php';
-
-?>

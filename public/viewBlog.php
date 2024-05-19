@@ -9,5 +9,3 @@ $tpl->assign('blogPosts', $blogPosts);
 $tpl->display('viewBlog.tpl');
 
 require_once 'includes/widgets/footer.php';
-
-?>

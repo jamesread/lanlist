@@ -11,5 +11,3 @@ $tpl->display('news.tpl');
 
 
 require_once 'includes/widgets/footer.php';
-
-?>

@@ -2,7 +2,7 @@
 
 require_once 'includes/widgets/header.php';
 
-use \libAllure\Session;
+use libAllure\Session;
 
 if (Session::isLoggedIn()) {
     echo '<table>';
@@ -20,7 +20,3 @@ if (Session::isLoggedIn()) {
 }
 
 require_once 'includes/widgets/footer.php';
-
-?>
-
-

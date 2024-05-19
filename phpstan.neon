@@ -1,0 +1,8 @@
+parameters:
+	level: 1
+	paths:
+	  - public/
+
+	ignoreErrors:
+	  - '#value type specified in iterable type array#'
+

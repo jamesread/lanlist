@@ -2,50 +2,51 @@
 
 require_once 'includes/common.php';
 
-use \libAllure\ElementHidden;
+use libAllure\ElementHidden;
 
-function getFormUsingMagic() {
-	foreach ($_REQUEST as $key => $value) {
-		if (strpos($key, 'formClazz') !== false) {
-			$form = $value;
-			break;
-		}
-	}
+function getFormUsingMagic()
+{
+    foreach ($_REQUEST as $key => $value) {
+        if (strpos($key, 'formClazz') !== false) {
+            $form = $value;
+            break;
+        }
+    }
 
-	if (!isset($form)) {
-		throw new SimpleFatalError('Uh oh, form not specified!');
-	}
+    if (!isset($form)) {
+        throw new SimpleFatalError('Uh oh, form not specified!');
+    }
 
-	if (!preg_match('/^[a-z]{6,32}$/i', $form)) {
-		throw new Exception('That form name looks a bit funky, please kindly poke off.');
-	}
+    if (!preg_match('/^[a-z]{6,32}$/i', $form)) {
+        throw new Exception('That form name looks a bit funky, please kindly poke off.');
+    }
 
-	if (!file_exists('includes/classes/' . $form . '.php')) {
-		throw new Exception('Oh, I looked for that form but could not find it. Imagine my disapointment.... ');
-	}
+    if (!file_exists('includes/classes/' . $form . '.php')) {
+        throw new Exception('Oh, I looked for that form but could not find it. Imagine my disapointment.... ');
+    }
 
-	require_once 'includes/classes/' . $form . '.php';
+    require_once 'includes/classes/' . $form . '.php';
 
-	if (!class_exists($form)) {
-		throw new Exception('Okay now that IS weird, the file exists, but there is no class, hmm.');
-	}
+    if (!class_exists($form)) {
+        throw new Exception('Okay now that IS weird, the file exists, but there is no class, hmm.');
+    }
 
-	$form = new $form();
+    $form = new $form();
 
-	if (!($form instanceof \libAllure\Form)) {
-		throw new Exception('After all the work I went to of instanciating a form, it was not a Form.');
-	}
+    if (!($form instanceof \libAllure\Form)) {
+        throw new Exception('After all the work I went to of instanciating a form, it was not a Form.');
+    }
 
-	return $form;
+    return $form;
 }
 
 $f = getFormUsingMagic();
 $f->addElement(new ElementHidden('formClazz', null, get_class($f)));
 
 if ($f->validate()) {
-	$f->process();
+    $f->process();
 
-	throw new Exception('Processed the form, but it didnt know what to do next... now I am sat here looking silly.');
+    throw new Exception('Processed the form, but it didnt know what to do next... now I am sat here looking silly.');
 }
 
 define('TITLE', 'Form: ' . $f->getTitle());
@@ -54,6 +55,3 @@ require_once 'includes/widgets/header.php';
 $tpl->displayForm($f);
 
 require_once 'includes/widgets/footer.php';
-
-
-?>

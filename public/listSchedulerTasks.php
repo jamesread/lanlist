@@ -2,7 +2,7 @@
 
 require_once 'includes/widgets/header.php';
 
-use \libAllure\Session;
+use libAllure\Session;
 
 Session::requirePriv('SCHEDULER_LIST');
 
@@ -16,5 +16,3 @@ $tpl->display('listScheduledTasks.tpl');
 startSidebar();
 require_once 'includes/widgets/adminBox.php';
 require_once 'includes/widgets/footer.php';
-
-?>

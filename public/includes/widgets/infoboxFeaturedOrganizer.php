@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $sql = 'SELECT o.title, o.id, o.blurb FROM organizers o ORDER BY rand() LIMIT 1';
 $stmt = $db->prepare($sql);
