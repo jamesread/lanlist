@@ -1,29 +1,40 @@
 <?php
 
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 
 use libAllure\Session;
+use libAllure\Shortcuts;
 use libAllure\ErrorHandler;
 
 switch ($_REQUEST['action']) {
     case 'toggleEvent':
         requirePriv('TOGGLE_EVENT_PUBLISHED');
 
-        $sql = 'UPDATE events SET published = !published WHERE id = :id';
+        $sql = 'UPDATE events SET published = !published WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $_REQUEST['id']);
         $stmt->execute();
 
-        $sql = 'SELECT u.id, u.username, u.email, e.id AS eventId, e.title AS eventTitle FROM users u JOIN organizers o ON u.organization = o.id JOIN events e ON e.organizer = o.id AND e.id = :eventId';
+        $event = fetchEvent($_REQUEST['id']);
+
+        $sql = 'SELECT u.id, u.username, u.email FROM users u WHERE u.organization = :organization';
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':eventId', $_REQUEST['id']);
+        $stmt->bindValue(':organization', $event['organizerId']);
         $stmt->execute();
 
         foreach ($stmt->fetchAll() as $orgieUser) {
+            $tpl->assign('event', $event);
+            $tpl->assign('publisherUsername', Session::getUser()->getUsername());
             $tpl->assign('user', $orgieUser);
             $content = $tpl->fetch('email.eventToggled.tpl');
 
-            sendEmail($orgieUser['email'], $content, 'Event has been published or unpublished.');
+            if ($event['published']) {
+                $title = 'Event: ' . $event['eventTitle'] . ' has been published!';
+            } else {
+                $title = 'Event: ' . $event['eventTitle'] . ' has been unpublished.';
+            }
+
+            sendEmail($orgieUser['email'], $content, $title);
         }
 
         redirect('viewEvent.php?id=' . $_REQUEST['id'], 'Event toggled. Email sent to organizers.');
