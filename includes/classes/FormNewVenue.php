@@ -22,10 +22,6 @@ class FormNewVenue extends Form {
 
 		if (Session::hasPriv('NEW_VENUE')) {
 			$this->addElement(FormHelpers::getOrganizerList());
-
-			if (isset($_REQUEST['formNewVenue-organizer'])) {
-				$this->getElement('organizer')->setValue($_REQUEST['formNewVenue-organizer']);
-			}
 		}
 
 		$this->addButtons(Form::BTN_SUBMIT);
@@ -39,19 +35,12 @@ class FormNewVenue extends Form {
 	public function process() {
 		global $db;
 
-		$sql = 'INSERT INTO venues (title, lat, lng, organizer, country) VALUES (:title, :lat, :lng, :organizer, :country) ';
+		$sql = 'INSERT INTO venues (title, lat, lng, country) VALUES (:title, :lat, :lng, :country) ';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':title', $this->getElementValue('title'));
 		$stmt->bindValue(':lat', $this->getElementValue('lat'));
 		$stmt->bindValue(':lng', $this->getElementValue('lng'));
 		$stmt->bindValue(':country', $this->getElementValue('country'));
-
-		if (Session::hasPriv('NEW_VENUE')) {
-			$stmt->bindValue(':organizer', $this->getElementValue('organizer'));
-		} else {
-			$stmt->bindValue('organizer', Session::getUser()->getData('organization'));
-		}
-
 		$stmt->execute();
 
 		Logger::messageDebug('Venue ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_VENUE');

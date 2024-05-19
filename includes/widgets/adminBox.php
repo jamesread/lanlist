@@ -7,7 +7,7 @@ use \libAllure\HtmlLinksCollection;
 
 $organizer = Session::getUser()->getData('organization');
 
-$ll = new HtmlLinksCollection('Super Menu v2.1');
+$ll = new HtmlLinksCollection('Site links');
 $ll->setDefaultIcon('go-next.png');
 $ll->add('#', 'History');
 
