@@ -12,5 +12,8 @@
         "pear/mail": "^2.0",
         "pear/net_smtp": "^1.12",
         "pear/auth_sasl": "^1.2"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.11"
     }
 }
