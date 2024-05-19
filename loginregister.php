@@ -23,11 +23,11 @@ if ($f->validate()) {
 		//setcookie('mylocation', Session::getUser()->getData('location', ''));
 
 		redirect('index.php', 'You have logged in.');
-	} catch (IncorrectPasswordException $e) {
+	} catch (\libAllure\exceptions\IncorrectPasswordException $e) {
 		Logger::messageNormal('Failed login for ' . $username . ', password wrong.', 'LOGIN_FAILURE_PASSWORD');
 
 		$f->setElementError('password', 'Password wrong.');
-	} catch (UserNotFoundException $e) {
+	} catch (\libAllure\exceptions\UserNotFoundException $e) {
 		Logger::messageNormal('Failed login for ' . $username . ', nonexistant user.', 'LOGIN_FAILURE_USERNAME');
 
 		$f->setElementError('username', 'User not found');
