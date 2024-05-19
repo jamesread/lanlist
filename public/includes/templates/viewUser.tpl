@@ -1,4 +1,26 @@
 <div>
+	<h2>User: {$viewUser.username}</h2>
+	<ul>
+		<li><strong>User</strong>: {$viewUser.username}</li>
+		<li><strong>Steam Username:</strong> {$viewUser.usernameSteam|default:'???'}</li>
+		<li><strong>Primary group:</strong> {$viewUser.groupTitle}</li>
+		<li><strong>Last login:</strong> {$viewUser.lastLogin}</li>
+		<li><strong>Registered:</strong> {$viewUser.registered}</li>
+		<li><strong>Email:</strong> {$viewUser.email}</li>
+
+		<li><strong>Organizer:</strong>
+		{if !empty($user['organizerId'])}
+		<a href = "viewOrganizer.php?id=' . $user['organizerId'] . '">' . $user['organizerTitle'] . '</a>';
+		{else}
+		None
+		{/if}
+		</li>
+	</ul>
+</div>
+
+
+{if isset($loggedEmails)}
+<div>
 	<h3>Logged emails to this user</h3>
 
 	{if count($loggedEmails) eq 0}
@@ -25,3 +47,4 @@
 		</table>
 	{/if}
 </div>
+{/if}

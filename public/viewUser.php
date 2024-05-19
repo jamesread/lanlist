@@ -22,18 +22,7 @@ $user = $stmt->fetchRow();
 define('TITLE', 'User: ' . $user['username']);
 require_once 'includes/widgets/header.php';
 
-echo '<h2>User: ' . $user['username'] . '</h2>';
-echo 'Steam username: ' . (empty($user['usernameSteam']) ? '???' : $user['usernameSteam']) . '<br />';
-echo 'Primary group: ' . $user['groupTitle'] . '<br />';
-echo 'Last login: ' . $user['lastLogin'] . '<br />';
-echo 'Registered: ' . issetor($user['registered']) . '<br />';
-echo 'Email: ' . issetor($user['email']) . '<br />';
-
-if (!empty($user['organizerId'])) {
-    echo 'Organizer: <a href = "viewOrganizer.php?id=' . $user['organizerId'] . '">' . $user['organizerTitle'] . '</a>';
-} else {
-    echo 'Organizer: None<br />';
-}
+$tpl->assign('viewUser', $user);
 
 if (Session::getUser()->hasPriv('USER_EMAIL_LOG')) {
     $sql = 'SELECT l.id, l.sent, l.subject FROM email_log l WHERE l.emailAddress = :emailAddress ORDER BY l.sent DESC LIMIT 10';
@@ -42,10 +31,11 @@ if (Session::getUser()->hasPriv('USER_EMAIL_LOG')) {
     $stmt->execute();
 
     $tpl->assign('loggedEmails', $stmt->fetchAll());
-    $tpl->display('viewUser.tpl');
 }
 
-startSidebar();
+$tpl->display('viewUser.tpl');
+
+    startSidebar();
 
 if (Session::getUser()->hasPriv('EDIT_USERS')) {
     $menu = new HtmlLinksCollection('User management');
@@ -66,6 +56,5 @@ if (Session::getUser()->hasPriv('EDIT_USERS')) {
     $tpl->assign('linkCollection', $menu);
     $tpl->display('linkCollection.tpl');
 }
-
 
 require_once 'includes/widgets/footer.php';
