@@ -292,7 +292,6 @@ DROP TABLE IF EXISTS `venues`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `venues` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `organizer` int(11) NOT NULL,
   `lat` float DEFAULT NULL,
   `lng` float DEFAULT NULL,
   `title` varchar(48) DEFAULT NULL,

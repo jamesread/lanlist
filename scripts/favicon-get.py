@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 def downloadFavicon(url, site, orgId):
     res = requests.get(site + url)
 
-    print("\t", res.status_code, url)
+    print(f"\t{res.status_code} from {url}")
 
     if res.status_code == 200:
         with open(str(orgId) + '.ico', 'wb') as f:
@@ -20,7 +20,7 @@ def downloadFavicon(url, site, orgId):
         return False
 
 def findFavicon(site, orgId):
-    print("\tTrying to find favicon for ", site)
+    print("\tTrying to find favicon by parsing html")
 
     res = requests.get(site)
     res.raise_for_status()
@@ -51,7 +51,13 @@ testData = [
 
 for row in cur:
     try: 
-        print("Getting ", row[0])
+        print(f"Getting {row}")
+
+        filename = str(row[1]) + '.ico'
+
+        if os.path.exists(filename):
+            print("\tAlready exists!")
+            continue
 
         if not downloadFavicon('/favicon.ico', row[0], row[1]):
             findFavicon(row[0], row[1])

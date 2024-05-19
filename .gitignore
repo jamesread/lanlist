@@ -1,6 +1,6 @@
-includes/config.php
-resources/images/organizer-logos
-resources/images/organizer-favicons
+public/includes/config.php
+public/resources/images/organizer-logos
+public/resources/images/organizer-favicons
 /vendor/
 /scripts/*.ico
 *.swo
