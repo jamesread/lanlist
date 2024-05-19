@@ -7,9 +7,9 @@ function fetchEventsFromOrganizerId($id) {
 	global $db;
 
 	if (Session::isLoggedIn() && (Session::getUser()->hasPriv('SUPERUSER') || Session::getUser()->getData('organization') == $id)) {
-		$sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published FROM events e WHERE e.organizer = :id ORDER BY e.dateStart';
+		$sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published, e.organizer AS organizerId FROM events e WHERE e.organizer = :id ORDER BY e.dateStart';
 	} else {
-		$sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published FROM events e WHERE e.organizer = :id AND e.published = 1 ORDER BY e.dateStart';
+		$sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, e.published, e.organizer AS organizerId FROM events e WHERE e.organizer = :id AND e.published = 1 ORDER BY e.dateStart';
 	}
 
 	$stmt = $db->prepare($sql);
@@ -24,7 +24,7 @@ function fetchEventsFromOrganizerId($id) {
 function fetchEventsFromVenueId($id) {
 	global $db;
 
-	$sql = 'SELECT e.title, e.dateStart, e.dateFinish, e.id FROM events e LEFT JOIN venues v ON v.id = e.venue WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
+	$sql = 'SELECT e.title, e.dateStart, e.dateFinish, e.id, o.id AS organizerId FROM events e LEFT JOIN venues v ON v.id = e.venue LEFT JOIN organizers o ON e.organizer = o.id WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
 	$stmt = $db->prepare($sql);
 	$stmt->bindValue('venueId', $id);
         $stmt->execute();
@@ -131,6 +131,7 @@ SELECT
 	u.username AS createdByUsername,
 	o.title AS organizerTitle, 
 	o.id AS organizerId, 
+        o.useFavicon,
 	v.id AS venueId,
 	v.title AS venueTitle,
 	v.lat AS venueLat,
@@ -156,8 +157,7 @@ SQL;
         }
 
         $event = $stmt->fetchRow();
-        $event['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS M Y g:ia');
-        $event['dateFinishHuman'] = date_format(date_create($event['dateFinish']), 'D jS M Y g:ia');
+        $event = normalizeEvent($event);
 
 	return $event;
 }

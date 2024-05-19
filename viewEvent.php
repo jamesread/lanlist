@@ -13,9 +13,8 @@ require_once 'includes/widgets/header.php';
 
 $tpl->assign('event', $event);
 
-$marker = jsMapMarker($event['venueLat'], $event['venueLng'], true); 
+$marker = jsMapMarker($event, true); 
 $tpl->assign('markers', array($marker));
-//$tpl->registerFunction('boolToString', 'tplBoolToString');
 $tpl->display('viewEvent.tpl');
 
 /*
@@ -37,15 +36,8 @@ if (strpos($logoUrl, "default") == false) {
 	$tpl->display('infobox.organizerLogo.tpl');
 }
 
-?>
+require_once 'includes/widgets/infoboxOtherEvents.php';
 
-<div class = "infobox">
-	<h2>Other events...</h2>
-	<p>You can view list of all other events on a <a href = "eventsMap.php">map</a> or in a <a href = "eventsList.php">list</a>.</p>
-
-	<p>Or, you might want a <a href = "listOrganizers.php">list of organizers</a>.</p>
-</div>
-<?php
 if (Session::isLoggedIn() && (Session::getUser()->hasPriv('MODERATE_EVENTS') || ($event['organizerId'] == Session::getUser()->getData('organization') && !empty($event['organizerId'])))) {
 	echo '<div class = "infobox"><h2>Admin</h2>';
 	echo '<p>With great power, comes great responsibility...</p><p>';
@@ -69,13 +61,7 @@ if (Session::isLoggedIn() && (Session::getUser()->hasPriv('MODERATE_EVENTS') || 
 
 	require_once 'includes/widgets/infoboxLinkUs.php';
 } else {
-?>
-<div class = "infobox">
-	<h2>&quot;I run this event!&quot;</h2>
-	<p>If you run this event then please do join us! By <a href = "loginregister.php">registering a new account</a>, you can associate your user account with this organizer and change any details, as well as add your future events.</p>
-	<p>If you know any of the staff members that run this event, do let them know that they are on lanlist.org!</p>
-</div>
-<?php
+    require_once 'includes/widgets/infoboxClaimEvent.php';
 }
 
 require_once 'includes/widgets/footer.php';

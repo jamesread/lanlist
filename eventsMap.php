@@ -1,26 +1,8 @@
 <?php
 
-require_once 'includes/common.php';
-require_once 'includes/classes/FormSetLocation.php';
+require_once 'includes/widgets/header.php';
 
 use \libAllure\Session;
-
-$f = new FormSetLocation();
-
-if ($f->validate()) {
-	$f->process();
-	$currentLocation = $f->getElementValue('location');
-} else if (Session::isLoggedIn()) {
-	$currentLocation = Session::getUser()->getData('location');
-} else if (isset($_COOKIE['mylocation'])) {
-	$currentLocation = $_COOKIE['mylocation'];
-} else {
-	$currentLocation = null;
-}
-
-require_once 'includes/widgets/header.php';
-require_once 'includes/functionality/misc.php';
-
 ?>
 <h2>LAN Parties On A Map...</h2>
 <div>
@@ -50,10 +32,10 @@ require_once 'includes/functionality/misc.php';
 
 <script type = "text/javascript">
 renderMap();
-        window.addEventListener('DOMContentLoaded', () => {
 
-	<?php echo jsForEvents(); ?>
-	});
+window.addEventListener('DOMContentLoaded', () => {
+<?php echo jsForEvents(); ?>
+});
 
 </script>
 

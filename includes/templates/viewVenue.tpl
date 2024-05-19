@@ -29,5 +29,5 @@
 <script type = "text/javascript">
 	renderMap();
 
-	addMarker({$venue.lat}, {$venue.lng}, null, true);
+	addMarker({$venue.lat}, {$venue.lng}, "{$venue.title}", null, false, true);
 </script>

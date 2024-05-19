@@ -419,6 +419,12 @@ img.favicon {
   background-color: white;
   padding: .3em;
   border-radius: 1em;
+  border: 2px solid #999;
+}
+
+img.favicon:hover {
+	border: 2px solid #0071EB;
+  cursor: pointer;
 }
 
 tr.warn td {
