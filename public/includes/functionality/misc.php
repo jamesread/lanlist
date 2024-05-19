@@ -276,7 +276,7 @@ function requirePriv($ident)
 {
     if (Session::isLoggedIn()) {
         if (!Session::getUser()->hasPriv($ident)) {
-            throw new Exception('You dont have the privs to do this.');
+            throw new \libAllure\exceptions\SimpleFatalError('You dont have the privs to do this.');
         }
     } else {
         throw new \libAllure\exceptions\SimpleFatalError('You are not logged in.');
