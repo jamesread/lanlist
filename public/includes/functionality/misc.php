@@ -105,7 +105,7 @@ function normalizeEvent($event) {
 
     $event['dateStartHuman'] = date_format($dateStart, 'D jS M Y');
     $event['dateFinishHuman'] = date_format($dateFinish, 'D jS M Y');
-    $event['dayStartHuman'] = date_format($dateFinish, 'D jS');
+    $event['dayStartHuman'] = date_format($dateStart, 'D jS');
     $event['dayFinishHuman'] = date_format($dateFinish, 'D jS');
     $event['dateTag'] = date_format(date_create($event['dateStart']), 'M Y');
     $event['bannerUrl'] = getOrganizerLogoUrl($event['organizerId']);
