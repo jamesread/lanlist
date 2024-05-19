@@ -65,7 +65,7 @@ class FormEditOrganizer extends Form {
 
 		$this->getElement('banner')->savePng();
 
-		Logger::messageDebug('Organizer ' . $this->getElementValue('title') . ' (' . $this->getElementValue('id') . ') edited by: ' . Session::getUser()->getUsername(), 'EDIT_ORGANIZER');
+		Logger::messageAudit('Organizer ' . $this->getElementValue('title') . ' (' . $this->getElementValue('id') . ') edited by: ' . Session::getUser()->getUsername(), 'EDIT_ORGANIZER');
 		redirect('viewOrganizer.php?id=' . $this->getElementValue('id'), 'Organizer updated.');
 	}
 

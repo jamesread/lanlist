@@ -43,7 +43,7 @@ class FormNewVenue extends Form {
 		$stmt->bindValue(':country', $this->getElementValue('country'));
 		$stmt->execute();
 
-		Logger::messageDebug('Venue ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_VENUE');
+		Logger::messageAudit('Venue ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_VENUE');
 		redirect('account.php', 'Venue created.');
 	}
 }

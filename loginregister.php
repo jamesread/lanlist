@@ -24,11 +24,11 @@ if ($f->validate()) {
 
 		redirect('index.php', 'You have logged in.');
 	} catch (\libAllure\exceptions\IncorrectPasswordException $e) {
-		Logger::messageNormal('Failed login for ' . $username . ', password wrong.', 'LOGIN_FAILURE_PASSWORD');
+		Logger::messageAudit('Failed login for ' . $username . ', password wrong.', 'LOGIN_FAILURE_PASSWORD');
 
 		$f->setElementError('password', 'Password wrong.');
 	} catch (\libAllure\exceptions\UserNotFoundException $e) {
-		Logger::messageNormal('Failed login for ' . $username . ', nonexistant user.', 'LOGIN_FAILURE_USERNAME');
+		Logger::messageAudit('Failed login for ' . $username . ', nonexistant user.', 'LOGIN_FAILURE_USERNAME');
 
 		$f->setElementError('username', 'User not found');
 	}
