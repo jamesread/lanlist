@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+
+<html lang = "en">
 
 <head>
 	<title>{$title|default:"A List of LAN Parties"} &bull; {$siteTitle}</title>

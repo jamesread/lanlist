@@ -1,5 +1,5 @@
 <h2>Cookies</h2>
-<p>lanlist.org will try to set some cookies, but you can easily browse the site without having cookies enabled.</p>
+<p>lanlist.org only has a single functional cookie for user logins, it does not use tracking cookies for advertising or marketing purposes, so no cookie consent screen is required.</p>
 
 <table>
 	<thead>
@@ -15,17 +15,6 @@
 			<td>lanlistUser</td>
 			<td>Session (normally, when you close your browser)</td>
 			<td>This stores an alphanumeric random string that is used to track your login session. This is also set for "guest" users (who have not logged in). Disabling this cookie will just break the login functionality of the site.</td>
-		</tr>
-
-		<tr>
-			<td>mylocation</td>
-			<td>Session (normally, when you close your browser)</td>
-			<td>Used to remember your current location, as entered into the "directions to a LAN" form on the events map and homepage. Disabling this cookie will stop the directions functionality from working.</td>
-		</tr>
-
-		<tr>
-			<td>__utma, __utmb, __utmc, etc... (Google's cookies)</td>
-			<td colspan = "2"><p>lanlist.org uses a lot of Google services to build the site because we believe Google has some of the best technology and code available.</p><p>Part of the services we use are Google Analitics, which set cookies. There is lots of information about these <a href = "https://developers.google.com/analytics/resources/concepts/gaConceptsCookies">cookies on the Google Developer website</a>.</p></td>
 		</tr>
 	</tbody>
 </table>

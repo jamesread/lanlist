@@ -1,10 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
-<html>
+<html lang = "en">
 
 <head>
-    <title>lanlist.org - Redirecting</title>
+<title><?php echo SITE_TITLE; ?> - Redirecting</title>
 
     <link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
     <link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />

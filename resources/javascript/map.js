@@ -93,6 +93,10 @@ async function addMarker(lat, lng, icon, eventObject, focus) {
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
 
   const img = document.createElement('img')
+  img.setAttribute('title', eventObject.eventTitle)
+  img.setAttribute('alt', eventObject.eventTitle)
+  img.setAttribute('width', '16')
+  img.setAttribute('height', '16')
   img.src = icon
 
   if (eventObject.useFavicon) {

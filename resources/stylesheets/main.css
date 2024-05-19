@@ -3,7 +3,6 @@
 }
 body {
 	font-family: sans-serif;
-	font-size: small;
 	line-height: 1.5;
 	margin-top: 0;
   background-color: #f5f5f5;
@@ -507,8 +506,8 @@ tr.audit td {
   }
 
   div#content {
-    width: 100%;
-    padding: 0;
+    width: auto;
+	  padding: 1em;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   }
 
