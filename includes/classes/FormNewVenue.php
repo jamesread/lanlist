@@ -13,7 +13,7 @@ class FormNewVenue extends Form {
 	public function __construct() {
 		parent::__construct('newVenue', 'New Venue');
 
-		$this->addElement(new ElementHtml('desc', null, 'A venue is a physical place where an event will be hosted, this may be a convention centre, a hall or just your house. You can specify detail such as sleeping arangements when the event is created.'));
+		$this->addElement(new ElementHtml('desc', null, 'A venue is a physical place where an event will be hosted, this may be a convention centre, a hall or just your house. You can specify detail such as sleeping arangements when the event is created. <br /><br /><strong>Note</strong> that organizations do not "own" venues, and other organizers can schedule their events at a venue that they did not create. For this reason, once you create a venue, only an admin can edit it.'));
 		$this->addElement(new ElementInput('title', 'Title', null, 'eg: Budleigh Salterton town hall, Cheltenham Racecourse, etc.'));
 		$this->addElement(FormHelpers::getElementCountry('United Kingdom'));
 		$this->addElement(new ElementHtml('locationDesc', null, '<br />The geodetic (WGS84) latitude/longitude of your venue. This can be awkward, but it allows us to put a pin on the map. We cannot use post/zip codes because many countries do not have them! <a href = "https://www.latlong.net/">https://www.latlong.net/</a> will convert an address to a rough lat/lng. '));
@@ -24,7 +24,7 @@ class FormNewVenue extends Form {
 			$this->addElement(FormHelpers::getOrganizerList());
 		}
 
-		$this->addButtons(Form::BTN_SUBMIT);
+		$this->addDefaultButtons('Create Venue');
 
 		$this->requireFields(array('title', 'lat', 'lng', 'country'));
 	}

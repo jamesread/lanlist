@@ -16,13 +16,7 @@ function fetchEventsFromOrganizerId($id) {
 	$stmt->bindValue(':id', $id);
 	$stmt->execute();
 
-	$events = array();
-
-	foreach ($stmt->fetchAll() as $event) {
-		$event['dtStart'] = date('Y-m-d', strtotime($event['dateStart']));
-		$event['dtFinish'] = date('Y-m-d', strtotime($event['dateFinish']));
-		$events[] = $event;
-	}
+        $events = normalizeEvents($stmt->fetchAll());
 
 	return $events;
 }
@@ -30,12 +24,14 @@ function fetchEventsFromOrganizerId($id) {
 function fetchEventsFromVenueId($id) {
 	global $db;
 
-	$sql = 'SELECT e.title, e.id FROM events e LEFT JOIN venues v ON v.id = e.venue WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
+	$sql = 'SELECT e.title, e.dateStart, e.dateFinish, e.id FROM events e LEFT JOIN venues v ON v.id = e.venue WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
 	$stmt = $db->prepare($sql);
 	$stmt->bindValue('venueId', $id);
-	$stmt->execute();
+        $stmt->execute();
 
-	return $stmt->fetchAll();
+        $events = normalizeEvents($stmt->fetchAll());
+
+	return $events;
 }
 
 function fromRequestRequireInt($name) {
@@ -86,8 +82,7 @@ SELECT
 	v.title,
 	v.lat,
 	v.lng,
-	v.country,
-	v.organizer
+	v.country
 FROM 
 	venues v
 WHERE 

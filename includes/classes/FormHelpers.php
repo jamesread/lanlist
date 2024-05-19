@@ -3,18 +3,11 @@
 use \libAllure\ElementSelect;
 
 abstract class FormHelpers {
-	public static function getVenueListElement($orgie = null, $includeNull = false) {
+	public static function getVenueListElement($includeNull = false) {
 		global $db;
 
-		if ($orgie == null) {
-			$sql = 'SELECT v.id, v.title FROM venues v ORDER BY v.title ASC';
-			$stmt = $db->prepare($sql);
-		} else {
-			$sql = 'SELECT v.id, v.title FROM venues v WHERE o.id = :orgie ORDER BY v.title ASC';
-			$stmt = $db->prepare($sql);
-			$stmt->bindValue(':orgie', $orgie);
-		}
-
+                $sql = 'SELECT v.id, v.title FROM venues v ORDER BY v.title ASC';
+                $stmt = $db->prepare($sql);
 		$stmt->execute();
 
 		$el = new ElementSelect('venue', 'Venue');

@@ -14,7 +14,7 @@
                 default: 
                     echo $event['country'];
                 }
-                echo ' ' . $event['dateStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>';
+                echo ' ' . $event['dayStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>';
                 echo '</li>';
                 }
 	}

@@ -20,7 +20,7 @@ require_once 'includes/widgets/infoboxListFilter.php';
 if (Session::isLoggedIn()) {
 	$organizer = Session::getUser()->getData('organization');
 
-	if (Session::hasPriv('EDIT_VENUE') || $organizer == $venue['organizer']) {
+	if (Session::hasPriv('EDIT_VENUE')) {
 		$menu = new HtmlLinksCollection('Venue admin');
 		$menu->add('formHandler.php?formClazz=FormEditVenue&amp;formEditVenue-id=' . $venue['id'], 'Edit');
 		$tpl->assign('linkCollection', $menu);

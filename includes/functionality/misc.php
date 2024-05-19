@@ -93,8 +93,13 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
 
 function normalizeEvents($events) {
     foreach ($events as $k => $event) {
-        $events[$k]['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS');
-        // $events[$k]['dateFinishHuman'] = date_format(date_create($event['dateFinish']), 'D jS M Y g:ia');
+        $dateStart = date_create($event['dateStart']);
+        $dateFinish = date_create($event['dateFinish']);
+
+        $events[$k]['dateStartHuman'] = date_format($dateStart, 'D jS M Y');
+        $events[$k]['dateFinishHuman'] = date_format($dateFinish, 'D jS M Y');
+        $events[$k]['dayStartHuman'] = date_format($dateFinish, 'D jS');
+        $events[$k]['dayFinishHuman'] = date_format($dateFinish, 'D jS');
         $events[$k]['dateTag'] = date_format(date_create($event['dateStart']), 'M Y');
     }
 

@@ -14,7 +14,7 @@
 {else}
 	<ul>
 	{foreach from = $eventsAtVenue item = "event"}
-		<li><a href = "viewEvent.php?id={$event.id}">{$event.title}</a></li>
+		<li><a href = "viewEvent.php?id={$event.id}">{$event.title}</a>, {$event.dateStartHuman}</li>
 	{/foreach}
 	</ul>
 {/if}

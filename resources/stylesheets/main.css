@@ -52,7 +52,7 @@ a[target="_new"]:hover {
 }
 
 table, tr, td, th {
-	font-size: 9pt;
+	font-size: small;
 }
 
 td {
