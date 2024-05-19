@@ -1,5 +1,5 @@
 includes/config.php
-resources/images/organizer-logos/
+resources/images/organizer-logos
 resources/images/organizer-favicons
 /vendor/
 /scripts/*.ico
