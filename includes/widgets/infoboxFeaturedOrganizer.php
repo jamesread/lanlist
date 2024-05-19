@@ -13,6 +13,7 @@ $org = $stmt->fetchRow();
 <?php
     $tpl->assign('organizerId', $org['id']);
     $tpl->assign('logoUrl', 'resources/images/organizer-logos/' . $org['id'] . '.jpg');
+    $tpl->assign('skipLogoBox', true);
 
     $tpl->display('infobox.organizerLogo.tpl');
 ?>

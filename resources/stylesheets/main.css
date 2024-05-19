@@ -23,13 +23,13 @@ img.imageIcon {
 
 a, a:visited, .dummyLink {
 	text-decoration: none;
-	color: #007bff;
+	color: #0071EB;
 	cursor: pointer;
   font-weight: bold;
 }
 
 a:hover {
-	color: #007bff;
+	color: #0071EB;
   text-decoration: underline;
 }
 
@@ -394,6 +394,10 @@ img.bannerSmall {
   width: 200px;
 }
 
+img.bannerFit {
+  max-width: 100%;
+}
+
 ul.nextEvents {
   list-style: none;
   padding: 0;
@@ -410,6 +414,20 @@ h1 a, h1 a:visited {
 
 h1 a:focus {
   color: white;
+}
+
+img.favicon {
+  background-color: white;
+  padding: .3em;
+  border-radius: 1em;
+}
+
+tr.warn td {
+  background-color: #f7f7ae;
+}
+
+tr.audit td {
+  background-color: lightskyblue;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -466,6 +484,10 @@ h1 a:focus {
   form {
     padding: .5em;
     margin: .5em;
+  }
+
+  td.collapseable, th.collapseable {
+    display: none;
   }
 }
 

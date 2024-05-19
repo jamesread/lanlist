@@ -5,24 +5,24 @@
 	<table class = "sortable">
 		<thead>
 			<tr>
-				<th>Title</th>
-				<th>Venue</th>
-				<th>Country</th>
 				<th>Organizer</th>
+				<th class = "collapseable">Venue</th>
+				<th class = "collapseable">Country</th>
+				<th>Event</th>
 				<th>Start date</th>
-				<th>Number of Seats</th>
+				<th class = "collapseable">Number of Seats</th>
 			</tr>
 		</thead>
 
 		<tbody>
 		{foreach from = $listEvents item = "itemEvent"}
 		<tr>
-			<td><a href = "viewEvent.php?id={$itemEvent.id}">{$itemEvent.title}</a></td>
-			<td>{$itemEvent.venueTitle}</td>
-			<td>{$itemEvent.country}</td>
 			<td><a href = "viewOrganizer.php?id={$itemEvent.organizerId}">{$itemEvent.organizerTitle}</a></td>
+			<td class = "collapseable">{$itemEvent.venueTitle}</td>
+			<td class = "collapseable">{$itemEvent.country}</td>
+			<td><a href = "viewEvent.php?id={$itemEvent.id}">{$itemEvent.title}</a></td>
 			<td>{$itemEvent.dateStartHuman}</td>
-			<td>{$itemEvent.numberOfSeats}</td>
+			<td class = "collapseable">{$itemEvent.numberOfSeats}</td>
 		</tr>
 		{/foreach}
 		</tbody>

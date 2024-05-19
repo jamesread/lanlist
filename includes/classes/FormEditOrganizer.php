@@ -33,6 +33,8 @@ class FormEditOrganizer extends Form {
 		$this->getElement('banner')->destinationFilename = $organizer['id'] . '.jpg';
 		$this->getElement('banner')->setMaxImageBounds(810, 306);
 
+                $this->addElement(new ElementCheckbox('useFavicon', 'Use site favicon', $organizer['useFavicon'], 'Favicons are collected periodically (about once per day). You can see which favicon the site collected for you at this URL: <a href = "resources/images/organizer-favicons/' . $organizer['id'] . '.png">HERE</a>'));
+
 		if (!Session::hasPriv('EDIT_ORGANIZER') && Session::getUser()->getData('organization') != $organizer['id']) {
 			throw new PermissionsException();
 		}
@@ -43,7 +45,7 @@ class FormEditOrganizer extends Form {
 	public function process() {
 		global $db;
 
-		$sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, steamGroupUrl = :steamGroupUrl, blurb = :blurb WHERE id = :id LIMIT 1';
+		$sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, steamGroupUrl = :steamGroupUrl, blurb = :blurb, useFavicon = :useFavicon WHERE id = :id LIMIT 1';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':id', $this->getElementValue('id'));
 		$stmt->bindValue(':title', $this->getElementValue('title'));
@@ -51,6 +53,7 @@ class FormEditOrganizer extends Form {
 		$stmt->bindValue(':assumedStale', $this->getElementValue('assumedStale'));
 		$stmt->bindValue(':steamGroupUrl', $this->getElementValue('steamGroupUrl'));
 		$stmt->bindValue(':blurb', $this->getElementValue('blurb'));
+		$stmt->bindValue(':useFavicon', $this->getElementValue('useFavicon'));
 
 		if (Session::getUser()->hasPriv('PUBLISH_ORGANIZERS')) {
 			$stmt->bindValue(':published', $this->getElementValue('published'));

@@ -232,8 +232,12 @@ function logMessageToDatabase($priority, $content, $eventId) {
 }
 
 function requirePriv($ident) {
-    if (!Session::getUser()->hasPriv($ident)) {
-        throw new Exception('You dont have the privs to do this.');
+    if (Session::isLoggedIn()) {
+        if (!Session::getUser()->hasPriv($ident)) {
+            throw new Exception('You dont have the privs to do this.');
+        }
+    } else {
+        throw new \libAllure\exceptions\SimpleFatalError('You are not logged in.');
     }
 }
 
@@ -286,12 +290,15 @@ function array_flatten($array) {
 function jsForEvents() {
     global $db;
 
-    $sql = 'SELECT e.id, o.id AS organizerId, o.title AS organizerTitle, e.numberOfSeats, e.title AS eventTitle, v.lat, v.lng, e.dateStart, e.dateFinish FROM events e LEFT JOIN (venues v) ON e.venue = v.id LEFT JOIN (organizers o) ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY e.dateStart DESC';
+    $sql = 'SELECT e.id, o.id AS organizerId, o.title AS organizerTitle, e.numberOfSeats, e.title AS eventTitle, v.lat, v.lng, e.dateStart, e.dateFinish, o.useFavicon FROM events e LEFT JOIN (venues v) ON e.venue = v.id LEFT JOIN (organizers o) ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY e.dateStart DESC';
     $stmt = $db->prepare($sql);
     $stmt->execute();
 
     foreach ($stmt->fetchAll() as $event) {
         $event['bannerUrl'] = getOrganizerLogoUrl($event['organizerId']);
+        $event['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS M Y g:ia');
+        $event['dateFinishHuman'] = date_format(date_create($event['dateFinish']), 'D jS M Y g:ia');
+
         $json = json_encode($event);
 
         echo "addEvent({$json});\n";

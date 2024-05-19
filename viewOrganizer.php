@@ -61,6 +61,7 @@ if (Session::isLoggedIn() && Session::getUser()->hasPriv('EDIT_ORGANIZER') || Se
 
 	echo '<li><a href = "formHandler.php?formClazz=FormNewVenue&formNewVenue-organizer=' . $organizer['id'] .  '">New Venue</a></li>';
 	echo '<li><a href = "formHandler.php?formClazz=FormEditOrganizer&amp;formEditOrganizer-id=' . $organizer['id'] . '">Edit organizer details</a></li>';
+	echo '<li><a href = "listOrganizers.php">Organizer list</a></li>';
 	echo '</ul></div>';
 }
 

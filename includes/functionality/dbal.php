@@ -68,6 +68,7 @@ SELECT
 	o.assumedStale,
 	o.steamGroupUrl,
 	o.blurb,
+        o.useFavicon,
 	count(v.id) AS venueCount
 FROM 
 	organizers o

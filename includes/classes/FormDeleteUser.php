@@ -1,7 +1,7 @@
 <?php
 
 use \libAllure\Form;
-use \libAllure\Element;
+use \libAllure\ElementHtml;
 use \libAllure\Session;
 
 class FormDeleteUser extends Form {
@@ -10,9 +10,9 @@ class FormDeleteUser extends Form {
 
 		requirePriv('USER_DELETE');
 
-		$this->addElement(Element::factory('hidden', 'uid', null, $_REQUEST['formDeleteUser-uid']));
-		$this->addElement(Element::factory('html', 'msg', null, 'Sure?'));
-		$this->addButtons(Form::BTN_SUBMIT);
+		$this->addElementReadOnly('User', $_REQUEST['formDeleteUser-uid'], 'uid');
+		$this->addElement(new ElementHtml('msg', null, 'Sure?'));
+                $this->addDefaultButtons('Delete user');
 	}
 
 	public function process() {

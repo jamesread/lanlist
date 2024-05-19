@@ -198,6 +198,7 @@ CREATE TABLE `organizers` (
   `lastChecked` datetime DEFAULT NULL,
   `created` datetime NOT NULL,
   `assumedStale` datetime DEFAULT NULL,
+  `useFavicon` tinyint default 0,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=319 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -10,7 +10,7 @@
 
 	<tbody>
 	{foreach from = $listLogs item = "itemLog"}
-	<tr>
+	<tr class = "{$itemLog.class}">
 		<td>{$itemLog.id}</td>
 		<td>{$itemLog.eventType}</td>
 		<td>{$itemLog.timestamp}</td>

@@ -9,9 +9,7 @@ define('TITLE', 'Site Checks');
 require_once 'includes/widgets/header.php';
 require_once 'includes/classes/EventsChecker.php';
 
-if (!Session::getUser()->hasPriv('SITE_CHECKS')) {
-	throw new PermissionException();
-}
+requirePriv('SITE_CHECKS');
 
 $checker = new EventsChecker();
 $checker->checkAllEvents();

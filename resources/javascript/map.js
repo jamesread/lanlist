@@ -56,10 +56,11 @@ function showInfobox(eventObject, marker) {
 
 	contentHtml = "";
 	contentHtml += '<img class = "bannerSmall" src = "' + eventObject.bannerUrl +'" />';
-	contentHtml += "<h2>" + eventObject.organizerTitle + " - " + eventObject.eventTitle + "</h2>";
+	contentHtml += "<h2><a href = \"viewEvent.php?id=" + eventObject.id + "\">" + eventObject.organizerTitle + " - " + eventObject.eventTitle + "</a></h2>";
 	contentHtml += '<p>';
-	contentHtml += 'Starts: ' + eventObject.dateStart + ', finishes: ' + eventObject.dateFinish + '<br />';
-	contentHtml += 'Seats: ' + eventObject.numberOfSeats + '<br /><br />';
+	contentHtml += '<strong>Starts:</strong> ' + eventObject.dateStartHuman + '<br />';
+  contentHtml += '<strong>Finishes:</strong> ' + eventObject.dateFinishHuman + '<br />';
+	contentHtml += '<strong>Seats:</strong> ' + eventObject.numberOfSeats + '<br /><br />';
 	contentHtml += '<a href = "viewEvent.php?id=' + eventObject.id + '">More info...</a>'
 	contentHtml += '</p>';
 
@@ -86,7 +87,7 @@ function focusOnMarker(marker) {
 	
 }
 
-async function addMarker(lat, lng, icon, focus, eventTitle) {
+async function addMarker(lat, lng, icon, eventObject, focus) {
 	var position = { lat: lat, lng: lng }
 
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
@@ -94,10 +95,14 @@ async function addMarker(lat, lng, icon, focus, eventTitle) {
   const img = document.createElement('img')
   img.src = icon
 
+  if (eventObject.useFavicon) {
+    img.classList.add('favicon')
+  }
+
 	const marker = new AdvancedMarkerElement({
 		position: position,
 		map: window.map,
-    title: eventTitle,
+    title: eventObject.eventTitle,
     content: img,
     gmpClickable: true
 //		icon: (icon == null) ? null : icon,
@@ -113,13 +118,17 @@ async function addMarker(lat, lng, icon, focus, eventTitle) {
 window.now = new Date();
 
 function addEvent(eventObject) {
-	if (new Date(eventObject.dateStart) < window.now) {
-		var icon = "resources/images/eventMarkerGray.png";
-	} else {
-		var icon = "resources/images/eventMarkerLogo.png";
-	}
+  if (eventObject.useFavicon) {
+    var icon = 'resources/images/organizer-favicons/' + eventObject.organizerId + '.png'
+  } else {
+    if (new Date(eventObject.dateStart) < window.now) {
+      var icon = "resources/images/eventMarkerGray.png";
+    } else {
+      var icon = "resources/images/eventMarkerLogo.png";
+    }
+  }
 
-	addMarker(eventObject.lat, eventObject.lng, icon, eventObject.eventTitle).then(marker => {
+	addMarker(eventObject.lat, eventObject.lng, icon, eventObject).then(marker => {
     marker.addListener('click', function() {
       onEventMarkerClicked(eventObject, marker);
     });

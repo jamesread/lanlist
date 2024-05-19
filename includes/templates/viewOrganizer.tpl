@@ -1,5 +1,5 @@
 <h2>Organizer: {$organizer.title}</h2>
-<img alt = "Organizer logo" title = "Organizer logo for {$organizer.title}" src = "{$organizer.logoUrl}" border = "1" /><br />
+<img class = "banner" alt = "Organizer logo" title = "Organizer logo for {$organizer.title}" src = "{$organizer.logoUrl}" /><br />
 
 <div class = "paralellContainer">
 	<strong>Website: </strong> {$organizer.websiteUrl|externUrl}<br />

@@ -16,7 +16,7 @@ class FormNewOrganizer extends Form {
 			$currentOrganizer = Session::getUser()->getData('organization');
 
 			if (empty($currentOrganizer) && $currentOrganizer != 0) {
-				throw new PermissionException('Cannot create another organizer, you already have one aginst your account');
+				throw new Exception('Cannot create another organizer, you already have one aginst your account');
 			}
 
 			$this->addElement(new ElementHtml('description', null, 'This will not appear in the organizers list immidiately, it will first have to be approved by one of our smiling friendly admins - they accept bribes in the form of cake.'));

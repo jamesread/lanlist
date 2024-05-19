@@ -34,6 +34,10 @@ if (isset($_REQUEST['full'])) {
 
 $logs = $db->query($sql)->fetchAll();
 
+foreach ($logs as $k => $log) {
+    $logs[$k]['class'] = strtolower($log['priority']);
+}
+
 $tpl->assign('listLogs', $logs);
 $tpl->display('listLogs.tpl');
 
