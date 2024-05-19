@@ -5,7 +5,14 @@
 	
 	echo '<ul class = "nextEvents">';
 	foreach (getListOfNextEvents() as $event) {
-		echo '<li>' . $event['dateStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>, ' . $event['country'] . '</li>';
+            echo '<li>' . $event['dateStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>, ';
+            switch ($event['country']) {
+            case 'United Kingdom':
+                echo '&#127468;&#127463;'; break; 
+            default: 
+                echo $event['country'];
+            }
+            echo '</li>';
 	}
 
 	echo '</ul>';
