@@ -93,7 +93,9 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
 
 function normalizeEvents($events) {
     foreach ($events as $k => $event) {
-        $events[$k]['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS M Y g:ia');
+        $events[$k]['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS');
+        // $events[$k]['dateFinishHuman'] = date_format(date_create($event['dateFinish']), 'D jS M Y g:ia');
+        $events[$k]['dateTag'] = date_format(date_create($event['dateStart']), 'M Y');
     }
 
     return $events;
@@ -174,12 +176,24 @@ function getListOfNextEvents($count = 10) {
 
     $count = intval($count);
 
-    $sql = 'SELECT e.id, e.title, e.dateStart, v.country FROM events e LEFT JOIN venues v ON e.venue = v.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
+    $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, v.country FROM events e LEFT JOIN venues v ON e.venue = v.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
 
     $events = $db->query($sql)->fetchAll();
     $events = normalizeEvents($events);
 
-    return $events;
+    $eventsByMonth = [];
+
+    foreach ($events as $event) {
+        $tag = $event['dateTag'];
+
+        if (!isset($eventsByMonth[$tag])) {
+            $eventsByMonth[$tag] = [];
+        }
+
+        $eventsByMonth[$tag][] = $event;
+    }
+
+    return $eventsByMonth;
 }
 
 function getNextEvent($organizerId = null) {

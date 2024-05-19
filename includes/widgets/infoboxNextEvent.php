@@ -1,18 +1,22 @@
 <div class = "infobox">
-	<h2>Next LAN Parties in the UK...</h2>
+	<h2>Next LAN Parties in the world...</h2>
 
 	<?php 
 	
 	echo '<ul class = "nextEvents">';
-	foreach (getListOfNextEvents() as $event) {
-            echo '<li>' . $event['dateStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>, ';
-            switch ($event['country']) {
-            case 'United Kingdom':
-                echo '&#127468;&#127463;'; break; 
-            default: 
-                echo $event['country'];
-            }
-            echo '</li>';
+        foreach (getListOfNextEvents() as $tag => $events) {
+            echo "<li><strong>$tag</strong></li>";
+            foreach ($events as $event) {
+                echo '<li>';
+                switch ($event['country']) {
+                case 'United Kingdom':
+                    echo '&#127468;&#127463;'; break; 
+                default: 
+                    echo $event['country'];
+                }
+                echo ' ' . $event['dateStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>';
+                echo '</li>';
+                }
 	}
 
 	echo '</ul>';
