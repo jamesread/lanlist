@@ -54,6 +54,6 @@ class FormEditVenue extends Form
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->execute();
 
-        redirect('viewVenue.php?id=' . $this->getElementValue('id'), 'Event updated.');
+        redirect('viewVenue.php?id=' . $this->getElementValue('id'), 'Venue updated.');
     }
 }
