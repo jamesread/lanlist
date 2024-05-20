@@ -65,7 +65,9 @@ startSidebar();
     <p>This website was created for those of you who love LAN Parties, either staff, punters or newbies. It is free to create an account and always will be. The site is looked after, if you spot a problem then <strong>please</strong> let us know.</p>
 </div>
 
-<p>Having problems logging in or registering a new account? Get in <a href = "contact.php">contact</a>.</p>
+<div class = "infobox">
+    <p>Having problems logging in or registering a new account? Get in <a href = "contact.php">contact</a>.</p>
+</div>
 <?php
 
 require_once 'includes/widgets/footer.php';
