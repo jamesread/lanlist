@@ -44,10 +44,13 @@
 			{/if}
 			</ul>
 		</nav>
+
 	</header>
 
 	{if !empty($alertMessage)}
-	<p class = "alert">{$alertMessage}</p>
+	<div class = "alert">{$alertMessage}</div>
 	{/if}
 
-	<div id = "content">
+
+	<main>
+	<div class = "{if $mainNopadding}nopadding{/if} infobox">

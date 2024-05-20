@@ -8,6 +8,8 @@ if (defined('TITLE')) {
     $tpl->assign('title', TITLE);
 }
 
+$tpl->assign('mainNopadding', defined('MAIN_NOPADDING'));
+
 use libAllure\Session;
 
 $tpl->assign('alertMessage', ALERT_MESSAGE);
