@@ -21,7 +21,7 @@
     }
 
     echo '</ul>';
-    echo '<p>You can also view a list of <a href = "eventsList.php">all upcomming events</a> if that tickles your fancy.</p>'
+    echo '<p>You can also view a list of <a href = "eventsList.php">all upcoming events</a> if that tickles your fancy.</p>'
     ?>
 </div>
 
