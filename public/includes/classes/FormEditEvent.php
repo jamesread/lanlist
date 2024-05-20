@@ -42,16 +42,16 @@ class FormEditEvent extends Form
         } else {
                 $this->addElement(FormHelpers::getVenueListElement(Session::getUser()->getData('organization'), true));
         }
-
+        
         $this->getElement('venue')->setValue($event['venue']);
         $this->addElement(new ElementDate('dateStart', 'Start', $event['dateStart']));
         $this->addElement(new ElementDate('dateFinish', 'Finish', $event['dateFinish']));
         $this->addScript('$("#formEditEvent-dateStart").datetime({"firstDay": 1 })');
         $this->addScript('$("#formEditEvent-dateFinish").datetime({"firstDay": 2 })');
-                $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
+        $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
         $this->addElement(new ElementNumeric('priceInAdv', 'Ticket price in advance', $event['priceInAdv']));
-                $this->addElement($this->getElementCurrency($event['currency']));
-                $this->addElementAgeRestrictions($event['ageRestrictions']);
+        $this->addElement($this->getElementCurrency($event['currency']));
+        $this->addElementAgeRestrictions($event['ageRestrictions']);
         $this->addElement(new ElementInput('website', 'Event website', $event['website']));
         $this->addElement(new ElementCheckbox('showers', 'Showers', $event['showers']));
         $this->addElement($this->getElementSleeping($event['sleeping']));
@@ -65,9 +65,9 @@ class FormEditEvent extends Form
         $this->getElement('internetMbps')->addSuggestedValue('2', '2mbps');
         $this->getElement('internetMbps')->addSuggestedValue('8', '8mbps');
         $this->addElement(new ElementNumeric('numberOfSeats', 'Number of seats', $event['numberOfSeats']));
-                $this->addElement(new ElementTextbox('blurb', 'Additional blurb', htmlify($event['blurb'])));
+        $this->addElement(new ElementTextbox('blurb', 'Additional blurb', htmlify($event['blurb'])));
 
-                $this->addDefaultButtons('Save');
+        $this->addDefaultButtons('Save');
     }
 
     protected function addElementAgeRestrictions($value)
@@ -146,13 +146,7 @@ class FormEditEvent extends Form
 
     public function process()
     {
-                global $db;
-
-                $priceOnDoor = $this->getElementvalue('priceOnDoor');
-
-        if ($priceOnDoor == '' || empty($priceOnDoor)) {
-            $priceOnDoor = 0;
-        }
+        global $db;
 
         $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, priceOnDoor = :priceOnDoor, priceInAdv = :priceInAdv, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
         $stmt = $db->prepare($sql);
@@ -160,7 +154,7 @@ class FormEditEvent extends Form
         $stmt->bindValue(':title', $this->getElementValue('title'));
         $stmt->bindValue(':dateStart', $this->getElementValue('dateStart'));
         $stmt->bindValue(':dateFinish', $this->getElementValue('dateFinish'));
-                $stmt->bindValue(':priceOnDoor', $priceOnDoor);
+        $stmt->bindValue(':priceOnDoor', $this->getElementValue('priceOnDoor'));
         $stmt->bindValue(':priceInAdv', $this->getElementvalue('priceInAdv'));
         $stmt->bindValue(':currency', $this->getElementvalue('currency'));
         $stmt->bindValue(':ageRestrictions', $this->getElementvalue('ageRestrictions'));
