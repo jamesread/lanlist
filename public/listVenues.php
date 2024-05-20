@@ -23,4 +23,10 @@ startSidebar();
 
 require_once 'includes/widgets/venuesByCountry.php';
 
+if (libAllure\Session::hasPriv('CREATE_VENUE')) {
+    echo '<div class = "infobox"><h2>Venue admin</h2>';
+    echo '<a href = "formHandler.php?formClazz=FormNewVenue">Create Venue</a>';
+    echo '</div>';
+}
+
 require_once 'includes/widgets/footer.php';
