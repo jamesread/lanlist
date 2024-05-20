@@ -1,6 +1,7 @@
 <?php
 
 define('TITLE', 'Events in a list');
+define('MAIN_NOPADDING', true);
 require_once 'includes/widgets/header.php';
 
 $_REQUEST['mode'] = &$_REQUEST['mode'];

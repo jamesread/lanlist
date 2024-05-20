@@ -1,5 +1,6 @@
 <?php
 
+define('MAIN_NOPADDING', true);
 require_once 'includes/widgets/header.php';
 
 use libAllure\Session;
@@ -13,7 +14,7 @@ use libAllure\Session;
             </noscript>
         </div>
 
-        <div>
+        <div style = "padding: 1em;">
             <p>
                 <?php
                 if (Session::isLoggedIn()) {

@@ -1,6 +1,6 @@
-	</div>
+	</aside>
 
-	<div id = "footer">
+	<footer>
 		<p>
 			<a href = "linkus.php">Link to us!</a>,
 			<a href = "contact.php">Contact</a>,
@@ -10,7 +10,7 @@
 		</p>
 		<p><small>{$queryCount} queries.</small></p>
 		<p>lanlist &copy; <a href = "licensing.php">The Lan Party Community</a></p>
-	</div>
+	</footer>
 </body>
 
 </html>

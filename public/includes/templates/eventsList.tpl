@@ -1,6 +1,5 @@
 <div>
 	<h2>LAN Parties in a list...</h2>
-	<p>This is a list of LAN Parties.</p>
 
 	<table class = "sortable">
 		<thead>

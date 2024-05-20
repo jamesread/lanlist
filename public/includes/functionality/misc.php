@@ -286,7 +286,7 @@ function requirePriv($ident)
 function startSidebar()
 {
     define('SIDEBAROUTPUT', 1);
-    echo '</div><div id = "sidebar">';
+    echo '</div></main><aside>';
 }
 
 function redirect($url, $reason)

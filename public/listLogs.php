@@ -1,6 +1,7 @@
 <?php
 
 define('TITLE', 'Event log');
+define('MAIN_NOPADDING', true);
 require_once 'includes/common.php';
 
 use libAllure\Session;

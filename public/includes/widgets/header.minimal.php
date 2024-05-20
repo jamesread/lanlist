@@ -18,6 +18,9 @@
 </head>
 
 <body>
-    <div id = "content" class = "minimal">
+    <main class = "minimal">
+        
+    <div class = "infobox">
 
-    <img src = "resources/images/lanlist.org-banner.png" /><br /><br />
+    <h1><a href = "/"><?php echo SITE_TITLE_DOMAIN; ?><span class = "tld"><?php echo SITE_TITLE_TLD; ?></span></a></h1>
+<br /><br />
