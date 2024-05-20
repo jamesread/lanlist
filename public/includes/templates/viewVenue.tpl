@@ -18,6 +18,7 @@
 	{/foreach}
 	</ul>
 {/if}
+	<a href = "formHandler.php?formClazz=FormNewEvent&formNewEvent-venue={$venue.id}">Create event</a>
 </div>
 
 <div id = "map" style = "width: 100%; height: 600px;border: 1px solid LightGray;" >
