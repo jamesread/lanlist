@@ -65,23 +65,27 @@ class FormNewOrganizer extends Form
             $stmt->bindValue(':published', 1);
             $stmt->execute();
 
-            addHistoryLink('viewOrganizer.php?id=' . $db->lastInsertId(), 'Created org: ' . $this->getElementValue('title'));
+            $orgId = $db->lastInsertId();
 
-            redirect('account.php', 'Organizer created.');
+            addHistoryLink('viewOrganizer.php?id=' . $orgId, 'Created org: ' . $this->getElementValue('title'));
+
+            redirect('viewOrganizer.php?id=' . $orgId(), 'Organizer created.');
         } else {
             $stmt->bindValue(':published', 0);
             $stmt->execute();
 
+            $orgId = $db->lastInsertId();
+
             $sql = 'UPDATE users SET organization = :organization WHERE id = :userId LIMIT 1';
             $stmt = $db->prepare($sql);
-            $stmt->bindValue(':organization', $db->lastInsertId());
+            $stmt->bindValue(':organization', $orgId);
             $stmt->bindValue(':userId', Session::getUser()->getId());
             $stmt->execute();
 
             // Refresh the cached organizer.
             Session::getUser()->getData('organization', false);
 
-            redirect('account.php', 'Organizer assigned to you.');
+            redirect('viewOrganizer.php?id=' . $orgId, 'Organizer assigned to you.');
         }
     }
 }
