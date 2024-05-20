@@ -287,6 +287,8 @@ div#advertisingBanner {
 
 ul {
   line-height: 2;
+  list-style: disclosure-closed;
+  padding-left: 1.2em;
 }
 
 ul#mainNavigation {
@@ -452,7 +454,6 @@ td.audit {
     color: #efefef;
   }
 
-
   header {
     background-color: #1e1e1e;
   }
@@ -461,16 +462,12 @@ td.audit {
     color: #efefef;
   }
 
-  .infobox, main {
+  .infobox {
     color: #ddd;
     background-color: #1e1e1e;
     box-shadow: #000 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   }
-
-  .infobox:hover {
-    border: .3em solid #444;
-  }
-
+  
   .infobox {
     border: .3em solid #000;
   }
@@ -499,6 +496,14 @@ td.audit {
     background-color: #1e1e1e;
     color: #ddd;
     text-transform: uppercase;
+  }
+
+  tr:nth-of-type(even) td {
+    background-color: #2e2e2e;
+  }
+
+  tr:hover td {
+    background-color: sienna;
   }
 }
 
