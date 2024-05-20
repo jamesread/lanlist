@@ -35,7 +35,7 @@ class FormEditUser extends Form
             $this->getElement('password')->setOptional(true);
         }
 
-        $this->addButtons(Form::BTN_SUBMIT);
+        $this->addDefaultButtons('Save user');
     }
 
     private function getGroupSelectionElement($currentGroup)

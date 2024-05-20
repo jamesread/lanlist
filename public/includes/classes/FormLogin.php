@@ -14,8 +14,7 @@ class FormLogin extends Form
         $this->addElement(new ElementInput('username', 'Username'));
         $this->addElement(new ElementPassword('password', 'Password'));
 
-        $this->addButtons(Form::BTN_SUBMIT);
-        $this->getElement('submit')->setCaption('Login');
+        $this->addDefaultButtons('Login');
     }
 
     public function process()

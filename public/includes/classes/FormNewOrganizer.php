@@ -28,7 +28,7 @@ class FormNewOrganizer extends Form
         $this->addElement(new ElementInput('websiteUrl', 'Website URL'));
         $this->addElement(new ElementTextbox('blurb', 'Blurb', null, 'A blurb describes the organizer, prehaps the year you started, how experienced you are, or if you like cake. Its best to leave event specific information to when you go to create events.'));
 
-        $this->addButtons(Form::BTN_SUBMIT);
+        $this->addDefaultButtons('Create Organizer');
     }
 
     public function validateExtended()
