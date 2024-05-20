@@ -75,6 +75,6 @@ class FormRegister extends Form
         Logger::messageNormal('New user registration: ' . $this->getElementValue('username'), 'USER_REGISTERED');
         sendEmailToAdmins('Username: ' . $this->getElementValue('username'), 'New user registration: ' . $this->getElementValue('username'));
 
-        redirect('loginregister.php?formLogin-username=' . $this->getElementValue('username'), 'Registeration complete!');
+        redirect('login.php?formLogin-username=' . $this->getElementValue('username'), 'Registeration complete!');
     }
 }

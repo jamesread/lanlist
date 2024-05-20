@@ -2,16 +2,9 @@
 
 require_once 'includes/common.php';
 require_once 'includes/classes/FormLogin.php';
-require_once 'includes/classes/FormRegister.php';
 
 use libAllure\Session;
 use libAllure\Logger;
-
-$fRegister = new FormRegister();
-
-if ($fRegister->validate()) {
-    $fRegister->process();
-}
 
 $f = new FormLogin();
 
@@ -26,7 +19,7 @@ if ($f->validate()) {
     } catch (\libAllure\exceptions\IncorrectPasswordException $e) {
         Logger::messageAudit('Failed login for ' . $username . ', password wrong.', 'LOGIN_FAILURE_PASSWORD');
 
-        $f->setElementError('password', 'Password wrong.');
+        $f->setElementError('password', 'Incorrect password.');
     } catch (\libAllure\exceptions\UserNotFoundException $e) {
         Logger::messageAudit('Failed login for ' . $username . ', nonexistant user.', 'LOGIN_FAILURE_USERNAME');
 
@@ -41,35 +34,19 @@ if (Session::isLoggedIn()) {
     redirect('index.php', 'You are already logged in!');
 }
 
-define('TITLE', 'Login to, or Register an account');
-require_once 'includes/widgets/header.php';
+define('TITLE', 'Login to your account');
 
-echo '<div class = "paralellContainer">';
+require_once 'includes/widgets/header.minimal.php';
+
 $tpl->displayForm($f);
-echo '</div>';
-
-echo '<div class = "paralellContainer">';
-$tpl->displayForm($fRegister);
-echo '</div>';
-
-startSidebar();
 
 ?>
-<div class = "infobox">
-    <h2>Why register?</h2>
-    <p>If you decide to register, you will be able to submit your own events, get directions and get a personalized list of LAN parties near you in the future.</p>
 </div>
-
-<div class = "infobox">
-    <h2>Freeeedom!</h2>
-    <p>This website was created for those of you who love LAN Parties, either staff, punters or newbies. It is free to create an account and always will be. The site is looked after, if you spot a problem then <strong>please</strong> let us know.</p>
-</div>
-
-<div class = "infobox">
-    <p>Having problems logging in or registering a new account? Get in <a href = "contact.php">contact</a>.</p>
+<div class = "infobox" style = "text-align: left;">
+    <h2>Register for an account</h2>
+    <p>If you do not yet have an account <a href = "register.php">register here</a>.</p>
 </div>
 <?php
 
 require_once 'includes/widgets/footer.php';
 
-?>

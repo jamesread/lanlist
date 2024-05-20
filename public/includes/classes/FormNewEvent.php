@@ -17,7 +17,7 @@ class FormNewEvent extends Form
         parent::__construct('formNewEvent', 'New Event');
 
         if (!Session::isLoggedIn()) {
-            redirect('loginregister.php', 'You should login before creating events!');
+            redirect('login.php', 'You should login before creating events!');
         }
 
         if (isset($_REQUEST['formNewEvent-venue'])) {

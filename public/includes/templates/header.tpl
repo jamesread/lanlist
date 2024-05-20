@@ -40,7 +40,8 @@
 			{if $isLoggedIn}
 				<li><strong><a href = "account.php">{$username}</a></strong></li>
 			{else}
-				<li><a href = "loginregister.php">Login/Register</a></li>
+				<li><a href = "login.php">Login</a></li>
+				<li><a href = "register.php">Register</a></li>
 			{/if}
 			</ul>
 		</nav>

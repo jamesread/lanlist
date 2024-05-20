@@ -297,7 +297,7 @@ function redirect($url, $reason)
     }
 
     echo '<h1>Redirecting: '  . $reason .  '</h1>';
-    echo '<p>You are being redirected to <a href = "' . $url . '">here</a>.</p>';
+    echo '<p style = "text-align: center">You are being redirected to <a href = "' . $url . '">here</a>.</p>';
 
     require_once 'includes/widgets/footer.minimal.php';
 }
