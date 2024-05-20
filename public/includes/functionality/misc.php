@@ -376,3 +376,42 @@ function addHistoryLink($url, $title)
         "title" => $title
     );
 }
+
+function dataShowers() 
+{
+    return [
+        null => 'Unknown',
+        0 => 'Not at venue',
+        1 => 'Available at venue',
+    ];
+}
+
+function dataSmoking() 
+{
+    return [
+        null => 'Unknown',
+        0 => 'Outside venue',
+        1 => 'Smoking area in venue',
+    ];
+}
+
+function dataAlcohol() {
+    return [
+        null => 'Unknown',
+        0 => 'Not allowed at the event',
+        1 => 'Bring your own alcohol',
+        2 => 'Bar at the venue',
+        3 => 'Bar at the venue, and bring your own alcohol',
+    ];
+}
+
+function lookupField($key, $type) {
+    switch ($type) {
+    case 'showers': return dataShowers()[$key];
+    case 'alcohol': return dataAlcohol()[$key];
+    case 'smoking': return dataSmoking()[$key];
+    }
+
+    return 'Unknown field type: ' . $type;
+    var_dump($a, $b); exit;
+}
