@@ -2,14 +2,12 @@
 
 require_once 'includes/common.php';
 
-use libAllure\Session;
+requirePriv('SITE_CHECKS');
 
 define('TITLE', 'Site Checks');
-
 require_once 'includes/widgets/header.php';
-require_once 'includes/classes/EventsChecker.php';
 
-requirePriv('SITE_CHECKS');
+require_once 'includes/classes/EventsChecker.php';
 
 $checker = new EventsChecker();
 $checker->checkAllEvents();

@@ -2,9 +2,7 @@
 
 require_once 'includes/common.php';
 
-use libAllure\Session;
-
-Session::requirePriv('JOIN_REQUESTS');
+requirePriv('JOIN_REQUESTS');
 
 if (isset($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
