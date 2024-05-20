@@ -18,7 +18,7 @@ require_once 'includes/widgets/infoboxFeaturedOrganizer.php';
 $tpl->display('infobox.otherFormats.tpl');
 
 if (Session::hasPriv('NEW_ORGANIZER')) {
-    echo '<div>';
+    echo '<div class = "infobox"><h2>Organizer admin</h2>';
     echo '<a href = "formHandler.php?formClazz=FormNewOrganizer">New Organizer</a>';
     echo '</div>';
 }
