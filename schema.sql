@@ -279,6 +279,7 @@ CREATE TABLE `users` (
   `selectsAsLists` tinyint(4) DEFAULT NULL,
   `location` varchar(24) DEFAULT NULL,
   `email` varchar(128) DEFAULT NULL,
+  `discordUser` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=543 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

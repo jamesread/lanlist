@@ -19,11 +19,18 @@ class FormEditUser extends Form
         $user = $this->getUser();
 
         $this->addElementReadOnly('Username', $user['username']);
+        $this->addElement(new ElementHidden('uid', null, $user['id']));
+
         $this->addElement(new ElementInput('email', 'Email Address', $user['email']));
         $this->getElement('email')->setMinMaxLengths(0, 64);
-        $this->addElement(new ElementInput('usernameSteam', 'Steam Username', $user['usernameSteam'], 'Plaese do include your Steam username - its a good way for us to get in contact.'));
-        $this->getElement('usernameSteam')->setMinMaxLengths(0, 64);
-        $this->addElement(new ElementHidden('uid', null, $user['id']));
+
+        $steam = $this->addElement(new ElementInput('usernameSteam', 'Steam Username', $user['usernameSteam'], 'Plaese do include your Steam username - its a good way for us to get in contact.'));
+        $steam->setMinMaxLengths(0, 64);
+        $steam->description = 'Message each other like it is 1999!';
+
+        $discord = $this->addElement(new ElementInput('discordUser', 'Discord User ID', $user['discordUser']));
+        $discord->setMinMaxLengths(0, 128);
+        $discord->description = 'Open Discord, click your profile icon in the bottom-left, and click "Copy User ID". This field is visible by admins, so they can message you.';
 
         if (Session::hasPriv('EDIT_USER')) {
             $this->addElement(new ElementHtml(null, null, 'Admin fields'));
@@ -93,11 +100,12 @@ class FormEditUser extends Form
     {
         global $db;
 
-        $sql = 'UPDATE users SET `group` = :group, email = :email, organization = :organizer, usernameSteam = :usernameSteam WHERE id = :id';
+        $sql = 'UPDATE users SET `group` = :group, email = :email, organization = :organizer, usernameSteam = :usernameSteam, discordUser = :discordUser WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('uid'));
         $stmt->bindValue(':email', $this->getElementValue('email'));
         $stmt->bindValue(':usernameSteam', $this->getElementValue('usernameSteam'));
+        $stmt->bindValue(':discordUser', $this->getElementValue('discordUser'));
 
         if (Session::getUser()->hasPriv('EDIT_USER')) {
             $stmt->bindValue(':organizer', $this->getElementValue('organizer'));
