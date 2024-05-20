@@ -2,7 +2,7 @@
 <div class = "infobox">
 
 	<h2>{$linkCollection->getTitle()}</h2>
-	<ul style = "list-style-type: none; padding-left: 1em;">
+	<ul>
 	{foreach from = $linkCollection item = "link"} 
 		<li>
 			{if not empty($link.iconUrl)}
