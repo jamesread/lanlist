@@ -70,6 +70,22 @@ switch ($_REQUEST['action']) {
         redirect('viewEvent.php?id=' . $newEventId, 'Event Cloned');
 
         break;
+    case 'deleteOrganizer':
+        requirePriv('DELETE_ORGANIZER');
+
+        $id = fromRequestRequireInt('id');
+
+        $org = fetchOrganizer($id);
+
+        $sql = 'DELETE FROM organizers WHERE id = :id LIMIT 1';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            ':id' => $id,
+        ]);
+
+        redirect('listOrganizers.php', 'Organizer deleted');
+
+        break;
     case 'deleteEvent':
         $event = fetchEvent(fromRequestRequireInt('id'));
 
