@@ -445,6 +445,11 @@ td.audit {
   background-color: lightskyblue !important;
 }
 
+.gm-style-iw-d h2 {
+  margin: 0;
+  padding: 0;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: black;
