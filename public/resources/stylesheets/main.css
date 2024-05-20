@@ -505,6 +505,10 @@ td.audit {
   tr:hover td {
     background-color: sienna;
   }
+
+  .alert {
+    color: black;
+  }
 }
 
 @media screen and (max-device-width: 1024px) {
