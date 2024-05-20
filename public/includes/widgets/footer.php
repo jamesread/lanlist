@@ -7,7 +7,6 @@ if (!defined('SIDEBAROUTPUT')) {
 global $db;
 global $tpl;
 
-$tpl->assign('queryCount', $db->queryCount);
 $tpl->display('footer.tpl');
 
 exit;

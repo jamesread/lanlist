@@ -8,7 +8,6 @@
 			<a href = "usefulRelatedSites.php">Useful related sites</a>,
 			<a href = "sitemap.php">Sitemap</a>
 		</p>
-		<p><small>{$queryCount} queries.</small></p>
 		<p>lanlist &copy; <a href = "licensing.php">The Lan Party Community</a></p>
 	</div>
 </body>
