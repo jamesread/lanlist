@@ -21,11 +21,6 @@ class FormNewVenue extends Form
         $this->addElement(new ElementHtml('locationDesc', null, '<br />The geodetic (WGS84) latitude/longitude of your venue. This can be awkward, but it allows us to put a pin on the map. We cannot use post/zip codes because many countries do not have them! <a href = "https://www.latlong.net/">https://www.latlong.net/</a> will convert an address to a rough lat/lng. '));
         $this->addElement(new ElementNumeric('lat', 'Latitude'))->setAllowNegative(true);
         $this->addElement(new ElementNumeric('lng', 'Longitude'))->setAllowNegative(true);
-
-        if (Session::hasPriv('NEW_VENUE')) {
-            $this->addElement(FormHelpers::getOrganizerList());
-        }
-
         $this->addDefaultButtons('Create Venue');
 
         $this->requireFields(array('title', 'lat', 'lng', 'country'));
@@ -48,6 +43,7 @@ class FormNewVenue extends Form
         $stmt->execute();
 
         Logger::messageAudit('Venue ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_VENUE');
-        redirect('account.php', 'Venue created.');
+
+        redirect('viewVenue.php?id=' . $db->lastInsertId(), 'Venue created.');
     }
 }
