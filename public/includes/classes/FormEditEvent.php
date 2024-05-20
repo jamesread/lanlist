@@ -51,8 +51,8 @@ class FormEditEvent extends Form
         $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
         $this->addElement(new ElementNumeric('priceInAdv', 'Ticket price in advance', $event['priceInAdv']));
         $this->addElement($this->getElementCurrency($event['currency']));
-        $this->addElementAgeRestrictions($event['ageRestrictions']);
         $this->addElement(new ElementInput('website', 'Event website', $event['website']));
+        $this->addElementAgeRestrictions($event['ageRestrictions']);
         $this->addElement(new ElementSelect('showers', 'Showers', $event['showers']))->addOptions(dataShowers());
         $this->addElement($this->getElementSleeping($event['sleeping']));
         $this->addElement(new ElementSelect('alcohol', 'Bring your own alcohol?', $event['alcohol']))->addOptions(dataAlcohol());
