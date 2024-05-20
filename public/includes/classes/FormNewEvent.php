@@ -16,16 +16,24 @@ class FormNewEvent extends Form
     {
         parent::__construct('formNewEvent', 'New Event');
 
+        if (!Session::isLoggedIn()) {
+            redirect('loginregister.php', 'You should login before creating events!');
+        }
+
+        if (isset($_REQUEST['formNewEvent-venue'])) {
+            $this->addElementReadOnly('Venue', $_REQUEST['formNewEvent-venue'], 'venue');
+        } else {
+            $this->addElement(FormHelpers::getVenueListElement());
+        }
+
         if (Session::getUser()->hasPriv('CREATE_EVENTS')) {
             $this->addElement(new ElementHtml('msg', null, 'Hi superuser.'));
 
             if (isset($_REQUEST['formNewEvent-organizer'])) {
                 $organizerId = intval($_REQUEST['formNewEvent-organizer']);
                 $this->addElement(new ElementHidden('organizer', 'Organizer', $organizerId));
-                $this->addElement(FormHelpers::getVenueListElement($organizerId));
             } else {
                 $this->addElement(FormHelpers::getOrganizerList(true));
-                $this->addElement(FormHelpers::getVenueListElement());
             }
         } elseif (Session::getUser()->getData('organization')) {
             $organizer = fetchOrganizer(Session::getUser()->getData('organization'));
@@ -34,12 +42,6 @@ class FormNewEvent extends Form
                 $this->addElement(new ElementHtml('msg', null, 'You are authorized to create public events for your organization.'));
             } else {
                 $this->addElement(new ElementHtml('msg', null, 'Your event will be linked to your organization, but will not be public until your organization has been approved.'));
-            }
-
-            try {
-                $this->addElement(FormHelpers::getVenueListElement(Session::getUser()->getData('organization')));
-            } catch (Exception $e) {
-                redirect('account.php', 'Create a venue first!');
             }
         } else {
             $this->addElement(new ElementHtml('msg', null, 'You can create events, but they will not appear in public lists until approved.'));
