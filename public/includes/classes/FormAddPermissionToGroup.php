@@ -13,7 +13,7 @@ class FormAddPermissionToGroup extends Form
 {
     public function __construct()
     {
-        parent::__construct('formPrivsAddGroup');
+        parent::__construct('formPrivsAddGroup', 'Grant permission for group');
 
                 $sql = 'SELECT g.id FROM groups g WHERE g.id = :group';
                 global $db;

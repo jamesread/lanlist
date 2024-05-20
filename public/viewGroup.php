@@ -22,7 +22,7 @@ $stmt->execute();
 
 $tpl->assign('listMembers', $stmt->fetchAll());
 
-$sql = 'SELECT p.`key`, p.description FROM privileges_g gp LEFT JOIN permissions p ON gp.permission = p.id WHERE gp.group = :gid';
+$sql = 'SELECT p.`key`, p.description FROM privileges_g gp LEFT JOIN permissions p ON gp.permission = p.id WHERE gp.group = :gid ORDER BY p.`key`';
 $stmt = Shortcuts::stmt($sql);
 $stmt->bindValue(':gid', $groupId);
 $stmt->execute();
@@ -34,7 +34,7 @@ startSidebar();
 
 if (Session::getUser()->hasPriv('GROUP_ADMIN')) {
     $menu = new HtmlLinksCollection('Group management');
-    $menu->add('formHandler.php?formClazz=FormAddPermissionToGroup&formPrivsAddGroup-usergroup=' . $groupId, 'Add Permission');
+    $menu->add('formHandler.php?formClazz=FormAddPermissionToGroup&formPrivsAddGroup-usergroup=' . $groupId, 'Grant Permission');
 
     $tpl->assign('linkCollection', $menu);
     $tpl->display('linkCollection.tpl');
