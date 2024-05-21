@@ -42,8 +42,10 @@ class FormNewVenue extends Form
         $stmt->bindValue(':country', $this->getElementValue('country'));
         $stmt->execute();
 
+        $venueId = $db->lastInsertId();
+
         Logger::messageAudit('Venue ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_VENUE');
 
-        redirect('viewVenue.php?id=' . $db->lastInsertId(), 'Venue created.');
+        redirect('viewVenue.php?id=' . $venueId, 'Venue created.');
     }
 }

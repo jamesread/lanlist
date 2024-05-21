@@ -23,6 +23,7 @@ if (Session::isLoggedIn()) {
     if (Session::hasPriv('EDIT_VENUE')) {
         $menu = new HtmlLinksCollection('Venue admin');
         $menu->add('formHandler.php?formClazz=FormEditVenue&amp;formEditVenue-id=' . $venue['id'], 'Edit');
+        $menu->add('formHandler.php?formClazz=FormNewOrganizer', 'New Organizer');
         $tpl->assign('linkCollection', $menu);
         $tpl->display('linkCollection.tpl');
     }

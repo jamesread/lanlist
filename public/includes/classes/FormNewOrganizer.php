@@ -69,7 +69,7 @@ class FormNewOrganizer extends Form
 
             addHistoryLink('viewOrganizer.php?id=' . $orgId, 'Created org: ' . $this->getElementValue('title'));
 
-            redirect('viewOrganizer.php?id=' . $orgId(), 'Organizer created.');
+            redirect('viewOrganizer.php?id=' . $orgId, 'Organizer created.');
         } else {
             $stmt->bindValue(':published', 0);
             $stmt->execute();

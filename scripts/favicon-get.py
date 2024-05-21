@@ -3,11 +3,13 @@
 import mysql.connector
 import os
 import requests
+from urllib.parse import urlparse 
 from bs4 import BeautifulSoup
 
 def downloadFavicon(url, site, orgId):
-    res = requests.get(site + url)
-
+    print(f"\tdl {site}{url}")
+    res = requests.get(site + "/" + url)
+        
     print(f"\t{res.status_code} from {url}")
 
     if res.status_code == 200:
@@ -19,6 +21,9 @@ def downloadFavicon(url, site, orgId):
     else:
         return False
 
+def isAbsolute(url):
+    return bool(urlparse(url).netloc)
+
 def findFavicon(site, orgId):
     print("\tTrying to find favicon by parsing html")
 
@@ -29,8 +34,14 @@ def findFavicon(site, orgId):
     
     for link in soup.find_all('link'):
         if "icon" in link['rel']:
-            print("\tFound a favicon!")
+
+            print(f"\tFound a favicon! {site}{link['href']}")
+
+            if isAbsolute(link['href']):
+                site = ""
+
             downloadFavicon(link['href'], site, orgId)
+
             return
 
     print ("\tCould not find a favicon")

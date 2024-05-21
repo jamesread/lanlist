@@ -1,9 +1,13 @@
 <?php
 
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 use libAllure\Shortcuts;
 use libAllure\Session;
 use libAllure\HtmlLinksCollection;
+
+requirePriv('VIEW_GROUP');
+
+require_once 'includes/widgets/header.php';
 
 $groupId = \libAllure\Sanitizer::getInstance()->filterUint('id');
 
