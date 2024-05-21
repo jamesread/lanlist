@@ -68,7 +68,7 @@ class FormEditUser extends Form
     {
         global $db;
 
-        if (Session::getUser()->hasPriv('EDIT_USERS') && isset($_REQUEST['formEditUser-uid'])) {
+        if (Session::getUser()->hasPriv('EDIT_USER') && isset($_REQUEST['formEditUser-uid'])) {
             $id = intval($_REQUEST['formEditUser-uid']);
         } else {
             $id = Session::getUser()->getId();
