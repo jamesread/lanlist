@@ -5,7 +5,7 @@ require_once 'includes/common.php';
 use libAllure\Session;
 
 if (!Session::isLoggedIn()) {
-    redirect('loginregister.php', 'You need to login to view your account.');
+    redirect('login.php', 'You need to login to view your account.');
 }
 
 define('TITLE', 'My Account');
@@ -19,6 +19,7 @@ if (!empty($organizer)) {
 
 $tpl->assign('userEmail', Session::getUser()->getData('email'));
 $tpl->assign('usernameSteam', Session::getUser()->getData('usernameSteam'));
+$tpl->assign('usernameDiscord', Session::getUser()->getData('discordUser'));
 $tpl->display('account.tpl');
 
     startSidebar();

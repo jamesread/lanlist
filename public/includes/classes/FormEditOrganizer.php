@@ -38,7 +38,7 @@ class FormEditOrganizer extends Form
                 $this->addElement(new ElementCheckbox('useFavicon', 'Use site favicon', $organizer['useFavicon'], 'Favicons are collected periodically (about once per day). You can see which favicon the site collected for you at this URL: <a href = "resources/images/organizer-favicons/' . $organizer['id'] . '.png">HERE</a>'));
 
         if (!Session::hasPriv('EDIT_ORGANIZER') && Session::getUser()->getData('organization') != $organizer['id']) {
-            throw new PermissionsException();
+            throw new libAllure\exceptions\SimpleFatalError('You do not have permission to edit this organization.');
         }
 
                 $this->addDefaultButtons('Save');

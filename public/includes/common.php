@@ -40,3 +40,4 @@ $tpl->registerModifier('count', 'count');
 $tpl->registerModifier('floatToMoney', 'floatToMoney');
 $tpl->registerModifier('stripslashes', 'stripslashes');
 $tpl->registerModifier('boolToString', 'boolToString');
+$tpl->registerModifier('lookupField', 'lookupField');

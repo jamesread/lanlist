@@ -20,7 +20,7 @@ use libAllure\Session;
                 if (Session::isLoggedIn()) {
                     echo 'Go to your <a href = "account.php">account</a> to add events. ';
                 } else {
-                    echo 'You can get the list in <a href = "eventsList.php">many different formats</a>, or you can add your own events if you <a href = "loginregister.php">login</a>. ';
+                    echo 'You can get the list in <a href = "eventsList.php">many different formats</a>, or you can add your own events if you <a href = "login.php">login</a>. ';
                 }
                 ?>
                 For feature requests, bugs and whatnot, get in <a href = "contact.php">contact</a>.

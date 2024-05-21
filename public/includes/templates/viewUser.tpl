@@ -3,6 +3,13 @@
 	<ul>
 		<li><strong>User</strong>: {$viewUser.username}</li>
 		<li><strong>Steam Username:</strong> {$viewUser.usernameSteam|default:'???'}</li>
+		<li><strong>Discord ID:</strong> 
+		{if empty($viewUser.discordUser)}
+			???
+		{else}
+			<a target = "_new" href = "https://discordapp.com/users/{$viewUser.discordUser}/">DM on Discord</a>
+		{/if}
+		</li>
 		<li><strong>Primary group:</strong> {$viewUser.groupTitle}</li>
 		<li><strong>Last login:</strong> {$viewUser.lastLogin}</li>
 		<li><strong>Registered:</strong> {$viewUser.registered}</li>

@@ -30,7 +30,6 @@ $menuOrganizer->addIfPriv('JOIN_REQUESTS', 'joinRequests.php', 'Join requests ' 
 
 $ll->addIfPriv('MODERATE_VENUES', 'listVenues.php', 'Venues', 'go-home.png');
 $menuVenues = $ll->addChildCollection('Venues');
-$menuVenues->addIf(!empty($organizer), 'viewOrganizer.php?id=' . $organizer, 'My venues', 'edit-find.png');
 $menuVenues->add('listVenues.php', 'List venues', 'edit-find.png');
 $menuVenues->add('formHandler.php?formClazz=FormNewVenue', 'Create venue', 'create.png');
 

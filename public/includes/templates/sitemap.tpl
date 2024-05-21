@@ -17,8 +17,11 @@
 <h3>Users &amp; Accounts</h3>
 
 <dl>
-	<dt><a href = "loginregister.php">Login/Register</a></dt>
-	<dd>Login with an existing user account or register a new one.</dd>
+	<dt><a href = "register.php">Register</a></dt>
+	<dd>Register a new user account.</dd>
+
+	<dt><a href = "login.php">Login</a></dt>
+	<dd>Login with an existing user account.</dd>
 
 	<dt><a href = "account.php">Account (Control Panel)</a></dt>
 	<dd>Manage your organization, create events, etc</dd>

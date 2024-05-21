@@ -297,7 +297,7 @@ function redirect($url, $reason)
     }
 
     echo '<h1>Redirecting: '  . $reason .  '</h1>';
-    echo '<p>You are being redirected to <a href = "' . $url . '">here</a>.</p>';
+    echo '<p style = "text-align: center">You are being redirected to <a href = "' . $url . '">here</a>.</p>';
 
     require_once 'includes/widgets/footer.minimal.php';
 }
@@ -375,4 +375,43 @@ function addHistoryLink($url, $title)
         "url" => $url,
         "title" => $title
     );
+}
+
+function dataShowers() 
+{
+    return [
+        null => 'Unknown',
+        0 => 'Not at venue',
+        1 => 'Available at venue',
+    ];
+}
+
+function dataSmoking() 
+{
+    return [
+        null => 'Unknown',
+        0 => 'Outside venue',
+        1 => 'Smoking area in venue',
+    ];
+}
+
+function dataAlcohol() {
+    return [
+        null => 'Unknown',
+        0 => 'Not allowed at the event',
+        1 => 'Bring your own alcohol',
+        2 => 'Bar at the venue',
+        3 => 'Bar at the venue, and bring your own alcohol',
+    ];
+}
+
+function lookupField($key, $type) {
+    switch ($type) {
+    case 'showers': return dataShowers()[$key];
+    case 'alcohol': return dataAlcohol()[$key];
+    case 'smoking': return dataSmoking()[$key];
+    }
+
+    return 'Unknown field type: ' . $type;
+    var_dump($a, $b); exit;
 }

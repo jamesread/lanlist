@@ -13,7 +13,7 @@
 <div class = "paralellContainer">
 
 	{if empty($organizer.blurb)}	
-	<p>Not much is known about this organizer. If you are the organizer of this event, <a href = "loginregister.php">get a user account</a> and request to <a href = "formHandler.php?formClazz=FormJoinOrganizer">join an existing organizer</a> to edit this page.</p>
+	<p>Not much is known about this organizer. If you are the organizer of this event, <a href = "register.php">register a user account</a> and request to <a href = "formHandler.php?formClazz=FormJoinOrganizer">join an existing organizer</a> to edit this page.</p>
 	{else}
 	<p>{$organizer.blurb}</p>
 	{/if}

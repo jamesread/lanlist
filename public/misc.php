@@ -48,7 +48,7 @@ switch ($_REQUEST['action']) {
 
         if (!Session::getUser()->hasPriv('EVENT_CLONE')) {
             if ($event['organizerId'] != Session::getUser()->getData('organization')) {
-                throw new PermissionsException('You cannot clone that event, because you are not the organizer.');
+                throw new libAllure\exceptions\SimpleFatalError('You cannot clone that event, because you are not the organizer.');
             }
         }
 
@@ -95,7 +95,7 @@ switch ($_REQUEST['action']) {
 
         if (!Session::getUser()->hasPriv('EVENT_DELETE')) {
             if ($event['organizerId'] != Session::getUser()->getData('organization')) {
-                throw new PermissionsException('You cannot delete that event, because you are not the organizer.');
+                throw new libAllure\exceptions\SimpleFatalError('You cannot delete that event, because you are not the organizer.');
             }
         }
 

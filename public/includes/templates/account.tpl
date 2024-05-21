@@ -1,10 +1,10 @@
 <h2>Account</h2>
-{if empty($userEmail) || empty($usernameSteam)} 
-	<p class = "notification">
-		<img src = "resources/images/steam.png" style = "float: left; padding-right: 1em;" />
-		<img src = "resources/images/email.png" style = "float: left; padding-right: 1em;" />
-		<span class = "karmaBad">Your steam username or email address is not in your profile!</span> Please could you <a href = "formHandler.php?formClazz=FormEditUser">update your profile with your contact details</a>, so that we can get in touch with you easily... We look after this site and will only send you messages if the events you submit have problems. We will <strong>not</strong> spam you, really!
+{if empty($usernameDiscord)} 
+	<p>
+		<img src = "resources/images/discord.png" style = "float: left; padding-right: 1em;" />
+		<span style = "color: #7289DA; font-weight: bold;">Your Discord User ID is not in your profile!</span> If you add it, site moderators can quickly and easily message you about any issues with events that you create. We absolutely won't spam you, and your Discord User ID is not public to anybody else. Don't delay, <a href = "formHandler.php?formClazz=FormEditUser">edit your user profile today!</a>
 	</p>
+	<br />
 {/if}
 
 <p>What would you like to do?</p>
@@ -30,8 +30,3 @@
 
 </ul>
 
-<h3>New - Free Advertising</h3>
-
-<p>
-	We are experimenting with banners in the header of the site. For now, they'll just be advertising events from organizers we know and love. We're not asking for money, just communication. Get in <a href = "contact.php">contact</a> and we can set a free banner up for you too.
-</p>
