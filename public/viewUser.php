@@ -37,7 +37,7 @@ $tpl->display('viewUser.tpl');
 
     startSidebar();
 
-if (Session::getUser()->hasPriv('EDIT_USERS')) {
+if (Session::getUser()->hasPriv('EDIT_USER')) {
     $menu = new HtmlLinksCollection('User management');
     $menu->add('listUsers.php', 'List Users');
     $menu->add('formHandler.php?formClazz=FormEditUser&amp;formEditUser-uid=' . $user['id'], 'Edit user');
