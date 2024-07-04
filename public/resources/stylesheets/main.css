@@ -190,7 +190,9 @@ h2 {
 
 h3 {
   margin-top: 0;
+  margin-bottom: 0.3em;
   color: #646464;
+  border-bottom: 1px solid #806600;
 }
 
 h4 {
@@ -420,6 +422,22 @@ ul.nextEvents {
 ul.nextEvents li {
   border-bottom: 1px solid #efefef;
   margin-bottom: .8em;
+}
+
+ul.property-list {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+ul.property-list li {
+  margin-bottom: 1em;
+}
+
+ul.property-list li img {
+  margin-right: .5em;
+  width: 1.6em;
+  vertical-align: top;
 }
 
 h1 a, h1 a:visited {
