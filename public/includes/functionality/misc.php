@@ -133,14 +133,15 @@ function floatToMoney($value, $currency = '£')
     if (empty($value) || $value == 0) {
         return '?';
     } else {
-        $value = number_format($value, 2);
+        if ($value % 10 != 0) {
+            $value = number_format($value, 2);
+        }
     }
 
     switch ($currency) {
         case '':
-            $currency = 'GBP';
+        case 'GBP': return '<span class = "currency">&pound;' . $value . '</span>';
         case 'SEK':
-        case 'GBP';
         default:
             return $value . ' ' . $currency;
     }
