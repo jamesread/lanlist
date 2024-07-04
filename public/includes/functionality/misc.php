@@ -27,7 +27,7 @@ function htmlify($input)
 
 function sendEmailToAdmins($content, $subject)
 {
-    return sendEmailToGroup(99, $content, $subject);
+    return sendEmailToGroup(ADMIN_GID, $content, $subject);
 }
 
 function sendEmailToGroup($groupId, $content, $subject)
