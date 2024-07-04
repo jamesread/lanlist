@@ -10,31 +10,55 @@
 	<strong>Organizer: </strong> {if empty($event.organizerId)}???{else}<a href = "viewOrganizer.php?id={$event.organizerId}">{$event.organizerTitle|default:"???"}</a>{/if}<br />
 	<strong>Event website: </strong> {$event.website|externUrlOr:"None"}	<br /><br />
 
-	<strong>Starts: </strong> {$event.dateStartHuman} <br />
-	<strong>Finishes: </strong> {$event.dateFinishHuman} <br /><br />
+	<ul class = "property-list">
+		<li>
+			<img src = "resources/images/svg/calendar.svg" /><strong>Dates: </strong> {$event.dateStartHuman} - {$event.dateFinishHuman}
+		</li>
+		<li>
+			<img src = "resources/images/svg/people.svg" /><strong>Number of seats: </strong> {if $event.numberOfSeats < 1}Unknown{else}{$event.numberOfSeats}{/if}
+		</li>
+		<li>
+			<img src = "resources/images/svg/age.svg" /><strong>Age restrictions: </strong> {if $event.ageRestrictions == ''}Not known{else}{$event.ageRestrictions}{/if}
+		</li>
+	</ul>
 
-	<strong>Number of seats: </strong> {if $event.numberOfSeats < 1}Unknown{else}{$event.numberOfSeats}{/if} <br /><br />
+	<h3>Tickets</h3>
+	<strong>On door: </strong> {if $event.priceOnDoor == 0}Not Applicable{else}{$event.priceOnDoor|floatToMoney:$event.currency}{/if} <br />
+	<strong>In advance: </strong> {$event.priceInAdv|floatToMoney:$event.currency} <br /><br />
 
-	<strong>Ticket price on door: </strong> {if $event.priceOnDoor == 0}Not Applicable{else}{$event.priceOnDoor|floatToMoney:$event.currency}{/if} <br />
-	<strong>Ticket price in advance: </strong> {$event.priceInAdv|floatToMoney:$event.currency} <br /><br />
-	<strong>Age restrictions: </strong> {if $event.ageRestrictions == ''}Not known{else}{$event.ageRestrictions}{/if}<br /><br />
-	<strong>Additional details: </strong> {$event.blurb|default:"Nothing"|stripslashes|htmlify} <br />
+	<h3>Additional details</h3>
+	{$event.blurb|default:"Nothing"|stripslashes|htmlify} 
 </div>
 
 <div class = "paralellContainer">
 	<h3>Venue</h3>
 	<a href = "viewVenue.php?id={$event.venueId}">{$event.venueTitle|default:"???"}</a> <br />
 
-	<br /><br />
+	<br />
 
 	<h3>Facilities</h3>
-	<strong>Sleeping: </strong> {$event.sleeping} <br />
-	<strong>Showers?: </strong> {$event.showers|lookupField:'showers'} <br />
-	<strong>Smoking area?: </strong> {$event.smoking|lookupField:'smoking'} <br />
-	<strong>Alcohol allowed?: </strong> {$event.alcohol|lookupField:'alcohol'} <br />
-	<strong>Network connection (mbps): </strong> {$event.networkMbps|default:"None"}<br />
-	<strong>Internet connection (mbps): </strong> {$event.internetMbps|default:"None"} <br />
-</div>
+	<ul class = "property-list">
+		<li>
+			<img src = "resources/images/svg/sleep.svg" /><strong>Sleeping: </strong> {$event.sleeping}
+		</li>
+		<li>
+			<img src = "resources/images/svg/shower.svg" /><strong>Showers?: </strong> {$event.showers|lookupField:'showers'}
+		</li>
+		<li>
+			<img src = "resources/images/svg/smoking.svg" /><strong>Smoking area?: </strong> {$event.smoking|lookupField:'smoking'} 
+		</li>
+		<li>
+			<img src = "resources/images/svg/alcohol.svg" /><strong>Alcohol allowed?: </strong> {$event.alcohol|lookupField:'alcohol'} 
+		</li>
+		<li>
+			<img src = "resources/images/svg/network.svg" /><strong>Network connection: </strong> {$event.networkMbps|default:"None"}mbps
+		</li>
+
+		<li>
+			<img src = "resources/images/svg/network.svg" /><strong>Internet connection: </strong> {$event.internetMbps|default:"None"}mbps
+		</li>
+	</ul>
+	</div>
 
 <hr />
 
