@@ -1,7 +1,10 @@
 <?php
 
 require_once 'includes/config.php';
-require_once '../vendor/autoload.php';
+
+$baseDir = realpath(__DIR__ . '/../../');
+
+require_once $baseDir . '/vendor/autoload.php';
 
 require_once 'includes/classes/SiteErrorHandler.php';
 
