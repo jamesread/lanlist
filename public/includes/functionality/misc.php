@@ -416,3 +416,9 @@ function lookupField($key, $type) {
     return 'Unknown field type: ' . $type;
     var_dump($a, $b); exit;
 }
+
+function outputJson($v) {
+    header('Content-Type: application/json');
+
+    echo json_encode($v);
+}

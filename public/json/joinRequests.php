@@ -11,4 +11,4 @@ $stmt->execute();
 
 $joinRequests = $stmt->fetchAll();
 
-echo json_encode($joinRequests);
+outputJson($joinRequests);
