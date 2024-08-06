@@ -55,7 +55,7 @@ class FormEditEvent extends Form
         $this->addElementAgeRestrictions($event['ageRestrictions']);
         $this->addElement(new ElementSelect('showers', 'Showers', $event['showers']))->addOptions(dataShowers());
         $this->addElement($this->getElementSleeping($event['sleeping']));
-        $this->addElement(new ElementSelect('alcohol', 'Bring your own alcohol?', $event['alcohol']))->addOptions(dataAlcohol());
+        $this->addElement(new ElementSelect('alcohol', 'Alcohol policy?', $event['alcohol']))->addOptions(dataAlcohol());
         $this->addElement(new ElementSelect('smoking', 'Smoking area?', $event['smoking']))->addOptions(dataSmoking());
         $this->addElement(new ElementNumeric('networkMbps', 'Network (mbps)', $event['networkMbps']));
         $this->getElement('networkMbps')->addSuggestedValue('100', 'Old 100 meg network');
