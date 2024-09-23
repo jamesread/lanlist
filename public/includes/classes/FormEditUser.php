@@ -9,6 +9,7 @@ use libAllure\ElementHidden;
 use libAllure\ElementSelect;
 use libAllure\ElementHtml;
 use libAllure\ElementPassword;
+use libAllure\DatabaseFactory;
 
 class FormEditUser extends Form
 {
