@@ -9,10 +9,12 @@
         foreach ($events as $event) {
             echo '<li>';
             switch ($event['country']) {
+                // https://symbl.cc/en/emoji/flags/country-flag/
                 case 'United Kingdom':  echo '&#127468;&#127463;'; break;
                 case 'Sweden':          echo '&#127480;&#127466;'; break;
                 case 'Netherlands':     echo '&#127475;&#127473;'; break;
                 case 'Germany':         echo '&#127465;&#127466;'; break;
+                case 'United States':   echo '&#127482;&#127480;'; break;
                 default:
                     echo $event['country'];
             }
