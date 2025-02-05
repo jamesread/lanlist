@@ -75,6 +75,7 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
         $headers = array(
             'From' => '"' . SITE_TITLE . '" <' . EMAIL_ADDRESS . '>',
             'To' => '<' . $recipient . '>',
+            'Reply-To' => '"' . EMAIL_REPLY_TO_NAME . '" <' . EMAIL_REPLY_TO_ADDRESS . '>',
             'Subject' => $subject,
             'Content-Type' => 'text/html'
         );
