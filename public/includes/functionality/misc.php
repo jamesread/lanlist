@@ -423,3 +423,35 @@ function outputJson($v) {
 
     echo json_encode($v);
 }
+
+function getGeoIpCountry() {
+    $country = 'United Kingdom';
+
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+
+        $country = geoip_country_name_by_name($ip);
+    }
+
+    return $country;
+}
+
+function canEditEvent($eventOrganizerId) {
+    if (!Session::isLoggedIn()) {
+        return false;
+    }
+
+    if (empty($eventOrganizerId)) {
+        return false;
+    }
+
+    if (Session::getUser()->hasPriv('MODERATE_EVENTS')) {
+        return true;
+    }
+
+    if (Session::getUser()->getData('organization') == $eventOrganizerId) {
+        return true;
+    }
+
+    return false;
+}
