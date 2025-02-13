@@ -441,16 +441,16 @@ function canEditEvent($eventOrganizerId) {
         return false;
     }
 
-    if (empty($eventOrganizerId)) {
-        return false;
-    }
-
     if (Session::getUser()->hasPriv('MODERATE_EVENTS')) {
         return true;
     }
 
     if (Session::getUser()->getData('organization') == $eventOrganizerId) {
         return true;
+    }
+
+    if (empty($eventOrganizerId)) {
+        return false;
     }
 
     return false;
