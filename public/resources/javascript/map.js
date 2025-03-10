@@ -122,7 +122,7 @@ async function addMarker(lat, lng, title, iconUrl, clickable, focus)
 function addMarkerEvent(evt, focus)
 {
     addMarker(evt.venueLat, evt.venueLng, evt.eventTitle, getEventIcon(evt), true, focus).then(marker => {
-        marker.addListener('click', function () {
+        marker.addListener('gmp-click', function () {
             onEventMarkerClicked(evt, marker);
         });
     })
