@@ -21,7 +21,7 @@ class FormNewEvent extends Form
         }
 
         if (isset($_REQUEST['formNewEvent-venue'])) {
-            $this->addElementReadOnly('Venue', $_REQUEST['formNewEvent-venue'], 'venue');
+            $this->addElementReadOnly('venue', $_REQUEST['formNewEvent-venue'], 'venue');
         } else {
             $this->addElement(FormHelpers::getVenueListElement());
         }
@@ -52,8 +52,23 @@ class FormNewEvent extends Form
 
         $this->addElement(new ElementInput('eventWebsite', 'Event specific URL', null, 'A URL to the event webpage on the organizer website would be useful.'));
         $this->getElement('eventWebsite')->setMinMaxLengths(0, 256);
-        $this->addElement(new ElementDate('dateStart', 'Start date', 'YYYY-MM-DD'));
-        $this->addElement(new ElementDate('dateFinish', 'Finish date', 'YYYY-MM-DD'));
+
+        $now = date_format(date_create(), 'Y-m-d');
+
+        $this->addElement(new ElementDate('dateStart', 'Start date', "$now 00:00"));
+        
+        $this->addElement(new ElementDate('dateFinish', 'Finish date', "$now 00:00"));
+
+            $s = <<<EOF
+const dateStart = document.getElementById('formNewEvent-dateStart');
+const dateFinish = document.getElementById('formNewEvent-dateFinish');
+
+dateStart.onchange = () => {
+    dateFinish.value = dateStart.value;
+}
+EOF;
+        $this->addScript($s);
+
         $this->addElement(new ElementHtml('protip', null, '<strong style = "text-decoration: blink; color: red;">Protip:</strong> You can edit this event and add much more detail after you have created it. '));
 
                 $this->requireFields('title', 'dateStart', 'dateFinish');

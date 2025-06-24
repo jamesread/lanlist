@@ -57,7 +57,9 @@ SELECT
 	o.assumedStale,
 	o.steamGroupUrl,
 	o.blurb,
+        o.genericEmail,
         o.useFavicon
+
 FROM 
 	organizers o
 WHERE 
