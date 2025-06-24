@@ -25,6 +25,10 @@
 	<h3>Tickets</h3>
 	<strong>On door: </strong> {if $event.priceOnDoor == 0}Not Applicable{else}{$event.priceOnDoor|floatToMoney:$event.currency}{/if} <br />
 	<strong>In advance: </strong> {$event.priceInAdv|floatToMoney:$event.currency} <br /><br />
+	
+	{if $canEditEvent}
+	<a href = "formHandler.php?formClazz=FormAddTicket&eventId={$event['id']}">Add ticket</a>
+	{/if}
 
 	<h3>Additional details</h3>
 	{$event.blurb|default:"Nothing"|stripslashes|htmlify} 
