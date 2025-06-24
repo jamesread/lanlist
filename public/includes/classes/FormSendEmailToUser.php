@@ -9,7 +9,7 @@ use libAllure\ElementReadOnly;
 
 class FormSendEmailToUser extends Form
 {
-    private \libAllure\User $user;
+    private ?\libAllure\User $user;
     private array $organizer;
 
     public function __construct()
@@ -18,25 +18,43 @@ class FormSendEmailToUser extends Form
 
         Session::requirePriv('SEND_EMAIL');
 
-        $uid = $_REQUEST['formSendEmailToUser-uid'];
-        $uid = intval($uid);
-        $this->user = \libAllure\User::getUserById($uid);
+        $elUid = $this->addElementReadOnly('User', 0, 'uid');
+        $sendTo = $this->addElementReadOnly('Email', '', 'email');
 
-        $sql = 'SELECT o.* FROM users u LEFT JOIN organizers o ON u.organization = o.id WHERE u.id = :userId LIMIT 1';
-        $stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
-        $stmt->bindValue(':userId', $this->user->getId());
-        $stmt->execute();
+        if (isset($_REQUEST['formSendEmailToUser-email'])) {
+            $to = $_REQUEST['formSendEmailToUser-email'];
 
-        if ($stmt->numRows()) {
-            $this->organizer = $stmt->fetchRow();
-        } else {
+            $sendTo->setValue($to);
+            $this->getElement('email')->setValue($to);
+        } else if (isset($_REQUEST['formSendEmailToUser-uid'])) {
+            $uid = $_REQUEST['formSendEmailToUser-uid'];
+            $uid = intval($uid);
+            $this->user = \libAllure\User::getUserById($uid);
+
+            $sql = 'SELECT o.* FROM users u LEFT JOIN organizers o ON u.organization = o.id WHERE u.id = :userId LIMIT 1';
+            $stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
+            $stmt->bindValue(':userId', $this->user->getId());
+            $stmt->execute();
+
+            if ($stmt->numRows()) {
+                $this->organizer = $stmt->fetchRow();
+            }
+
+            $sendTo->description = $this->user->getData('email') .  ', User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ;
+            $sendTo->value = $this->user->getData('email');
+        }
+
+        if (empty($this->organizer)) {
             $this->organizer = array('title' => '???', 'id' => '0');
         }
 
-                $sendTo = $this->addElementReadOnly('User', $uid, 'uid');
-                $sendTo->description = $this->user->getData('email') .  ', User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ;
         $this->addElement(new ElementInput('subject', 'Subject', 'Message from a human!'));
-        $this->addElement(new ElementTextbox('body', 'Body', 'Hey ' . $this->user->getUsername() . ', ' . "\n\n" . 'Your message here.' . "\n\n- lanlist.org ", 'No footer will be appended. From: mailer@lanlist.org'));
+
+        $this->addElement(new ElementTextbox('body', 'Body', "", 'No footer will be appended. From: mailer@lanlist.org'));
+        $s = <<<EOF
+document.getElementById('formSendEmailToUser-body').setAttribute('rows', '20');
+EOF;
+        $this->addScript($s);
 
         $this->loadTemplate();
 
@@ -48,14 +66,16 @@ class FormSendEmailToUser extends Form
         if (isset($_REQUEST['template'])) {
             $template = $_REQUEST['template'];
         } else {
-            return;
+            $template = 'default';
         }
 
         global $tpl;
 
-        $tpl->assign('username', $this->user->getUsername());
-        $tpl->assign('organizationUrl', 'http://lanlist.org/viewOrganizer.php?id=' . $this->user->getData('organization'));
-        $tpl->assign('organizer', $this->organizer);
+        if (!empty($this->user)) {
+            $tpl->assign('username', $this->user->getUsername());
+            $tpl->assign('organizationUrl', 'http://lanlist.org/viewOrganizer.php?id=' . $this->user->getData('organization'));
+            $tpl->assign('organizer', $this->organizer);
+        }
 
         $content = $tpl->fetch('email.' . $template . '.tpl');
         $subject = 'Message from a human!';
@@ -78,7 +98,7 @@ class FormSendEmailToUser extends Form
 
         $subject = $this->getElementValue('subject');
 
-        sendEmail($this->user->getData('email'), $content, $subject, false);
+        sendEmail($this->getElementValue('email'), $content, $subject, false);
 
         redirect('listUsers.php?', 'Email sent.');
     }

@@ -26,6 +26,7 @@ class FormEditOrganizer extends Form
         $this->addElement(new ElementHidden('id', null, $organizer['id']));
         $this->addElement(new ElementInput('websiteUrl', 'Website', $organizer['websiteUrl']));
         $this->addElement(new ElementDate('assumedStale', 'Assumed stale since', $organizer['assumedStale']));
+        $this->addElement(new ElementInput('genericEmail', 'Generic email', $organizer['genericEmail']));
         $this->addElement(new ElementInput('steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
         $this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
         $this->addElement(new ElementTextbox('blurb', 'Blurb', $organizer['blurb']));
@@ -48,12 +49,13 @@ class FormEditOrganizer extends Form
     {
         global $db;
 
-        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, steamGroupUrl = :steamGroupUrl, blurb = :blurb, useFavicon = :useFavicon WHERE id = :id LIMIT 1';
+        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, blurb = :blurb, useFavicon = :useFavicon WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->bindValue(':title', $this->getElementValue('title'));
         $stmt->bindValue(':websiteUrl', $this->getElementValue('websiteUrl'));
         $stmt->bindValue(':assumedStale', $this->getElementValue('assumedStale'));
+        $stmt->bindValue(':genericEmail', $this->getElementValue('genericEmail'));
         $stmt->bindValue(':steamGroupUrl', $this->getElementValue('steamGroupUrl'));
         $stmt->bindValue(':blurb', $this->getElementValue('blurb'));
         $stmt->bindValue(':useFavicon', $this->getElementValue('useFavicon'));

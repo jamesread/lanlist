@@ -19,7 +19,7 @@ h1 {
 
 <p>Hey.</p>
 
-<p>This is a lanlist.org newsletter for updates between {$newsletterStartDate} and {$newsletterFinishDate}. </p>
+<p>This is a lanlist.info newsletter for updates between {$newsletterStartDate} and {$newsletterFinishDate}. </p>
 
 {if !empty($listNewUsers) || !empty($listNewEvents) || !empty($listNewOrganizers)}
 <h1>News</h1>
@@ -66,7 +66,7 @@ h1 {
 
 	<ul>
 	{foreach from = $issuesList item = "issue"}
-		<li><a href = "http://lanlist.org/viewEvent.php?id={$issue.id}">{$issue.title}</a>: {$issue.issueDescription}</li>
+		<li><a href = "http://lanlist.info/viewEvent.php?id={$issue.id}">{$issue.title}</a>: {$issue.issueDescription}</li>
 	{/foreach}
 	</ul>
 {/if}

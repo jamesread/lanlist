@@ -50,7 +50,7 @@ function showInfobox(eventObject, marker)
     window.infoBox.open(window.map, marker);
 }
 
-async function renderMap()
+async function renderMap(geoipGuess)
 {
     const { Map } = await google.maps.importLibrary("maps");
 
@@ -60,7 +60,7 @@ async function renderMap()
     })
 
     try { 
-      const geoipGuess = 'United Kingdom'
+      //const geoipGuess = 'United Kingdom'
       countryZoom(geoipGuess)
     } catch (e) {
       console.error("Could not get location", e)
@@ -122,7 +122,7 @@ async function addMarker(lat, lng, title, iconUrl, clickable, focus)
 function addMarkerEvent(evt, focus)
 {
     addMarker(evt.venueLat, evt.venueLng, evt.eventTitle, getEventIcon(evt), true, focus).then(marker => {
-        marker.addListener('click', function () {
+        marker.addListener('gmp-click', function () {
             onEventMarkerClicked(evt, marker);
         });
     })

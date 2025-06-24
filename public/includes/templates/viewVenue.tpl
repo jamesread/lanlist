@@ -4,7 +4,7 @@
 	<h3>Location</h3>
 	<p><strong>lat</strong>: {$venue.lat}</p>
 	<p><strong>lng</strong>: {$venue.lng}</p>
-	<p><strong>Country</strong>: {$venue.country}</p>
+	<p><strong>Country</strong>: <a href = "listVenues.php?country={$venue.country}">{$venue.country}</a></p>
 </div>
 
 <div class = "paralellContainer">
@@ -19,6 +19,13 @@
 	</ul>
 {/if}
 	<a href = "formHandler.php?formClazz=FormNewEvent&formNewEvent-venue={$venue.id}">Create event</a>
+
+{if !empty($associatedOrganizers)}
+	<h3>Organizers that use this venue</h3>
+	{foreach from = $associatedOrganizers item = $event}
+	<a href = "viewOrganizer.php?id={$event.organizer}">{$event.organizerTitle}</a>
+	{/foreach}
+	{/if}
 </div>
 
 <div id = "map" style = "width: 100%; height: 600px;border: 1px solid LightGray;" >

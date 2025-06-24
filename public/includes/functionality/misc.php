@@ -385,6 +385,7 @@ function dataShowers()
         null => 'Unknown',
         0 => 'Not at venue',
         1 => 'Available at venue',
+        2 => 'Included in private rooms',
     ];
 }
 
@@ -407,8 +408,22 @@ function dataAlcohol() {
     ];
 }
 
+function dataSleeping() {
+    return [
+        null => 'Unknown',
+        0 => 'Not arranged by organizer',
+        1 => 'Not an overnight Event',
+        2 => 'Private rooms at venue',
+        3 => 'Indoors at venue',
+        4 => 'Indoors and camping at venue',
+        5 => 'Indoors, camping and private rooms at venue',
+        6 => 'Indoors at venue. Camping and hotels nearby',
+    ];
+}
+
 function lookupField($key, $type) {
     switch ($type) {
+    case 'sleeping': return dataSleeping()[$key];
     case 'showers': return dataShowers()[$key];
     case 'alcohol': return dataAlcohol()[$key];
     case 'smoking': return dataSmoking()[$key];
@@ -425,12 +440,17 @@ function outputJson($v) {
 }
 
 function getGeoIpCountry() {
-    $country = 'United Kingdom';
+    $default = 'United Kingdom';
+    $country = $default;
 
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 
         $country = geoip_country_name_by_name($ip);
+    }
+
+    if (empty($country)) {
+        return $default;
     }
 
     return $country;
@@ -441,16 +461,16 @@ function canEditEvent($eventOrganizerId) {
         return false;
     }
 
-    if (empty($eventOrganizerId)) {
-        return false;
-    }
-
     if (Session::getUser()->hasPriv('MODERATE_EVENTS')) {
         return true;
     }
 
     if (Session::getUser()->getData('organization') == $eventOrganizerId) {
         return true;
+    }
+
+    if (empty($eventOrganizerId)) {
+        return false;
     }
 
     return false;

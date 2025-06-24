@@ -43,7 +43,7 @@
 	<h3>Facilities</h3>
 	<ul class = "property-list">
 		<li>
-			<img src = "resources/images/svg/sleep.svg" /><strong>Sleeping: </strong> {$event.sleeping}
+			<img src = "resources/images/svg/sleep.svg" /><strong>Sleeping: </strong> {$event.sleeping|lookupField:'sleeping'}
 		</li>
 		<li>
 			<img src = "resources/images/svg/shower.svg" /><strong>Showers?: </strong> {$event.showers|lookupField:'showers'}
