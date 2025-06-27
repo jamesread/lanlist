@@ -15,6 +15,12 @@
 	<link rel = "shortcut icon" type = "image/png" href = "resources/images/favicon.png" />
 	<link rel = "alternate" type = "application/rss+xml" title = "{$siteTitle} - A list of LAN Parties" href = "api.php?function=events&amp;format=rss" />
 
+	<meta property = "og:image" content = "https://lanlist.info/resources/images/social-banner.png" />
+	<meta property = "og:type" content = "website" />
+	<meta property = "og:url" content = "https://lanlist.info/" />
+	<meta property = "og:title" content = "{$title|default:"A list of LAN parties"} &bull; {$siteTitle}" />
+	<meta property = "og:description" content = "A list of LAN Parties for the community." />
+
 	<script type = "text/javascript" src = "resources/javascript/map.js"></script>
 
 	<script type="text/javascript">

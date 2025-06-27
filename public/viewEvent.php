@@ -11,6 +11,9 @@ addHistoryLink('viewEvent.php?id=' . $event['id'], 'View event: ' . $event['even
 define('TITLE', 'Event: ' . $event['organizerTitle'] . ' - ' . $event['eventTitle']);
 require_once 'includes/widgets/header.php';
 
+$canEditEvent = canEditEvent($event['organizerId']);
+
+$tpl->assign('canEditEvent', $canEditEvent);
 $tpl->assign('event', $event);
 
 $marker = jsMapMarker($event, true);
@@ -38,7 +41,7 @@ if (strpos($logoUrl, "default") == false) {
 
 require_once 'includes/widgets/infoboxOtherEvents.php';
 
-if (Session::isLoggedIn() && (Session::getUser()->hasPriv('MODERATE_EVENTS') || ($event['organizerId'] == Session::getUser()->getData('organization') && !empty($event['organizerId'])))) {
+if ($canEditEvent) {
     echo '<div class = "infobox"><h2>Admin</h2>';
     echo '<p>With great power, comes great responsibility...</p><p>';
     echo '<strong>Created on:</strong> ' . $event['createdDate'] . '<br />';

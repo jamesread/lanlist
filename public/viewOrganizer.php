@@ -23,6 +23,8 @@ if (Session::isLoggedIn() && (Session::getUser()->hasPriv('SUPERUSER') || Sessio
     $stmt->execute();
 
     $tpl->assign('associatedUsers', $stmt->fetchAll());
+} else {
+    $organizer['genericEmail'] = null;
 }
 
 $tpl->assign('userlist', Session::hasPriv('USERLIST'));

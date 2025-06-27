@@ -50,17 +50,35 @@ function showInfobox(eventObject, marker)
     window.infoBox.open(window.map, marker);
 }
 
-async function renderMap()
+async function renderMap(geoipGuess)
 {
     const { Map } = await google.maps.importLibrary("maps");
 
-    window.mapCenter = { lat: 55.729639, lng: 4.603271 }
+    window.map = new Map(document.getElementById('map'), {
+        zoom: 5,
+        mapId: 'lanlist'
+    })
 
-        window.map = new Map(document.getElementById('map'), {
-            center: mapCenter,
-            zoom: 5,
-            mapId: 'lanlist'
-        })
+    try { 
+      //const geoipGuess = 'United Kingdom'
+      countryZoom(geoipGuess)
+    } catch (e) {
+      console.error("Could not get location", e)
+      window.map.setCenter({ lat: 55.729639, lng: 4.603271 })
+    }
+}
+
+
+function countryZoom(country) {
+  const geocoder = new google.maps.Geocoder()
+
+  geocoder.geocode({address: country}, (results, status) => {
+    if (status == google.maps.GeocoderStatus.OK) {
+      window.map.setCenter(results[0].geometry.location);
+      window.map.fitBounds(results[0].geometry.viewport);
+    }
+  })
+
 }
 
 function focusOnMarker(marker)
@@ -104,7 +122,7 @@ async function addMarker(lat, lng, title, iconUrl, clickable, focus)
 function addMarkerEvent(evt, focus)
 {
     addMarker(evt.venueLat, evt.venueLng, evt.eventTitle, getEventIcon(evt), true, focus).then(marker => {
-        marker.addListener('click', function () {
+        marker.addListener('gmp-click', function () {
             onEventMarkerClicked(evt, marker);
         });
     })

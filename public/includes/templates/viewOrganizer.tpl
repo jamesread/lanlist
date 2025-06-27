@@ -51,6 +51,10 @@
 			{/if}
 		{/foreach}
 	</ul>
+
+	{if !empty($organizer.genericEmail)}
+		<a href = "formHandler.php?formClazz=FormSendEmailToUser&formSendEmailToUser-email={$organizer.genericEmail}">{$organizer.genericEmail}</a>
+	{/if}
 </div>
 {/if}
 

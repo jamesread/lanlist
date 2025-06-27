@@ -218,8 +218,16 @@ main {
 }
 
 .infobox.nopadding h2 {
-  padding-left: 1em;
+  padding-left: .9em;
   padding-top: 1em;
+}
+
+.infobox.nopadding p {
+  padding-left: 1em;
+}
+
+.infobox.nopadding td:first-child, .infobox.nopadding th:first-child {
+  padding-left: 1.2em;
 }
 
 main.minimal {
