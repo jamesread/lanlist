@@ -15,6 +15,7 @@
                 case 'Netherlands':     echo '&#127475;&#127473;'; break;
                 case 'Germany':         echo '&#127465;&#127466;'; break;
                 case 'United States':   echo '&#127482;&#127480;'; break;
+				case 'Canada':          echo '&#127464;&#127462;'; break;
                 default:
                     echo $event['country'];
             }
