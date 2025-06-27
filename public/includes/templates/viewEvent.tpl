@@ -23,12 +23,22 @@
 	</ul>
 
 	<h3>Tickets</h3>
+
+	{if empty($event.tickets)}
 	<strong>On door: </strong> {if $event.priceOnDoor == 0}Not Applicable{else}{$event.priceOnDoor|floatToMoney:$event.currency}{/if} <br />
 	<strong>In advance: </strong> {$event.priceInAdv|floatToMoney:$event.currency} <br /><br />
+	{else}
+		<ul>
+		{foreach from = $event.tickets item = ticket}
+			<li><strong>{$ticket.title}:</strong> {$ticket.cost} {$ticket.currency}</li>
+		{/foreach}
+		</ul>
+	{/if}
 	
 	{if $canEditEvent}
-	<a href = "formHandler.php?formClazz=FormAddTicket&eventId={$event['id']}">Add ticket</a>
+	<a href = "formHandler.php?formClazz=FormAddTicket&addticket-eventId={$event['id']}">Add ticket</a>
 	{/if}
+
 
 	<h3>Additional details</h3>
 	{$event.blurb|default:"Nothing"|stripslashes|htmlify} 

@@ -3,6 +3,7 @@
 use libAllure\Session;
 use libAllure\DatabaseFactory;
 use libAllure\ErrorHandler;
+use libAllure\ElementAutoSelect;
 use libAllure\Logger;
 
 function getCountJoinRequests()
@@ -475,3 +476,18 @@ function canEditEvent($eventOrganizerId) {
 
     return false;
 }
+
+function getElementCurrency($val)
+{
+	$el = new ElementAutoSelect('currency', 'Currency', $val, 'GBP, USD, EUR, etc');
+	$el->addOption('GBP (&pound; - UK, etc)', 'GBP');
+	$el->addOption('USD ($ - America, etc)', 'USD');
+	$el->addOption('AUD ($ - Austrialia, etc)', 'AUD');
+	$el->addOption('SEK (Sweden)', 'SEK');
+	$el->addOption('ISK (Iceland)', 'ISK');
+	$el->addOption('EUR (&euro; - Europe, etc)', 'EUR');
+	$el->addOption('CHF (Swiss franc)', 'CHF');
+
+	return $el;
+}
+

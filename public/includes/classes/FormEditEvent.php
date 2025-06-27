@@ -62,7 +62,7 @@ EOF;
 
         $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
         $this->addElement(new ElementNumeric('priceInAdv', 'Ticket price in advance', $event['priceInAdv']));
-        $this->addElement($this->getElementCurrency($event['currency']));
+        $this->addElement(getElementCurrency($event['currency']));
         $this->addElement(new ElementInput('website', 'Event website', $event['website']));
         $this->addElementAgeRestrictions($event['ageRestrictions']);
         $this->addElement(new ElementSelect('showers', 'Showers', $event['showers']))->addOptions(dataShowers());
@@ -106,20 +106,6 @@ EOF;
         if (!preg_match('/^[A-Z]{3}$/', $this->getElementValue('currency'))) {
             $this->setElementError('currency', 'This is not a valid currency code. Please refer to ISO 4217 (3 uppercase characters).');
         }
-    }
-
-    private function getElementCurrency($val)
-    {
-        $el = new ElementAutoSelect('currency', 'Currency', $val, 'GBP, USD, EUR, etc');
-        $el->addOption('GBP (&pound; - UK, etc)', 'GBP');
-        $el->addOption('USD ($ - America, etc)', 'USD');
-        $el->addOption('AUD ($ - Austrialia, etc)', 'AUD');
-        $el->addOption('SEK (Sweden)', 'SEK');
-        $el->addOption('ISK (Iceland)', 'ISK');
-        $el->addOption('EUR (&euro; - Europe, etc)', 'EUR');
-        $el->addOption('CHF (Swiss franc)', 'CHF');
-
-        return $el;
     }
 
     private function getEvent()
