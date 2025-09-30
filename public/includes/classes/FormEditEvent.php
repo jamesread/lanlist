@@ -60,8 +60,6 @@ dateStart.onchange = () => {
 EOF;
         $this->addScript($s);
 
-        $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
-        $this->addElement(new ElementNumeric('priceInAdv', 'Ticket price in advance', $event['priceInAdv']));
         $this->addElement(getElementCurrency($event['currency']));
         $this->addElement(new ElementInput('website', 'Event website', $event['website']));
         $this->addElementAgeRestrictions($event['ageRestrictions']);
@@ -130,14 +128,12 @@ EOF;
     {
         global $db;
 
-        $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, priceOnDoor = :priceOnDoor, priceInAdv = :priceInAdv, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
+        $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->bindValue(':title', $this->getElementValue('title'));
         $stmt->bindValue(':dateStart', $this->getElementValue('dateStart'));
         $stmt->bindValue(':dateFinish', $this->getElementValue('dateFinish'));
-        $stmt->bindValue(':priceOnDoor', $this->getElementValue('priceOnDoor'));
-        $stmt->bindValue(':priceInAdv', $this->getElementvalue('priceInAdv'));
         $stmt->bindValue(':currency', $this->getElementvalue('currency'));
         $stmt->bindValue(':ageRestrictions', $this->getElementvalue('ageRestrictions'));
         $stmt->bindValue(':website', $this->getElementvalue('website'));
