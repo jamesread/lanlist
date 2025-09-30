@@ -100,10 +100,23 @@ input {
 input,button, select, option  {
   font-family: sans-serif;
   font-size: inherit;
+  border-radius: .6em;
 }
 
-input, button {
+input, select {
+  width: 20em;
+}
+
+select {
+  padding: .6em;
+  background-color: white;
   border: 1px solid LightGray;
+  border-radius: .6em;
+}
+
+input, button, textarea {
+  border: 1px solid LightGray;
+  border-radius: .6em;
   padding: .6em;
 }
 
@@ -117,8 +130,6 @@ button {
   color: black;
   text-align: left;
   border: 0;
-  border-radius: .2em;
-  border-radius: .2em;
   padding: .6em;
   margin-right: .5em;
   display: inline-block;
@@ -126,13 +137,14 @@ button {
   min-width: 16px;
   background-repeat: no-repeat;
   background-position: center center;
-  background-color: LightGreen;
+  background-color: #488448;
+  color: white;
   font-weight: bold;
   text-transform: uppercase;
 }
 
 button:hover {
-  background-color: white;
+  background-color: #3a6f3a;
 }
 
 .paginate_enabled_next, .paginate_disabled_next {
@@ -159,6 +171,7 @@ label {
   width: 10em;
   padding-right: 1em;
   vertical-align: top;
+  text-align: right;
 }
 
 label.required:after {
