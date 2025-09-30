@@ -33,7 +33,7 @@ class FormAddTicket extends Form {
         $sql = 'INSERT INTO tickets (event, cost, currency, title) values (:event, :cost, :currency, :title)';
         $stmt = Shortcuts::stmt($sql);
         $stmt->bindValue(':event', $this->eventId);
-		$stmt->bindValue(':title', $this->getElementValue('title');
+		$stmt->bindValue(':title', $this->getElementValue('ticketTitle'));
         $stmt->bindValue(':cost', $this->getElementValue('ticketCost'));
 		$stmt->bindValue(':currency', $this->getElementValue('currency'));
 		$stmt->execute();
