@@ -19,7 +19,8 @@ class FormSendEmailToUser extends Form
         Session::requirePriv('SEND_EMAIL');
 
         $elUid = $this->addElementReadOnly('User', 0, 'uid');
-        $sendTo = $this->addElementReadOnly('Email', '', 'email');
+
+		$sendTo = $this->addElement(new ElementInput('email', 'Email', ''));
 
         if (isset($_REQUEST['formSendEmailToUser-email'])) {
             $to = $_REQUEST['formSendEmailToUser-email'];
@@ -41,7 +42,7 @@ class FormSendEmailToUser extends Form
             }
 
             $sendTo->description = $this->user->getData('email') .  ', User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ;
-            $sendTo->value = $this->user->getData('email');
+            $sendTo->setValue($this->user->getData('email'));
         }
 
         if (empty($this->organizer)) {
@@ -87,16 +88,27 @@ EOF;
             $subject = $matches[1];
         }
 
-        $this->getElement('body')->setValue($content);
+        $this->getElement('body')->setValue(trim($content));
         $this->getElement('subject')->setValue($subject);
     }
 
     public function process()
-    {
-        $content = nl2br($this->getElementValue('body'));
-        $content .= '<br /><br /><small>This is NOT an automated email, a human wrote this email and sent it to you directly from lanlist.org. We try not to spam our users and hope you found this email useful. If you REALLY hate us and want to stop receiving email from us then login to http://lanlist.org and remove your email address from your user profile. You should be able to reply to this email and talk to a human, or check http://lanlist.org/contact.php for our latest contact details. </small>';
+	{
+
+		$content = $this->getElementValue('body');
+		
+		$footer = '<br /><br /><small>This is NOT an automated email, a human wrote this email and sent it to you directly from lanlist.org. We try not to spam our users and hope you found this email useful. If you REALLY hate us and want to stop receiving email from us then login to http://lanlist.org and remove your email address from your user profile. You should be able to reply to this email and talk to a human, or check http://lanlist.org/contact.php for our latest contact details. </small>';
+
+		// Insert footer just before the closing body tag if it exists, otherwise append to the end of the email
+
+		if (stripos($content, '</body>') === false) {
+			$content .= $footer;
+		} else {
+			$content = str_replace('</body>', $footer . '</body>', $content);
+		}
 
         $subject = $this->getElementValue('subject');
+
 
         sendEmail($this->getElementValue('email'), $content, $subject, false);
 

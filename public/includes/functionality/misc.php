@@ -53,6 +53,11 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
         throw new Exception('Cannot send a blank email');
     }
 
+	if (empty($recipient) || !filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+		Logger::messageWarning('Not sending email, invalid recipient: ' . $recipient, 'SEND_EMAIL_INVALID');
+		return;
+	}
+
     $content = wordwrap($content);
 
     if ($includeStandardFooter) {
