@@ -42,19 +42,29 @@ class FormEditEvent extends Form
         } else {
                 $this->addElement(FormHelpers::getVenueListElement(Session::getUser()->getData('organization'), true));
         }
+
+        // Trim seconds from dates as it messes up browser 
+        $event['dateStart'] = date_create($event['dateStart'])->format('Y-m-d H:i');
+        $event['dateFinish'] = date_create($event['dateFinish'])->format('Y-m-d H:i');
         
         $this->getElement('venue')->setValue($event['venue']);
         $this->addElement(new ElementDate('dateStart', 'Start', $event['dateStart']));
         $this->addElement(new ElementDate('dateFinish', 'Finish', $event['dateFinish']));
-        $this->addScript('$("#formEditEvent-dateStart").datetime({"firstDay": 1 })');
-        $this->addScript('$("#formEditEvent-dateFinish").datetime({"firstDay": 2 })');
-        $this->addElement(new ElementNumeric('priceOnDoor', 'Ticket price on the door', $event['priceOnDoor']));
-        $this->addElement(new ElementNumeric('priceInAdv', 'Ticket price in advance', $event['priceInAdv']));
-        $this->addElement($this->getElementCurrency($event['currency']));
+            $s = <<<EOF
+const dateStart = document.getElementById('formEditEvent-dateStart');
+const dateFinish = document.getElementById('formEditEvent-dateFinish');
+
+dateStart.onchange = () => {
+    dateFinish.value = dateStart.value;
+}
+EOF;
+        $this->addScript($s);
+
+        $this->addElement(getElementCurrency($event['currency']));
         $this->addElement(new ElementInput('website', 'Event website', $event['website']));
         $this->addElementAgeRestrictions($event['ageRestrictions']);
         $this->addElement(new ElementSelect('showers', 'Showers', $event['showers']))->addOptions(dataShowers());
-        $this->addElement($this->getElementSleeping($event['sleeping']));
+        $this->addElement(new ElementSelect('sleeping', 'Sleeping', $event['sleeping']))->addOptions(dataSleeping());
         $this->addElement(new ElementSelect('alcohol', 'Bring your own alcohol?', $event['alcohol']))->addOptions(dataAlcohol());
         $this->addElement(new ElementSelect('smoking', 'Smoking area?', $event['smoking']))->addOptions(dataSmoking());
         $this->addElement(new ElementNumeric('networkMbps', 'Network (mbps)', $event['networkMbps']));
@@ -96,36 +106,6 @@ class FormEditEvent extends Form
         }
     }
 
-    private function getElementCurrency($val)
-    {
-        $el = new ElementAutoSelect('currency', 'Currency', $val, 'GBP, USD, EUR, etc');
-        $el->addOption('GBP (&pound; - UK, etc)', 'GBP');
-        $el->addOption('USD ($ - America, etc)', 'USD');
-        $el->addOption('AUD ($ - Austrialia, etc)', 'AUD');
-        $el->addOption('SEK (Sweden)', 'SEK');
-        $el->addOption('ISK (Iceland)', 'ISK');
-        $el->addOption('EUR (&euro; - Europe, etc)', 'EUR');
-        $el->addOption('CHF (Swiss franc)', 'CHF');
-
-        return $el;
-    }
-
-    private function getElementSleeping($val)
-    {
-        $el = new ElementSelect('sleeping', 'Sleeping');
-
-        $el->addOption('Not aranged by organizer');
-        $el->addOption('Not an overnight event');
-        $el->addOption('Private rooms at venue');
-        $el->addOption('Indoors at venue');
-        $el->addOption('Indoors and camping at venue');
-        $el->addOption('Indoors, camping and private rooms at venue');
-        $el->addOption('Indoors at venue. Camping and hotels nearby.');
-        $el->setValue($val);
-
-        return $el;
-    }
-
     private function getEvent()
     {
         global $db;
@@ -148,14 +128,12 @@ class FormEditEvent extends Form
     {
         global $db;
 
-        $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, priceOnDoor = :priceOnDoor, priceInAdv = :priceInAdv, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
+        $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->bindValue(':title', $this->getElementValue('title'));
         $stmt->bindValue(':dateStart', $this->getElementValue('dateStart'));
         $stmt->bindValue(':dateFinish', $this->getElementValue('dateFinish'));
-        $stmt->bindValue(':priceOnDoor', $this->getElementValue('priceOnDoor'));
-        $stmt->bindValue(':priceInAdv', $this->getElementvalue('priceInAdv'));
         $stmt->bindValue(':currency', $this->getElementvalue('currency'));
         $stmt->bindValue(':ageRestrictions', $this->getElementvalue('ageRestrictions'));
         $stmt->bindValue(':website', $this->getElementvalue('website'));

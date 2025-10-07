@@ -7,8 +7,12 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 def downloadFavicon(url, site, orgId):
+    if site != "":
+        url = site + "" + url
+
     print(f"\tdl {site}{url}")
-    res = requests.get(site + "/" + url)
+
+    res = requests.get(url)
         
     print(f"\t{res.status_code} from {url}")
 
@@ -22,7 +26,7 @@ def downloadFavicon(url, site, orgId):
         return False
 
 def isAbsolute(url):
-    return bool(urlparse(url).netloc)
+    return urlparse(url).netloc != ""
 
 def findFavicon(site, orgId):
     print("\tTrying to find favicon by parsing html")

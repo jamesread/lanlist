@@ -3,6 +3,7 @@
 use libAllure\Session;
 use libAllure\DatabaseFactory;
 use libAllure\ErrorHandler;
+use libAllure\ElementAutoSelect;
 use libAllure\Logger;
 
 function getCountJoinRequests()
@@ -51,6 +52,11 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
     if (empty($content)) {
         throw new Exception('Cannot send a blank email');
     }
+
+	if (empty($recipient) || !filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+		Logger::messageWarning('Not sending email, invalid recipient: ' . $recipient, 'SEND_EMAIL_INVALID');
+		return;
+	}
 
     $content = wordwrap($content);
 
@@ -385,6 +391,7 @@ function dataShowers()
         null => 'Unknown',
         0 => 'Not at venue',
         1 => 'Available at venue',
+        2 => 'Included in private rooms',
     ];
 }
 
@@ -407,8 +414,22 @@ function dataAlcohol() {
     ];
 }
 
+function dataSleeping() {
+    return [
+        null => 'Unknown',
+        0 => 'Not arranged by organizer',
+        1 => 'Not an overnight Event',
+        2 => 'Private rooms at venue',
+        3 => 'Indoors at venue',
+        4 => 'Indoors and camping at venue',
+        5 => 'Indoors, camping and private rooms at venue',
+        6 => 'Indoors at venue. Camping and hotels nearby',
+    ];
+}
+
 function lookupField($key, $type) {
     switch ($type) {
+    case 'sleeping': return dataSleeping()[$key];
     case 'showers': return dataShowers()[$key];
     case 'alcohol': return dataAlcohol()[$key];
     case 'smoking': return dataSmoking()[$key];
@@ -425,12 +446,17 @@ function outputJson($v) {
 }
 
 function getGeoIpCountry() {
-    $country = 'United Kingdom';
+    $default = 'United Kingdom';
+    $country = $default;
 
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 
         $country = geoip_country_name_by_name($ip);
+    }
+
+    if (empty($country)) {
+        return $default;
     }
 
     return $country;
@@ -455,3 +481,18 @@ function canEditEvent($eventOrganizerId) {
 
     return false;
 }
+
+function getElementCurrency($val)
+{
+	$el = new ElementAutoSelect('currency', 'Currency', $val, 'GBP, USD, EUR, etc');
+	$el->addOption('GBP (&pound; - UK, etc)', 'GBP');
+	$el->addOption('USD ($ - America, etc)', 'USD');
+	$el->addOption('AUD ($ - Austrialia, etc)', 'AUD');
+	$el->addOption('SEK (Sweden)', 'SEK');
+	$el->addOption('ISK (Iceland)', 'ISK');
+	$el->addOption('EUR (&euro; - Europe, etc)', 'EUR');
+	$el->addOption('CHF (Swiss franc)', 'CHF');
+
+	return $el;
+}
+

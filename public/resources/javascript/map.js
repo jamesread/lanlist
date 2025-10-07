@@ -50,7 +50,7 @@ function showInfobox(eventObject, marker)
     window.infoBox.open(window.map, marker);
 }
 
-async function renderMap()
+async function renderMap(geoipGuess)
 {
     const { Map } = await google.maps.importLibrary("maps");
 
@@ -60,7 +60,7 @@ async function renderMap()
     })
 
     try { 
-      const geoipGuess = 'United Kingdom'
+      //const geoipGuess = 'United Kingdom'
       countryZoom(geoipGuess)
     } catch (e) {
       console.error("Could not get location", e)
