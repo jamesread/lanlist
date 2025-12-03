@@ -14,10 +14,10 @@ class FormEditTicket extends \libAllure\Form {
 		$ticket = $this->getTicket($tid);
 		$this->event = $ticket['event'];
 
-		$canEditEvent = canEditEvent($this->event);
+		$canEditEvent = canEditEvent($ticket['organizerId']);
 
 		if (!$canEditEvent) {
-			throw new \libAllure\FormException('You do not have permission to edit this ticket.');
+			throw new \Exception('You do not have permission to edit this ticket.');
 		}
 
 		$this->addElementReadOnly('Ticket', $ticket['id'], 'id'); 
@@ -47,7 +47,7 @@ class FormEditTicket extends \libAllure\Form {
 	private function getTicket($id) {
 		global $db;
 
-		$sql = 'SELECT t.id, t.title, t.event, t.currency, t.cost FROM tickets t WHERE t.id = :id';
+		$sql = 'SELECT t.id, t.title, t.event, t.currency, t.cost, t.event, o.id AS organizerId FROM tickets t LEFT JOIN events e ON t.event = e.id LEFT JOIN organizers o ON e.organizer = o.id WHERE t.id = :id';
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':id', $id);
 		$stmt->execute();
