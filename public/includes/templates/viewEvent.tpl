@@ -33,7 +33,9 @@
 		{else}
 			<ul>
 			{foreach from = $event.tickets item = ticket}
-				<li><strong>{$ticket.title}:</strong> {$ticket.cost} {$ticket.currency}</li>
+				<li><strong>{$ticket.title}:</strong> {$ticket.cost} {$ticket.currency}
+				{if $canEditEvent}<a href = "formHandler.php?formClazz=FormEditTicket&editTicket-id={$ticket['id']}">Edit Ticket</a>{/if}
+				</li>
 			{/foreach}
 			</ul>
 		{/if}
