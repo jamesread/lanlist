@@ -11,7 +11,8 @@ $ll = new HtmlLinksCollection('Site links');
 $ll->setDefaultIcon('go-next.png');
 $ll->add('#', 'History');
 
-$menuHistory = $ll->addChildCollection('History');
+$menuHistory = new HtmlLinksCollection();
+$menuHistory = $ll->addChildCollection('History', $menuHistory);
 
 if (isset($_SESSION['history']) && is_array($_SESSION['history'])) {
     foreach (array_reverse($_SESSION['history']) as $link) {
@@ -20,7 +21,8 @@ if (isset($_SESSION['history']) && is_array($_SESSION['history'])) {
 }
 
 $ll->addIfPriv('MODERATE_ORGANIZERS', 'listOrganizers.php', 'Organizers', 'system-users.png');
-$menuOrganizer = $ll->addChildCollection('Organizers');
+$menuOrganizer = new HtmlLinksCollection();
+$menuOrganizer = $ll->addChildCollection('Organizers', $menuOrganizer);
 $menuOrganizer->add('listOrganizers.php', 'List Organizers', 'edit-find.png');
 $menuOrganizer->addIfPriv('CREATE_ORGANIZER', 'formHandler.php?formClazz=FormNewOrganizer', 'Create organizer', 'create.png');
 
@@ -29,18 +31,21 @@ $joinRequestsNotification = ($countJoinRequests == 0) ? null : '<strong>(' . $co
 $menuOrganizer->addIfPriv('JOIN_REQUESTS', 'joinRequests.php', 'Join requests ' . $joinRequestsNotification);
 
 $ll->addIfPriv('MODERATE_VENUES', 'listVenues.php', 'Venues', 'go-home.png');
-$menuVenues = $ll->addChildCollection('Venues');
+$menuVenues = new HtmlLinksCollection();
+$menuVenues = $ll->addChildCollection('Venues', $menuVenues);
 $menuVenues->add('listVenues.php', 'List venues', 'edit-find.png');
 $menuVenues->add('formHandler.php?formClazz=FormNewVenue', 'Create venue', 'create.png');
 
 $ll->addIfPriv('MODERATE_EVENTS', 'eventsList.php', 'Events', 'office-calendar.png');
-$menuEvents = $ll->addChildCollection('Events');
+$menuEvents = new HtmlLinksCollection();
+$menuEvents = $ll->addChildCollection('Events', $menuEvents);
 $menuEvents->addIf(!empty($organizer), 'viewOrganizer.php?id=' . $organizer, 'My events', 'edit-find.png');
 $menuEvents->add('eventsList.php', 'List events', 'edit-find.png');
 $menuEvents->add('formHandler.php?formClazz=FormNewEvent', 'Create event', 'create.png');
 
 $ll->addIfPriv('SYSTEM_MENU', null, 'System', 'emblem-system.png');
-$menuSystem = $ll->addChildCollection('System');
+$menuSystem = new HtmlLinksCollection();
+$menuSystem = $ll->addChildCollection('System', $menuSystem);
 
 $issuesChecker = new EventsChecker();
 $issuesChecker->checkAllEvents();
@@ -58,7 +63,8 @@ $newLogNotification = empty($newLogNotification) ? null : '<strong>(' . $newLogN
 $menuSystem->add('listLogs.php', 'Logs ' . $newLogNotification, 'log.png');
 
 $ll->addIfPriv('ADMIN_GOOGLE_ACCOUNTS', null, 'External');
-$menuExternalLinks = $ll->addChildCollection('External');
+$menuExternalLinks = new HtmlLinksCollection();
+$menuExternalLinks = $ll->addChildCollection('External', $menuExternalLinks);
 $menuExternalLinks->add('http://mail.lanlist.org', 'lanlist.org Gmail', 'gmail.png');
 $menuExternalLinks->add('http://google.com/a/lanlist.org', 'lanlist.org Google Admin', 'google.png');
 
