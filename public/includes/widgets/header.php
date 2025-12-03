@@ -17,6 +17,7 @@ $tpl->assign('siteTitle', SITE_TITLE);
 $tpl->assign('siteTitleDomain', SITE_TITLE_DOMAIN);
 $tpl->assign('siteTitleTld', SITE_TITLE_TLD);
 $tpl->assign('isLoggedIn', Session::isLoggedIn());
+$tpl->assign('isModerator', Session::hasPriv('MODERATOR'));
 $tpl->assign('username', Session::isLoggedIn() ? Session::getUser()->getUsername() : 'Guest');
 $tpl->assign('mapsApiKey', MAPS_API_KEY);
 //$tpl->register_modifier('floatToMoney', 'floatToMoney');

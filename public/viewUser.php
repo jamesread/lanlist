@@ -49,7 +49,8 @@ if (Session::getUser()->hasPriv('EDIT_USER')) {
     } else {
         $menu->add('formHandler.php?formClazz=FormSendEmailToUser&formSendEmailToUser-uid=' . $user['id'], 'Send email');
 
-        $menuEmail = $menu->addChildCollection('Send email');
+		$menuEmail = new HtmlLinksCollection('Send email');
+        $menuEmail = $menu->addChildCollection('Send email', $menuEmail);
         $menuEmail->add('formHandler.php?formClazz=FormSendEmailToUser&formSendEmailToUser-uid=' . $user['id'] . '&template=addYourRecentEvents', 'Template: Nag to add recent events');
     }
 

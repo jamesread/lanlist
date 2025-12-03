@@ -15,12 +15,15 @@ class FormAddTicket extends Form {
 		$event = fetchEvent($this->eventId);
 
         $this->addElementReadOnly('Event title', $event['eventTitle']);
+
         $this->addElementReadOnly('Event ID', $this->eventId, 'eventId');
 
         $elTicketTitle = new ElementInput('ticketTitle', 'Ticket title', '');
+		$elTicketTitle->setMinMaxLengths(1, 128);
         $this->addElement($elTicketTitle);
 
         $elTicketCost = new ElementInput('ticketCost', 'Ticket cost', '');
+		$elTicketCost->setMinMaxLengths(1, 10);
         $this->addElement($elTicketCost);
 
         $elTicketCurrency = getElementCurrency('GBP');

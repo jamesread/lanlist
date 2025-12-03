@@ -48,6 +48,15 @@ class FormEditEvent extends Form
         $event['dateFinish'] = date_create($event['dateFinish'])->format('Y-m-d H:i');
         
         $this->getElement('venue')->setValue($event['venue']);
+		$this->addElement(new ElementInput('fuzzyDate', 'Fuzzy date'));
+		$this->addScript(<<<EOF
+document.getElementById('formEditEvent-fuzzyDate').onchange = (e) => {
+	let v = e.srcElement.value;
+
+    console.log('onChange', v)
+}
+EOF);
+
         $this->addElement(new ElementDate('dateStart', 'Start', $event['dateStart']));
         $this->addElement(new ElementDate('dateFinish', 'Finish', $event['dateFinish']));
             $s = <<<EOF
@@ -60,7 +69,6 @@ dateStart.onchange = () => {
 EOF;
         $this->addScript($s);
 
-        $this->addElement(getElementCurrency($event['currency']));
         $this->addElement(new ElementInput('website', 'Event website', $event['website']));
         $this->addElementAgeRestrictions($event['ageRestrictions']);
         $this->addElement(new ElementSelect('showers', 'Showers', $event['showers']))->addOptions(dataShowers());
@@ -74,7 +82,7 @@ EOF;
         $this->getElement('internetMbps')->addSuggestedValue('0', 'No internet!');
         $this->getElement('internetMbps')->addSuggestedValue('2', '2mbps');
         $this->getElement('internetMbps')->addSuggestedValue('8', '8mbps');
-        $this->addElement(new ElementNumeric('numberOfSeats', 'Number of seats', $event['numberOfSeats']));
+		$this->addElement(new ElementNumeric('numberOfSeats', 'Number of seats', $event['numberOfSeats']));
         $this->addElement(new ElementTextbox('blurb', 'Additional blurb', htmlify($event['blurb'])));
 
         $this->addDefaultButtons('Save');
@@ -87,23 +95,6 @@ EOF;
         $el->addOption('Over 18s Only');
         $el->addOption('Under 18s require parents consent');
         $el->setValue($value);
-    }
-
-    protected function validateExtended()
-    {
-        $this->validateCurrency();
-    }
-
-    private function validateCurrency()
-    {
-        $val = $this->getElementValue('currency');
-        if (empty($val)) {
-            return;
-        }
-
-        if (!preg_match('/^[A-Z]{3}$/', $this->getElementValue('currency'))) {
-            $this->setElementError('currency', 'This is not a valid currency code. Please refer to ISO 4217 (3 uppercase characters).');
-        }
     }
 
     private function getEvent()
@@ -128,21 +119,32 @@ EOF;
     {
         global $db;
 
-        $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, website = :website, showers = :showers, sleeping = :sleeping, currency = :currency, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
+		$networkMbps = $this->getElementValue('networkMbps');
+
+		if (empty($networkMbps)) {
+			$networkMbps = null;
+		}
+
+		$internetMbps = $this->getElementValue('internetMbps');
+
+		if (empty($internetMbps)) {
+			$internetMbps = null;
+		}
+
+        $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, website = :website, showers = :showers, sleeping = :sleeping, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->bindValue(':title', $this->getElementValue('title'));
         $stmt->bindValue(':dateStart', $this->getElementValue('dateStart'));
         $stmt->bindValue(':dateFinish', $this->getElementValue('dateFinish'));
-        $stmt->bindValue(':currency', $this->getElementvalue('currency'));
         $stmt->bindValue(':ageRestrictions', $this->getElementvalue('ageRestrictions'));
         $stmt->bindValue(':website', $this->getElementvalue('website'));
         $stmt->bindValue(':showers', $this->getElementvalue('showers'));
         $stmt->bindValue(':sleeping', $this->getElementvalue('sleeping'));
         $stmt->bindValue(':alcohol', $this->getElementValue('alcohol'));
         $stmt->bindValue(':smoking', $this->getElementValue('smoking'));
-        $stmt->bindValue(':networkMbps', $this->getElementValue('networkMbps'));
-        $stmt->bindValue(':internetMbps', $this->getElementValue('internetMbps'));
+        $stmt->bindValue(':networkMbps', $networkMbps);
+        $stmt->bindValue(':internetMbps', $internetMbps);
         $stmt->bindValue(':numberOfSeats', $this->getElementValue('numberOfSeats'));
         $stmt->bindValue(':blurb', $this->getElementValue('blurb'));
         $stmt->bindValue(':venue', $this->getElementValue('venue'));
