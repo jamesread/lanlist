@@ -28,11 +28,15 @@
 	<strong>On door: </strong> {if $event.priceOnDoor == 0}Not Applicable{else}{$event.priceOnDoor|floatToMoney:$event.currency}{/if} <br />
 	<strong>In advance: </strong> {$event.priceInAdv|floatToMoney:$event.currency} <br /><br />
 	{else}
-		<ul>
-		{foreach from = $event.tickets item = ticket}
-			<li><strong>{$ticket.title}:</strong> {$ticket.cost} {$ticket.currency}</li>
-		{/foreach}
-		</ul>
+	    {if count($event.tickets) eq 1 && $event.tickets[0].cost == 0}
+		<p>Tickets are free for this event!</p>
+		{else}
+			<ul>
+			{foreach from = $event.tickets item = ticket}
+				<li><strong>{$ticket.title}:</strong> {$ticket.cost} {$ticket.currency}</li>
+			{/foreach}
+			</ul>
+		{/if}
 	{/if}
 	
 	{if $canEditEvent}
