@@ -5,6 +5,22 @@ import os
 import requests
 from urllib.parse import urlparse 
 from bs4 import BeautifulSoup
+import configargparse
+
+parser = configargparse.ArgParser(default_config_files=['./favicon-get.conf'])
+parser.add_argument('--org-id', help='The id of the organizer to get the favicon for. If not set, will get favicons for all organizers in the database.')
+args = parser.parse_args()
+
+
+def isUsableFaviconContentType(content_type):
+    if not content_type or not str(content_type).strip():
+        return False
+    mime = content_type.split(';')[0].strip().lower()
+    if not mime.startswith('image/'):
+        return False
+    # e.g. image/svg+xml, image/png, image/x-icon, image/vnd.microsoft.icon
+    return True
+
 
 def downloadFavicon(url, site, orgId):
     if site != "":
@@ -16,14 +32,18 @@ def downloadFavicon(url, site, orgId):
         
     print(f"\t{res.status_code} from {url}")
 
-    if res.status_code == 200:
-        with open(str(orgId) + '.ico', 'wb') as f:
-            f.write(res.content)
-
-    if res.status_code == 200:
-        return True
-    else:
+    if res.status_code != 200:
         return False
+
+    ct = res.headers.get('Content-Type', '')
+    if not isUsableFaviconContentType(ct):
+        print(f"\treject Content-Type {ct!r} (expected image/*, not HTML or other non-image types)")
+        return False
+
+    with open(str(orgId) + '.ico', 'wb') as f:
+        f.write(res.content)
+
+    return True
 
 def isAbsolute(url):
     return urlparse(url).netloc != ""
@@ -58,11 +78,13 @@ mydb = mysql.connector.connect(
 )
 
 cur = mydb.cursor()
-cur.execute('SELECT o.websiteUrl, o.id FROM organizers o')
 
-testData = [
-    ("https://blog.jread.com", "0")
-]
+if args.org_id:
+    cur.execute('SELECT o.websiteUrl, o.id FROM organizers o WHERE o.id = %s', (args.org_id,))
+else:
+    cur.execute('SELECT o.websiteUrl, o.id FROM organizers o')
+
+print("cur", cur)
 
 for row in cur:
     try: 
