@@ -6,4 +6,3 @@ public/resources/images/organizer-favicons
 *.swo
 *.swp
 uploads/
-composer.lock
