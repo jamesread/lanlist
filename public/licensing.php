@@ -14,8 +14,8 @@ require_once 'includes/widgets/header.php';
         <img alt="Creative Commons Licence" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
     </a><br />
 
-    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">The lanlist.org LAN Party Lists</span> 
-    by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lanlist.org/contact.php" property="cc:attributionName" rel="cc:attributionURL">lanlist.org Admin Team</a> 
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">The <?php echo htmlspecialchars(SITE_TITLE); ?> LAN Party Lists</span> 
+    by <a xmlns:cc="http://creativecommons.org/ns#" href="<?php echo htmlspecialchars(SITE_BASE_URL); ?>/contact.php" property="cc:attributionName" rel="cc:attributionURL"><?php echo htmlspecialchars(SITE_TITLE); ?> Admin Team</a> 
     are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a>.<br />
 </div>
 <br /><br />

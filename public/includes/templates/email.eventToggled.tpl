@@ -8,7 +8,7 @@
 
 <p>It was changed by <strong>{$publisherUsername}</strong>.<p>
 
-<p>View your event here: <a href = "https://www.lanlist.info/viewEvent.php?id={$event.id}">{$event.eventTitle}</a><p>
+<p>View your event here: <a href = "{$siteBaseUrl}/viewEvent.php?id={$event.id}">{$event.eventTitle}</a><p>
 
 </body>
 

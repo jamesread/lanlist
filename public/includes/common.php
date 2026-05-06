@@ -2,6 +2,10 @@
 
 require_once 'includes/config.php';
 
+if (!defined('SITE_BASE_URL')) {
+    define('SITE_BASE_URL', 'https://lanlist.info');
+}
+
 $baseDir = realpath(__DIR__ . '/../../');
 
 require_once $baseDir . '/vendor/autoload.php';

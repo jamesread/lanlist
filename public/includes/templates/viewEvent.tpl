@@ -7,7 +7,7 @@
 <div class = "paralellContainer">
 	<h3>Basics</h3>
 
-	<strong>Organizer: </strong> {if empty($event.organizerId)}???{else}<a href = "viewOrganizer.php?id={$event.organizerId}">{$event.organizerTitle|default:"???"}</a>{/if}<br />
+	<strong>Organizer: </strong> {if empty($event.organizerId)}???{else}{if $event.useFavicon}<img class = "imageIcon favicon" src = "resources/images/organizer-favicons/{$event.organizerId}.png" width = "16" height = "16" alt = "" decoding = "async" /> {/if}<a href = "viewOrganizer.php?id={$event.organizerId}">{$event.organizerTitle|default:"???"}</a>{/if}<br />
 	<strong>Event website: </strong> {$event.website|externUrlOr:"None"}	<br /><br />
 
 	<ul class = "property-list">

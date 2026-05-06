@@ -23,6 +23,7 @@ switch ($_REQUEST['action']) {
         $stmt->execute();
 
         foreach ($stmt->fetchAll() as $orgieUser) {
+            $tpl->assign('siteBaseUrl', SITE_BASE_URL);
             $tpl->assign('event', $event);
             $tpl->assign('publisherUsername', Session::getUser()->getUsername());
             $tpl->assign('user', $orgieUser);

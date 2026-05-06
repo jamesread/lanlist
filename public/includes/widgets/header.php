@@ -16,6 +16,7 @@ $tpl->assign('alertMessage', ALERT_MESSAGE);
 $tpl->assign('siteTitle', SITE_TITLE);
 $tpl->assign('siteTitleDomain', SITE_TITLE_DOMAIN);
 $tpl->assign('siteTitleTld', SITE_TITLE_TLD);
+$tpl->assign('siteBaseUrl', SITE_BASE_URL);
 $tpl->assign('isLoggedIn', Session::isLoggedIn());
 $tpl->assign('isModerator', Session::hasPriv('MODERATOR'));
 $tpl->assign('username', Session::isLoggedIn() ? Session::getUser()->getUsername() : 'Guest');

@@ -74,7 +74,7 @@ EOF;
 
         if (!empty($this->user)) {
             $tpl->assign('username', $this->user->getUsername());
-            $tpl->assign('organizationUrl', 'http://lanlist.org/viewOrganizer.php?id=' . $this->user->getData('organization'));
+            $tpl->assign('organizationUrl', SITE_BASE_URL . '/viewOrganizer.php?id=' . $this->user->getData('organization'));
             $tpl->assign('organizer', $this->organizer);
         }
 
@@ -97,7 +97,7 @@ EOF;
 
 		$content = $this->getElementValue('body');
 		
-		$footer = '<br /><br /><small>This is NOT an automated email, a human wrote this email and sent it to you directly from lanlist.org. We try not to spam our users and hope you found this email useful. If you REALLY hate us and want to stop receiving email from us then login to http://lanlist.org and remove your email address from your user profile. You should be able to reply to this email and talk to a human, or check http://lanlist.org/contact.php for our latest contact details. </small>';
+		$footer = '<br /><br /><small>This is NOT an automated email, a human wrote this email and sent it to you directly from ' . htmlspecialchars(SITE_TITLE) . '. We try not to spam our users and hope you found this email useful. If you REALLY hate us and want to stop receiving email from us then login to ' . htmlspecialchars(SITE_BASE_URL) . ' and remove your email address from your user profile. You should be able to reply to this email and talk to a human, or check ' . htmlspecialchars(SITE_BASE_URL) . '/contact.php for our latest contact details. </small>';
 
 		// Insert footer just before the closing body tag if it exists, otherwise append to the end of the email
 
