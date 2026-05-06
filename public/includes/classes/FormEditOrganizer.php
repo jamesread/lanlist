@@ -29,6 +29,8 @@ class FormEditOrganizer extends Form
         $this->addElement(new ElementInput('genericEmail', 'Generic email', $organizer['genericEmail']));
         $this->addElement(new ElementInput('steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
         $this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
+        $this->addElement(new ElementInput('discordInviteUrl', 'Discord invite URL', htmlify($organizer['discordInviteUrl'])));
+        $this->getElement('discordInviteUrl')->setMinMaxLengths(0, 255);
         $this->addElement(new ElementTextbox('blurb', 'Blurb', $organizer['blurb']));
                 $this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG, maximum image size is 468x160'));
                 $this->getElement('banner')->tempDir = UPLOAD_TEMP_DIR;
@@ -49,7 +51,7 @@ class FormEditOrganizer extends Form
     {
         global $db;
 
-        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, blurb = :blurb, useFavicon = :useFavicon WHERE id = :id LIMIT 1';
+        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, discordInviteUrl = :discordInviteUrl, blurb = :blurb, useFavicon = :useFavicon WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->bindValue(':title', $this->getElementValue('title'));
@@ -57,6 +59,7 @@ class FormEditOrganizer extends Form
         $stmt->bindValue(':assumedStale', $this->getElementValue('assumedStale'));
         $stmt->bindValue(':genericEmail', $this->getElementValue('genericEmail'));
         $stmt->bindValue(':steamGroupUrl', $this->getElementValue('steamGroupUrl'));
+        $stmt->bindValue(':discordInviteUrl', $this->getElementValue('discordInviteUrl'));
         $stmt->bindValue(':blurb', $this->getElementValue('blurb'));
         $stmt->bindValue(':useFavicon', $this->getElementValue('useFavicon'));
 
