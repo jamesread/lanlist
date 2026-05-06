@@ -2,5 +2,5 @@
 <p>{$news|@count} article(s).</p>
 
 {foreach from = $news item = article}
-	<h2>Article: {$article.title}</h2>
+	<h2>Article: {$article.title|escape:'html'}</h2>
 {/foreach}

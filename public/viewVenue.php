@@ -1,7 +1,6 @@
 <?php
 
-define('INCLUDE_GOOGLE_MAPS', true);
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 
 use libAllure\Session;
 use libAllure\HtmlLinksCollection;
@@ -10,6 +9,11 @@ $id = fromRequestRequireInt('id');
 $venue = fetchVenue($id);
 
 addHistoryLink('viewVenue.php?id=' . $id, 'View venue: ' . $venue['title']);
+
+define('INCLUDE_GOOGLE_MAPS', true);
+define('TITLE', 'Venue: ' . $venue['title']);
+define('META_DESCRIPTION', seoVenueMetaDescription($venue));
+require_once 'includes/widgets/header.php';
 
 $associatedOrganizers = [];
 

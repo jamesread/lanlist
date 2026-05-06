@@ -1,7 +1,26 @@
 <?php
 
+require_once 'includes/common.php';
+
+global $tpl;
+
 define('MAIN_NOPADDING', true);
 define('INCLUDE_GOOGLE_MAPS', true);
+define('TITLE', 'LAN parties map');
+define(
+    'META_DESCRIPTION',
+    'Interactive map of upcoming LAN parties and gaming LAN events. Browse by location, open the event list, or add your own events on lanlist.'
+);
+
+$jsonLdPayload = buildWebSiteJsonLd();
+$jsonEncodeFlags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+
+if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+    $jsonEncodeFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
+}
+
+$tpl->assign('structuredDataJson', json_encode($jsonLdPayload, $jsonEncodeFlags));
+
 require_once 'includes/widgets/header.php';
 
 use libAllure\Session;

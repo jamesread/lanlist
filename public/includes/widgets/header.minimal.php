@@ -12,7 +12,7 @@
     <?php
 
     if (defined('REDIRECT')) {
-        echo '<meta http-equiv = "refresh" content = "3; url=' . REDIRECT . '"/>';
+        echo '<meta http-equiv = "refresh" content = "3; url=' . htmlspecialchars(REDIRECT, ENT_QUOTES, 'UTF-8') . '"/>';
     }
     ?>
 </head>

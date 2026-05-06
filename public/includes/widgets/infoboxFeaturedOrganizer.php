@@ -8,7 +8,7 @@ $org = $stmt->fetchRow();
 ?>
 
 <div class = "infobox">
-        <h2>Featured organizer: <a href = "viewOrganizer.php?id=<?php echo $org['id']; ?>"><?php echo $org['title']; ?></a></h2>
+        <h2>Featured organizer: <a href = "viewOrganizer.php?id=<?php echo (int)$org['id']; ?>"><?php echo htmlspecialchars((string)$org['title'], ENT_QUOTES, 'UTF-8'); ?></a></h2>
 
 <?php
     $tpl->assign('organizerId', $org['id']);
@@ -17,5 +17,5 @@ $org = $stmt->fetchRow();
 
     $tpl->display('infobox.organizerLogo.tpl');
 ?>
-        <p><?php echo $org['blurb']; ?></p>
+        <p><?php echo htmlspecialchars((string)$org['blurb'], ENT_QUOTES, 'UTF-8'); ?></p>
 </div>

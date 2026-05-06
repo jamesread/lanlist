@@ -9,8 +9,10 @@ use libAllure\ElementReadOnly;
 
 class FormSendEmailToUser extends Form
 {
-    private ?\libAllure\User $user;
-    private array $organizer;
+    private ?\libAllure\User $user = null;
+
+    /** @var array<string, mixed> */
+    private array $organizer = [];
 
     public function __construct()
     {
@@ -41,12 +43,20 @@ class FormSendEmailToUser extends Form
                 $this->organizer = $stmt->fetchRow();
             }
 
-            $sendTo->description = $this->user->getData('email') .  ', User: <a href = "viewUser.php?id=' . $this->user->getId() . '">' . $this->user->getData('username') . '</a> Organizer: <a href = "viewOrganizer.php?id=' . $this->organizer['id'] . '">' . $this->organizer['title'] . '</a>' ;
+            if ($this->organizer === []) {
+                $this->organizer = ['title' => '???', 'id' => 0];
+            }
+
+            $sendTo->description = htmlspecialchars((string)$this->user->getData('email'), ENT_QUOTES, 'UTF-8')
+                . ', User: <a href = "viewUser.php?id=' . (int)$this->user->getId() . '">'
+                . htmlspecialchars((string)$this->user->getData('username'), ENT_QUOTES, 'UTF-8')
+                . '</a> Organizer: <a href = "viewOrganizer.php?id=' . (int)$this->organizer['id'] . '">'
+                . htmlspecialchars((string)$this->organizer['title'], ENT_QUOTES, 'UTF-8') . '</a>';
             $sendTo->setValue($this->user->getData('email'));
         }
 
-        if (empty($this->organizer)) {
-            $this->organizer = array('title' => '???', 'id' => '0');
+        if ($this->organizer === []) {
+            $this->organizer = ['title' => '???', 'id' => 0];
         }
 
         $this->addElement(new ElementInput('subject', 'Subject', 'Message from a human!'));
@@ -64,10 +74,11 @@ EOF;
 
     private function loadTemplate()
     {
-        if (isset($_REQUEST['template'])) {
-            $template = $_REQUEST['template'];
-        } else {
-            $template = 'default';
+        $allowedTemplates = ['default', 'eventToggled', 'addYourRecentEvents'];
+        $template = 'default';
+
+        if (isset($_REQUEST['template']) && in_array((string)$_REQUEST['template'], $allowedTemplates, true)) {
+            $template = (string)$_REQUEST['template'];
         }
 
         global $tpl;

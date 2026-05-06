@@ -1,6 +1,10 @@
 <?php
 
 define('TITLE', 'Organizers of LAN Parties');
+define(
+    'META_DESCRIPTION',
+    'Directory of LAN party organizers on lanlist — browse groups and open profiles to see upcoming events.'
+);
 require_once 'includes/widgets/header.php';
 
 use libAllure\Session;

@@ -1,5 +1,7 @@
 <?php
 
+define('TITLE', 'Useful related sites');
+define('META_DESCRIPTION', 'Other websites, wikis, and community resources related to LAN parties and local gaming events.');
 require_once 'includes/widgets/header.php';
 
 ?>

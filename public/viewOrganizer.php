@@ -8,6 +8,14 @@ $organizer = fetchOrganizer(fromRequestRequireInt('id'));
 addHistoryLink('viewOrganizer.php?id=' . $organizer['id'], 'Viewed: ' . $organizer['title']);
 
 define('TITLE', 'Organizer: ' . $organizer['title']);
+define('META_DESCRIPTION', seoOrganizerMetaDescription($organizer));
+
+$ogImageAbs = seoOrganizerOpenGraphAbsoluteImageUrl((int)$organizer['id']);
+
+if ($ogImageAbs !== null) {
+    define('META_OG_IMAGE', $ogImageAbs);
+}
+
 require_once 'includes/widgets/header.php';
 
 $organizer['logoUrl'] = getOrganizerLogoUrl($organizer['id']);

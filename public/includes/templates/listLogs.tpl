@@ -10,10 +10,10 @@
 	<tbody>
 	{foreach from = $listLogs item = "itemLog"}
 	<tr>
-		<td class = "{$itemLog.class}"><strong>{$itemLog.priority}</strong></td>
-		<td>{$itemLog.eventType}</td>
-		<td>{$itemLog.timestamp}</td>
-		<td>{$itemLog.content}</td>
+		<td class = "{$itemLog.class|escape:'html'}"><strong>{$itemLog.priority|escape:'html'}</strong></td>
+		<td>{$itemLog.eventType|escape:'html'}</td>
+		<td>{$itemLog.timestamp|escape:'html'}</td>
+		<td>{$itemLog.content|escape:'html'}</td>
 	</tr>
 	{/foreach}
 

@@ -2,6 +2,30 @@
 
 define('TITLE', 'Events in a list');
 define('MAIN_NOPADDING', true);
+
+$eventsListMode = isset($_REQUEST['mode']) ? (string)$_REQUEST['mode'] : '';
+
+switch ($eventsListMode) {
+    case 'perOrganizer':
+        define(
+            'META_DESCRIPTION',
+            'Upcoming LAN parties grouped by organizer, with venues, countries, start dates, and seat counts.'
+        );
+        break;
+    case 'everything':
+        define(
+            'META_DESCRIPTION',
+            'All published LAN parties on lanlist, including past events, with organizers, venues, dates, and seating.'
+        );
+        break;
+    default:
+        define(
+            'META_DESCRIPTION',
+            'Chronological list of upcoming LAN parties with organizers, venues, countries, and start dates.'
+        );
+        break;
+}
+
 require_once 'includes/widgets/header.php';
 
 $_REQUEST['mode'] = &$_REQUEST['mode'];

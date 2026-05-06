@@ -24,7 +24,7 @@ if (!isset($_REQUEST['function'])) {
 if (!isset($_REQUEST['format'])) {
     throw new Exception('Format is required.');
 } else {
-    define('FORMAT', $_REQUEST['format']);
+    define('FORMAT', strtolower(trim((string)$_REQUEST['format'])));
 }
 
 function csvLine(array $data)
@@ -40,6 +40,10 @@ function csvLine(array $data)
 
 switch (FUNC) {
     case 'logs':
+        if (FORMAT !== 'csv') {
+            throw new Exception('Format not supported.');
+        }
+
         requirePriv('VIEW_LOGS');
 
         $sql = 'SELECT l.id, l.timestamp, l.priority, l.eventType, l.content FROM logs l ORDER BY id DESC LIMIT 3000';
@@ -61,6 +65,12 @@ switch (FUNC) {
 
         break;
     case 'events':
+        $allowedEventFormats = ['json', 'rss', 'ical', 'csv'];
+
+        if (!in_array(FORMAT, $allowedEventFormats, true)) {
+            throw new Exception('Format not supported.');
+        }
+
         if (empty($_REQUEST['includePast'])) {
             $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, o.title AS organizer FROM events e LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now()';
         } else {

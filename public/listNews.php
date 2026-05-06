@@ -1,5 +1,7 @@
 <?php
 
+define('TITLE', 'News');
+define('META_DESCRIPTION', 'News and short announcements about lanlist and the LAN party community.');
 require_once 'includes/widgets/header.php';
 
 $sql = 'SELECT n.id, n.title, n.content FROM news n';

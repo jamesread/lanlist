@@ -304,8 +304,8 @@ function redirect($url, $reason)
         require_once 'includes/widgets/header.minimal.php';
     }
 
-    echo '<h1>Redirecting: '  . $reason .  '</h1>';
-    echo '<p style = "text-align: center">You are being redirected to <a href = "' . $url . '">here</a>.</p>';
+    echo '<h1>Redirecting: ' . htmlspecialchars((string)$reason, ENT_QUOTES, 'UTF-8') . '</h1>';
+    echo '<p style = "text-align: center">You are being redirected to <a href = "' . htmlspecialchars((string)$url, ENT_QUOTES, 'UTF-8') . '">here</a>.</p>';
 
     require_once 'includes/widgets/footer.minimal.php';
 }

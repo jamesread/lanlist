@@ -25,6 +25,7 @@ foreach (
         '/listOrganizers.php',
         '/listVenues.php',
         '/listNews.php',
+        '/viewBlog.php',
         '/linkus.php',
         '/contact.php',
         '/usefulRelatedSites.php',
@@ -56,6 +57,24 @@ foreach ($stmt->fetchAll() as $row) {
     $lastmod = date('c', $created);
 
     echo '  <url><loc>' . $h($loc) . '</loc><lastmod>' . $h($lastmod) . "</lastmod></url>\n";
+}
+
+$sql = 'SELECT DISTINCT organizer AS id FROM events WHERE published = 1 AND organizer IS NOT NULL ORDER BY organizer ASC';
+$stmt = $db->prepare($sql);
+$stmt->execute();
+
+foreach ($stmt->fetchAll() as $row) {
+    $loc = $base . '/viewOrganizer.php?id=' . (int)$row['id'];
+    echo '  <url><loc>' . $h($loc) . "</loc></url>\n";
+}
+
+$sql = 'SELECT DISTINCT venue AS id FROM events WHERE published = 1 AND venue IS NOT NULL ORDER BY venue ASC';
+$stmt = $db->prepare($sql);
+$stmt->execute();
+
+foreach ($stmt->fetchAll() as $row) {
+    $loc = $base . '/viewVenue.php?id=' . (int)$row['id'];
+    echo '  <url><loc>' . $h($loc) . "</loc></url>\n";
 }
 
 echo "</urlset>\n";

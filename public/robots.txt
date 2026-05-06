@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /includes
 
-Sitemap: /sitemap.xml.php
+Sitemap: https://lanlist.info/sitemap.xml.php

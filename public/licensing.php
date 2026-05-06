@@ -1,5 +1,7 @@
 <?php
 
+define('TITLE', 'Licensing');
+define('META_DESCRIPTION', 'Open source software license (AGPL) and Creative Commons BY-SA terms for LAN party list data on lanlist.');
 require_once 'includes/widgets/header.php';
 
 ?>

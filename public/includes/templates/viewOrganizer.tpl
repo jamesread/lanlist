@@ -38,7 +38,7 @@
 	{if empty($organizer.blurb)}	
 	<p>Not much is known about this organizer. If you are the organizer of this event, <a href = "register.php">register a user account</a> and request to <a href = "formHandler.php?formClazz=FormJoinOrganizer">join an existing organizer</a> to edit this page.</p>
 	{else}
-	<p>{$organizer.blurb}</p>
+	<p>{$organizer.blurb|stripslashes|htmlify}</p>
 	{/if}
 </div>
 
@@ -76,7 +76,7 @@
 	</ul>
 
 	{if !empty($organizer.genericEmail)}
-		<a href = "formHandler.php?formClazz=FormSendEmailToUser&formSendEmailToUser-email={$organizer.genericEmail}">{$organizer.genericEmail}</a>
+		<a href = "formHandler.php?formClazz=FormSendEmailToUser&amp;formSendEmailToUser-email={$organizer.genericEmail|escape:'url'}">{$organizer.genericEmail|escape:'html'}</a>
 	{/if}
 </div>
 {/if}

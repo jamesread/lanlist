@@ -11,7 +11,29 @@ function seoCurrentPageUrl(): string
     $query = '';
 
     if (!empty($_SERVER['QUERY_STRING'])) {
-        $query = '?' . $_SERVER['QUERY_STRING'];
+        $params = [];
+        parse_str($_SERVER['QUERY_STRING'], $params);
+
+        if (is_array($params) && $params !== []) {
+            $trackingKeys = [
+                'utm_source' => true,
+                'utm_medium' => true,
+                'utm_campaign' => true,
+                'utm_term' => true,
+                'utm_content' => true,
+                'gclid' => true,
+                'fbclid' => true,
+                'msclkid' => true,
+            ];
+
+            foreach ($trackingKeys as $key => $_) {
+                unset($params[$key]);
+            }
+
+            if ($params !== []) {
+                $query = '?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+            }
+        }
     }
 
     return $base . $scriptName . $query;
@@ -55,6 +77,68 @@ function seoPlainDescriptionFromEvent(array $event, int $maxLength): string
 function seoEventMetaDescription(array $event): string
 {
     return seoPlainDescriptionFromEvent($event, 160);
+}
+
+function seoEventPageTitle(array $event): string
+{
+    $organizer = trim((string)($event['organizerTitle'] ?? ''));
+    $eventTitle = trim((string)($event['eventTitle'] ?? ''));
+    $eventName = $eventTitle !== '' ? $eventTitle : 'LAN party';
+
+    if ($organizer !== '') {
+        return 'Event: ' . $organizer . ' - ' . $eventName;
+    }
+
+    return 'Event: ' . $eventName;
+}
+
+function buildWebSiteJsonLd(): array
+{
+    return seoJsonLdStripNulls([
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => SITE_TITLE,
+        'url' => rtrim(SITE_BASE_URL, '/') . '/',
+        'description' => seoDefaultMetaDescription(),
+    ]);
+}
+
+function seoOrganizerMetaDescription(array $organizer): string
+{
+    $fromBlurb = strip_tags(stripslashes($organizer['blurb'] ?? ''));
+    $fromBlurb = trim(preg_replace('/\s+/', ' ', $fromBlurb));
+
+    if ($fromBlurb !== '') {
+        return seoTruncateMeta(html_entity_decode($fromBlurb, ENT_QUOTES | ENT_HTML5, 'UTF-8'), 160);
+    }
+
+    $title = (string)($organizer['title'] ?? '');
+    $fallback = $title !== ''
+        ? 'LAN party organizer: ' . $title . '. Upcoming events and details on lanlist.'
+        : 'LAN party organizer profile on lanlist.';
+
+    return seoTruncateMeta($fallback, 160);
+}
+
+function seoVenueMetaDescription(array $venue): string
+{
+    $title = trim((string)($venue['title'] ?? ''));
+    $country = trim((string)($venue['country'] ?? ''));
+
+    $parts = ['LAN party venue'];
+
+    if ($title !== '') {
+        $parts[] = $title;
+    }
+
+    if ($country !== '') {
+        $parts[] = $country;
+    }
+
+    return seoTruncateMeta(
+        implode(' — ', $parts) . '. Find upcoming LAN events at this location on lanlist.',
+        160
+    );
 }
 
 function seoOrganizerOpenGraphAbsoluteImageUrl(?int $organizerId): ?string

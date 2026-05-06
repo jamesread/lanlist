@@ -12,10 +12,10 @@ switch ($_REQUEST['action']) {
 
         $sql = 'UPDATE events SET published = !published WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':id', $_REQUEST['id']);
+        $stmt->bindValue(':id', fromRequestRequireInt('id'));
         $stmt->execute();
 
-        $event = fetchEvent($_REQUEST['id']);
+        $event = fetchEvent(fromRequestRequireInt('id'));
 
         $sql = 'SELECT u.id, u.username, u.email FROM users u WHERE u.organization = :organization';
         $stmt = $db->prepare($sql);
@@ -38,7 +38,7 @@ switch ($_REQUEST['action']) {
             sendEmail($orgieUser['email'], $content, $title);
         }
 
-        redirect('viewEvent.php?id=' . $_REQUEST['id'], 'Event toggled. Email sent to organizers.');
+        redirect('viewEvent.php?id=' . (int)$event['id'], 'Event toggled. Email sent to organizers.');
         break;
     case 'cloneEvent':
         $event = fetchEvent(fromRequestRequireInt('id'));
@@ -109,6 +109,8 @@ switch ($_REQUEST['action']) {
         redirect('index.php', 'Event deleted');
         break;
     case 'updateOrganizerLastChecked':
+        requirePriv('SITE_CHECKS');
+
         $organizer = fetchOrganizer(fromRequestRequireInt('id'));
 
         $sql = 'UPDATE organizers SET lastChecked = now() WHERE id = :id';

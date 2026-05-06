@@ -37,7 +37,7 @@ $tpl->assign('structuredDataJson', json_encode($jsonLdPayload, $jsonEncodeFlags)
 
 $tpl->assign('includeGoogleMaps', !empty($event['venueId']));
 
-define('TITLE', 'Event: ' . $event['organizerTitle'] . ' - ' . $event['eventTitle']);
+define('TITLE', seoEventPageTitle($event));
 require_once 'includes/widgets/header.php';
 
 $canEditEvent = canEditEvent($event['organizerId']);

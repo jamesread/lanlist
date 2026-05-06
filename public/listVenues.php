@@ -1,6 +1,10 @@
 <?php
 
 define('TITLE', 'List of venues that have LAN Parties');
+define(
+    'META_DESCRIPTION',
+    'Venues that host LAN parties listed on lanlist — find locations and see which events use each venue.'
+);
 require_once 'includes/widgets/header.php';
 
 if (isset($_REQUEST['country'])) {

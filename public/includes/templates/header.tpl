@@ -23,6 +23,11 @@
 	<meta property = "og:title" content = "{$title|default:"A list of LAN parties"} &bull; {$siteTitle}" />
 	<meta property = "og:description" content = "{$metaDescription|escape:'htmlall':'UTF-8'}" />
 
+	<meta name = "twitter:card" content = "summary_large_image" />
+	<meta name = "twitter:title" content = "{$title|default:"A list of LAN parties"} &bull; {$siteTitle}" />
+	<meta name = "twitter:description" content = "{$metaDescription|escape:'htmlall':'UTF-8'}" />
+	<meta name = "twitter:image" content = "{$socialImageUrl|escape:'htmlall':'UTF-8'}" />
+
 	{if isset($structuredDataJson) && $structuredDataJson !== ''}
 	<script type="application/ld+json">{$structuredDataJson nofilter}</script>
 	{/if}
