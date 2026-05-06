@@ -2,6 +2,8 @@
 
 <p>Whether you are a human or a robot, here is a sitemap for you to read.</p>
 
+<p>Machine-readable index: <a href = "sitemap.xml.php">XML sitemap</a> (also listed in <code>robots.txt</code>).</p>
+
 <h3>Lists</h3>
 <dl>
 	<dt><a href = "eventsList.php">Events</a></dt>
@@ -11,7 +13,7 @@
 	<dd>A list of organizers of LAN Parties.</dd>
 
 	<dt><a href = "listVenues.php">Venues</a></dt>
-	<dd>Vanues are physical places where organizers hold their events.</dd>
+	<dd>Venues are physical places where organizers hold their events.</dd>
 </dl>
 
 <h3>Users &amp; Accounts</h3>

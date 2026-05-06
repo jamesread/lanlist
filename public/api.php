@@ -9,6 +9,11 @@ require_once 'includes/common.php';
 use libAllure\Sanitizer;
 
 $sanitizer = new Sanitizer();
+$siteOrigin = rtrim(SITE_BASE_URL, '/');
+$siteHost = (string) parse_url($siteOrigin, PHP_URL_HOST);
+if ($siteHost === '') {
+    $siteHost = 'lanlist.info';
+}
 
 if (!isset($_REQUEST['function'])) {
     throw new Exception('The requrest argument "function" is required.');
@@ -43,7 +48,7 @@ switch (FUNC) {
         switch (FORMAT) {
             case 'csv':
                 header('Content-Type: text/plain');
-                header('Content-Disposition: inline; filename = "lanlist.org Logs.csv";');
+                header('Content-Disposition: inline; filename = "lanlist.info Logs.csv";');
 
                 foreach ($logs as $log) {
                     echo csvLine($log);
@@ -81,12 +86,12 @@ switch (FUNC) {
                 $elChannel = $elRss->appendChild($doc->createElement('channel'));
                 $elAtomSelf = $doc->createElement('atom:link');
                 $elAtomSelf->setAttribute('rel', 'self');
-                $elAtomSelf->setAttribute('href', 'http://lanlist.org/api.php?function=events&format=rss');
+                $elAtomSelf->setAttribute('href', $siteOrigin . '/api.php?function=events&format=rss');
                 $elAtomSelf->setAttribute('type', 'application/rss+xml');
                 $elChannel->appendChild($elAtomSelf);
-                $elChannel->appendChild($doc->createElement('title'))->nodeValue = 'lanlist.org - A list of LAN parties';
+                $elChannel->appendChild($doc->createElement('title'))->nodeValue = SITE_TITLE . ' - A list of LAN parties';
                 $elChannel->appendChild($doc->createElement('description'))->nodeValue = 'A list of LAN parties.';
-                $elChannel->appendChild($doc->createElement('link'))->nodeValue = 'http://lanlist.org';
+                $elChannel->appendChild($doc->createElement('link'))->nodeValue = $siteOrigin . '/';
                 $elChannel->appendChild($doc->createElement('lastBuildDate'))->nodeValue = date(DATE_RSS);
                 $elChannel->appendChild($doc->createElement('pubDate'))->nodeValue = date(DATE_RSS);
 
@@ -94,8 +99,8 @@ switch (FUNC) {
                         $elItem = $elChannel->appendChild($doc->createElement('item'));
 
                         $elItem->appendChild($doc->createElement('title'))->nodeValue = $event['title'];
-                        $elItem->appendChild($doc->createElement('link'))->nodeValue = 'http://www.lanlist.org/viewEvent.php?id=' . $event['id'];
-                        $elItem->appendChild($doc->createElement('guid'))->nodeValue = 'http://www.lanlist.org/viewEvent.php?id=' . $event['id'];
+                        $elItem->appendChild($doc->createElement('link'))->nodeValue = $siteOrigin . '/viewEvent.php?id=' . $event['id'];
+                        $elItem->appendChild($doc->createElement('guid'))->nodeValue = $siteOrigin . '/viewEvent.php?id=' . $event['id'];
                         $elItem->appendChild($doc->createElement('pubDate'))->nodeValue = date(DATE_RSS, strtotime($event['dateStart']));
                 }
 
@@ -104,13 +109,13 @@ switch (FUNC) {
                 break;
             case 'ical':
                 header('Content-Type: text/calendar');
-                header('Content-Disposition: inline, filename="lanlist.org.ics"');
+                header('Content-Disposition: inline, filename="lanlist.info.ics"');
                 define('X_DATE_ICAL', 'Ymd\Thi00');
 
                 echo "BEGIN:VCALENDAR\r\nVERSION:2.0\r\n";
                 echo "PRODID:-//lanlist/hacks//NO\r\n";
-                echo "SUMMARY:lanlist.org - A list of LAN Parties\r\n";
-                echo "X-WR-CALNAME;VALUE=TEXT:lanlist.org\r\n";
+                echo 'SUMMARY:' . SITE_TITLE . " - A list of LAN Parties\r\n";
+                echo 'X-WR-CALNAME;VALUE=TEXT:' . SITE_TITLE . "\r\n";
                 echo "METHOD:PUBLISH\r\n";
                 echo "CALSCALE:GREGORIAN\r\n";
 
@@ -119,10 +124,10 @@ switch (FUNC) {
                     echo 'DTSTAMP:' . date(X_DATE_ICAL, strtotime($event['dateStart'])) . "\r\n";
                     echo 'DTSTART:' . date(X_DATE_ICAL, strtotime($event['dateStart'])) . "\r\n";
                     echo 'DTEND:' . date(X_DATE_ICAL, strtotime($event['dateFinish'])) . "\r\n";
-                    echo 'DESCRIPTION: Title: ' . $event['title'] . ', Organizer: ' .  $event['organizer'] . ' URL: <a href = "http://www.lanlist.org/viewEvent.php?id=' . $event['id'] . '">linky</a>' . " \r\n";
-                    echo 'URL: http://www.lanlist.org/viewEvent.php?id=' . $event['id'] . "\r\n";
+                    echo 'DESCRIPTION: Title: ' . $event['title'] . ', Organizer: ' .  $event['organizer'] . ' URL: ' . $siteOrigin . '/viewEvent.php?id=' . $event['id'] . " \r\n";
+                    echo 'URL: ' . $siteOrigin . '/viewEvent.php?id=' . $event['id'] . "\r\n";
                     echo 'SUMMARY:' . $event['organizer'] . ' - ' . $event['title'] . "\r\n";
-                    echo 'UUID:event' . $event['id'] . "@lanlist.org\r\n";
+                    echo 'UUID:event' . $event['id'] . '@' . $siteHost . "\r\n";
                     echo "STATUS: CONFIRMED\r\n";
 //                  echo 'ORGANIZER: ' . $event['organizer'] . "\r\n";
                     echo "END:VEVENT\r\n";

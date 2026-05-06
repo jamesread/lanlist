@@ -8,6 +8,35 @@ $event = fetchEvent(fromRequestRequireInt('id'));
 
 addHistoryLink('viewEvent.php?id=' . $event['id'], 'View event: ' . $event['eventTitle']);
 
+define('META_DESCRIPTION', seoEventMetaDescription($event));
+
+$ogImageAbs = seoOrganizerOpenGraphAbsoluteImageUrl(isset($event['organizerId']) ? (int)$event['organizerId'] : null);
+
+if ($ogImageAbs !== null) {
+    define('META_OG_IMAGE', $ogImageAbs);
+}
+
+$eventCoords = null;
+
+if (
+    isset($event['venueLat'], $event['venueLng'])
+    && $event['venueLat'] !== '' && $event['venueLng'] !== ''
+    && is_numeric($event['venueLat']) && is_numeric($event['venueLng'])
+) {
+    $eventCoords = ['lat' => (float)$event['venueLat'], 'lng' => (float)$event['venueLng']];
+}
+
+$jsonLdPayload = buildEventJsonLdArray($event, $eventCoords);
+$jsonEncodeFlags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+
+if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+    $jsonEncodeFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
+}
+
+$tpl->assign('structuredDataJson', json_encode($jsonLdPayload, $jsonEncodeFlags));
+
+$tpl->assign('includeGoogleMaps', !empty($event['venueId']));
+
 define('TITLE', 'Event: ' . $event['organizerTitle'] . ' - ' . $event['eventTitle']);
 require_once 'includes/widgets/header.php';
 

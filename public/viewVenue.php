@@ -1,5 +1,6 @@
 <?php
 
+define('INCLUDE_GOOGLE_MAPS', true);
 require_once 'includes/widgets/header.php';
 
 use libAllure\Session;
