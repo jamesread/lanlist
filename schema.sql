@@ -193,6 +193,7 @@ CREATE TABLE `organizers` (
   `title` varchar(32) DEFAULT NULL,
   `websiteUrl` varchar(256) DEFAULT NULL,
   `steamGroupUrl` varchar(256) DEFAULT NULL,
+  `discordInviteUrl` varchar(256) DEFAULT NULL,
   `blurb` varchar(1024) DEFAULT NULL,
   `published` tinyint(4) DEFAULT '0',
   `lastChecked` datetime DEFAULT NULL,

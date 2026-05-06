@@ -247,6 +247,7 @@ main.minimal {
   margin: auto;
   margin-top: 3em;
   width: 50%;
+  max-width: 600px;
   display: block;
   grid-column-start: main;
   grid-column-end: sidebar;
@@ -362,6 +363,83 @@ div.paralellContainer {
   width: 45%;
   margin-right: 1%;
   vertical-align: top;
+}
+
+.organizer-steam-discord-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1.25em;
+  row-gap: 0.45em;
+}
+
+.organizer-steam-line,
+.organizer-steam-cell,
+.organizer-discord-cell {
+  min-width: 0;
+}
+
+.organizer-discord-join,
+.organizer-steam-join {
+  margin: 0;
+}
+
+a.organizer-platform-button {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 2.5em;
+  padding: 0.45em 0.95em;
+  border: 0;
+  border-radius: 0.25em;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 0.95em;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color 0.15s ease, filter 0.15s ease;
+}
+
+a.organizer-platform-button--discord {
+  background-color: #5865f2;
+}
+
+a.organizer-platform-button--discord:hover {
+  background-color: #4752c4;
+  color: #fff;
+  filter: brightness(1.02);
+}
+
+a.organizer-platform-button--discord:focus {
+  outline: 2px solid #00b0f4;
+  outline-offset: 2px;
+}
+
+a.organizer-platform-button--steam {
+  background-color: #1b2838;
+}
+
+a.organizer-platform-button--steam:hover {
+  background-color: #2a475e;
+  color: #fff;
+  filter: brightness(1.02);
+}
+
+a.organizer-platform-button--steam:focus {
+  outline: 2px solid #66c0f4;
+  outline-offset: 2px;
+}
+
+a.organizer-platform-button svg.organizer-platform-icon {
+  width: 18px;
+  height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  margin-right: 0.45em;
+  flex-shrink: 0;
+  display: block;
+  box-sizing: content-box;
 }
 
 #licenseBlock {

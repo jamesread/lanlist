@@ -56,6 +56,7 @@ SELECT
 	o.websiteUrl,
 	o.assumedStale,
 	o.steamGroupUrl,
+	o.discordInviteUrl,
 	o.blurb,
         o.genericEmail,
         o.useFavicon
