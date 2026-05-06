@@ -4,8 +4,15 @@ use libAllure\Logger;
 
 class SiteErrorHandler extends \libAllure\ErrorHandler
 {
-    public function renderSfe(\Throwable $e)
+    public function renderSfe($obj)
     {
+        if (!$obj instanceof \Throwable) {
+            parent::renderSfe($obj);
+
+            return;
+        }
+
+        $e = $obj;
         $this->logClientFacingException($e, 'SimpleFatalError');
 
         require_once 'includes/widgets/header.minimal.php';
