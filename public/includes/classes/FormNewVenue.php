@@ -19,7 +19,8 @@ class FormNewVenue extends Form
         $this->addElement(new ElementInput('title', 'Title', null, 'eg: Budleigh Salterton town hall, Cheltenham Racecourse, etc.'));
         $this->addElement(FormHelpers::getElementCountry('United Kingdom'));
         $this->addElement(new ElementHtml('locationDesc', null, '<br />The geodetic (WGS84) latitude/longitude of your venue. This can be awkward, but it allows us to put a pin on the map. We cannot use post/zip codes because many countries do not have them! <a href = "https://www.latlong.net/">https://www.latlong.net/</a> will convert an address to a rough lat/lng. '));
-        $this->addElement(new ElementInput('magicLocation', 'Magic Location'));
+		$ml = $this->addElement(new ElementInput('magicLocation', 'Magic Location'));
+		$ml->description = 'Paste in a lat/lng pair like "<strong>51.123, -0.123</strong>" and the fields below will be filled in automatically. This field is not required.';
         $e = <<<EOF
 const magic = document.getElementById('newVenue-magicLocation');
 
@@ -27,7 +28,7 @@ magic.onchange = () => {
     console.log("onc");
     if (magic.value.includes(", ")) {
         const text = magic.value;
-        const regex = /([-+]?\d+\.\d+),\s*([-+]?\d+\.\d+)/;
+        const regex = /([-+]?\d+\.\d+),[ ]?([-+]?\d+\.\d+)/;
         const match = text.match(regex);
 
         if (match) {

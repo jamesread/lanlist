@@ -48,18 +48,45 @@ li {
 	
 	<a href = "formHandler.php?formClazz=FormNewEvent&formNewEvent-organizer={$organizer.id}">Create new event</a>
 {else}
-	<ul>
+	<table>
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Title</th>
+			<th>Venue</th>
+			<th>Created By</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+
 	{foreach from = $organizer.events item = event}
-		<li class = "{if $event.inPast}subtle{else}{/if}">
-		{$event.dateStart}: 
+		<tr class = "{if $event.inPast}subtle{else}{/if}">
+
+		<td>
+		{$event.dateStart}
+		</td>
+		<td>
 		<a href = "viewEvent.php?id={$event.id}">{$event.title}</a>
+		</td>
+		<td>
+		{if !empty($event.venueId)}
+			<a href = "viewVenue.php?id={$event.venueId}">{$event.venueTitle}</a>
+		{else}
+			<span class = "subtle">No venue</span>
+		{/if}
+		</td>
+		<td>
 		created by <a href = "viewUser.php?id={$event.uid}">{$event.username}</a>
-		|
+
+		</td>
+		<td>
 		<a href="misc.php?action=cloneEvent&id={$event.id}">Clone</a>
 		|
 		<a href="eventEdit.php?id={$event.id}">Edit</a>
-
-		</li>
+		</td>
+		</tr>
 	{/foreach}
-	</ul>
+	</tbody>
+	</table>
 {/if}

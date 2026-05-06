@@ -36,7 +36,7 @@ if (count($organizers) == 0) {
 }
 $selectedOrganizer = $organizers[0];
 
-$events = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, u.id as uid, u.username FROM events e LEFT JOIN users u on e.createdBy = u.id WHERE e.organizer = :organizer ORDER BY e.dateStart DESC';
+$events = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, u.id as uid, u.username, v.id AS venueId, v.title AS venueTitle FROM events e LEFT JOIN venues v ON e.venue = v.id LEFT JOIN users u on e.createdBy = u.id WHERE e.organizer = :organizer ORDER BY e.dateStart DESC';
 $stmt = $db->prepare($events);
 $stmt->execute(['organizer' => $selectedOrganizer['id']]);
 
