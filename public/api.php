@@ -35,6 +35,8 @@ function csvLine(array $data)
 
 switch (FUNC) {
     case 'logs':
+        requirePriv('VIEW_LOGS');
+
         $sql = 'SELECT l.id, l.timestamp, l.priority, l.eventType, l.content FROM logs l ORDER BY id DESC LIMIT 3000';
         $logs = $db->query($sql)->fetchAll();
 
