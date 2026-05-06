@@ -25,6 +25,8 @@ abstract class FormHelpers
                 $el->addOption($venue['country'] . ', ' . $venue['title'], $venue['id']);
             }
         }
+    
+        $el->description = '<a href = "formHandler.php?formClazz=FormNewVenue">New Venue</a>';
 
         return $el;
     }

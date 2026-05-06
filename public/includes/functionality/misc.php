@@ -3,6 +3,7 @@
 use libAllure\Session;
 use libAllure\DatabaseFactory;
 use libAllure\ErrorHandler;
+use libAllure\ElementAutoSelect;
 use libAllure\Logger;
 
 function getCountJoinRequests()
@@ -27,7 +28,7 @@ function htmlify($input)
 
 function sendEmailToAdmins($content, $subject)
 {
-    return sendEmailToGroup(99, $content, $subject);
+    return sendEmailToGroup(ADMIN_GID, $content, $subject);
 }
 
 function sendEmailToGroup($groupId, $content, $subject)
@@ -52,6 +53,11 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
         throw new Exception('Cannot send a blank email');
     }
 
+	if (empty($recipient) || !filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+		Logger::messageWarning('Not sending email, invalid recipient: ' . $recipient, 'SEND_EMAIL_INVALID');
+		return;
+	}
+
     $content = wordwrap($content);
 
     if ($includeStandardFooter) {
@@ -75,6 +81,7 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
         $headers = array(
             'From' => '"' . SITE_TITLE . '" <' . EMAIL_ADDRESS . '>',
             'To' => '<' . $recipient . '>',
+            'Reply-To' => '"' . EMAIL_REPLY_TO_NAME . '" <' . EMAIL_REPLY_TO_ADDRESS . '>',
             'Subject' => $subject,
             'Content-Type' => 'text/html'
         );
@@ -133,14 +140,15 @@ function floatToMoney($value, $currency = '£')
     if (empty($value) || $value == 0) {
         return '?';
     } else {
-        $value = number_format($value, 2);
+        if ($value % 10 != 0) {
+            $value = number_format($value, 2);
+        }
     }
 
     switch ($currency) {
         case '':
-            $currency = 'GBP';
+        case 'GBP': return '<span class = "currency">&pound;' . $value . '</span>';
         case 'SEK':
-        case 'GBP';
         default:
             return $value . ' ' . $currency;
     }
@@ -383,6 +391,7 @@ function dataShowers()
         null => 'Unknown',
         0 => 'Not at venue',
         1 => 'Available at venue',
+        2 => 'Included in private rooms',
     ];
 }
 
@@ -405,8 +414,22 @@ function dataAlcohol() {
     ];
 }
 
+function dataSleeping() {
+    return [
+        null => 'Unknown',
+        0 => 'Not arranged by organizer',
+        1 => 'Not an overnight Event',
+        2 => 'Private rooms at venue',
+        3 => 'Indoors at venue',
+        4 => 'Indoors and camping at venue',
+        5 => 'Indoors, camping and private rooms at venue',
+        6 => 'Indoors at venue. Camping and hotels nearby',
+    ];
+}
+
 function lookupField($key, $type) {
     switch ($type) {
+    case 'sleeping': return dataSleeping()[$key];
     case 'showers': return dataShowers()[$key];
     case 'alcohol': return dataAlcohol()[$key];
     case 'smoking': return dataSmoking()[$key];
@@ -415,3 +438,61 @@ function lookupField($key, $type) {
     return 'Unknown field type: ' . $type;
     var_dump($a, $b); exit;
 }
+
+function outputJson($v) {
+    header('Content-Type: application/json');
+
+    echo json_encode($v);
+}
+
+function getGeoIpCountry() {
+    $default = 'United Kingdom';
+    $country = $default;
+
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+
+        $country = geoip_country_name_by_name($ip);
+    }
+
+    if (empty($country)) {
+        return $default;
+    }
+
+    return $country;
+}
+
+function canEditEvent($eventOrganizerId) {
+    if (!Session::isLoggedIn()) {
+        return false;
+    }
+
+    if (Session::getUser()->hasPriv('MODERATE_EVENTS')) {
+        return true;
+    }
+
+    if (Session::getUser()->getData('organization') == $eventOrganizerId) {
+        return true;
+    }
+
+    if (empty($eventOrganizerId)) {
+        return false;
+    }
+
+    return false;
+}
+
+function getElementCurrency($val)
+{
+	$el = new ElementAutoSelect('currency', 'Currency', $val, 'GBP, USD, EUR, etc');
+	$el->addOption('GBP (&pound; - UK, etc)', 'GBP');
+	$el->addOption('USD ($ - America, etc)', 'USD');
+	$el->addOption('AUD ($ - Austrialia, etc)', 'AUD');
+	$el->addOption('SEK (Sweden)', 'SEK');
+	$el->addOption('ISK (Iceland)', 'ISK');
+	$el->addOption('EUR (&euro; - Europe, etc)', 'EUR');
+	$el->addOption('CHF (Swiss franc)', 'CHF');
+
+	return $el;
+}
+

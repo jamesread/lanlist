@@ -16,8 +16,8 @@
 		<li><strong>Email:</strong> {$viewUser.email}</li>
 
 		<li><strong>Organizer:</strong>
-		{if !empty($user['organizerId'])}
-		<a href = "viewOrganizer.php?id=' . $user['organizerId'] . '">' . $user['organizerTitle'] . '</a>';
+		{if !empty($viewUser['organizerId'])}
+		<a href = "viewOrganizer.php?id={$viewUser.organizerId}">{$viewUser.organizerTitle}</a>
 		{else}
 		None
 		{/if}

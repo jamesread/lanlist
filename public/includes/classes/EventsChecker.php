@@ -7,7 +7,7 @@ class EventsChecker
     private $eventsList;
     private $countProblems = 0;
 
-    public function __construct(array $eventsList = null)
+    public function __construct(?array $eventsList = null)
     {
         if (empty($eventsList)) {
             $this->eventsList = $this->getInitialEventsList();
@@ -18,7 +18,7 @@ class EventsChecker
 
     public function getInitialEventsList()
     {
-        $sql = 'SELECT e.*, o.id AS organizerId, o.title AS organizerTitle FROM events e LEFT JOIN organizers o ON e.organizer = o.id WHERE e.dateStart > now()';
+        $sql = 'SELECT e.*, o.id AS organizerId, o.title AS organizerTitle, count(t.id) AS ticketCount FROM events e LEFT JOIN tickets t on e.id = t.event LEFT JOIN organizers o ON e.organizer = o.id WHERE e.dateStart > now() GROUP BY e.id';
         $stmt = DatabaseFactory::getInstance()->prepare($sql);
         $stmt->execute();
 
@@ -72,6 +72,12 @@ class EventsChecker
     public function checkTicketPrices(&$event)
     {
         if (empty($event['priceInAdv'])) {
+			if (empty($event['ticketCount'])) {
+				throw new Exception('No tickets defined for event');
+			} else {
+				return; // Tickets are defined, which is the more modern approach.
+			}
+
             throw new Exception('No cost for tickets in advance');
         }
     }

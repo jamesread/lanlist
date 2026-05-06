@@ -1,10 +1,20 @@
 <?php
 
+
+use \libAllure\SchedulerTask;
+use \libAllure\Inflector;
+
 require_once 'includes/classes/EventsChecker.php';
 
-class ScheduledTaskNewsletter extends Task
+class ScheduledTaskNewsletter extends SchedulerTask
 {
     private $dateFormat = 'Y-m-d H:i';
+    private $newUsers = [];
+    private $newEvents = [];
+    private $newOrganizers = [];
+    private $issuesList = [];
+    private $joinRequests = [];
+
 
     public function execute()
     {

@@ -3,6 +3,7 @@
 require_once 'includes/common.php';
 
 requirePriv('USERLIST');
+define('MAIN_NOPADDING', true);
 
 require_once 'includes/widgets/header.php';
 

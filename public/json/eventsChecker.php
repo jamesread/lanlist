@@ -10,4 +10,5 @@ $checker->checkAllEvents();
 
 $events = $checker->getEventsList();
 
-echo json_encode($events);
+outputJson($events);
+

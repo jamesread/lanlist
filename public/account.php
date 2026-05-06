@@ -20,6 +20,7 @@ if (!empty($organizer)) {
 $tpl->assign('userEmail', Session::getUser()->getData('email'));
 $tpl->assign('usernameSteam', Session::getUser()->getData('usernameSteam'));
 $tpl->assign('usernameDiscord', Session::getUser()->getData('discordUser'));
+$tpl->assign('geoip', getGeoIpCountry());
 $tpl->display('account.tpl');
 
     startSidebar();

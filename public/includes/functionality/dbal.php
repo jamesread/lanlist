@@ -57,7 +57,9 @@ SELECT
 	o.assumedStale,
 	o.steamGroupUrl,
 	o.blurb,
+        o.genericEmail,
         o.useFavicon
+
 FROM 
 	organizers o
 WHERE 
@@ -164,6 +166,25 @@ SQL;
 
         $event = $stmt->fetchRow();
         $event = normalizeEvent($event);
+
+	$sqlTickets = <<<SQL
+SELECT
+	t.id,
+	t.cost,
+	t.currency,
+	t.event,
+	t.title
+FROM 
+	tickets t
+WHERE 
+	t.event = :eventId
+SQL;
+
+	$stmt = $db->prepare($sqlTickets);
+	$stmt->bindValue(':eventId', $id, Database::PARAM_INT);
+	$stmt->execute();
+
+	$event['tickets'] = $stmt->fetchAll();
 
     return $event;
 }

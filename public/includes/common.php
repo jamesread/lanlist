@@ -1,12 +1,15 @@
 <?php
 
 require_once 'includes/config.php';
-require_once '../vendor/autoload.php';
+
+$baseDir = realpath(__DIR__ . '/../../');
+
+require_once $baseDir . '/vendor/autoload.php';
 
 require_once 'includes/classes/SiteErrorHandler.php';
 
 $eh = new SiteErrorHandler();
-$eh->beGreedy();
+//$eh->beGreedy();
 
 use libAllure\Logger;
 
@@ -41,3 +44,4 @@ $tpl->registerModifier('floatToMoney', 'floatToMoney');
 $tpl->registerModifier('stripslashes', 'stripslashes');
 $tpl->registerModifier('boolToString', 'boolToString');
 $tpl->registerModifier('lookupField', 'lookupField');
+$tpl->registerModifier('var_dump', 'var_dump');

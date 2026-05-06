@@ -4,6 +4,7 @@ require_once 'includes/common.php';
 
 requirePriv('SITE_CHECKS');
 
+define('MAIN_NOPADDING', true);
 define('TITLE', 'Site Checks');
 require_once 'includes/widgets/header.php';
 

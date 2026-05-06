@@ -42,6 +42,12 @@ $tpl->displayForm($f);
 
 ?>
 </div>
+
+<div class = "infobox">
+    <h2>Forgotten your password?</h2>
+    <p>You can <a href = "formHandler.php?formClazz=FormRequestPasswordReset">request a password reset</a>.<p>
+</div>
+
 <div class = "infobox" style = "text-align: left;">
     <h2>Register for an account</h2>
     <p>If you do not yet have an account <a href = "register.php">register here</a>.</p>

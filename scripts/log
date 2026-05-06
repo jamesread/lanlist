@@ -1,0 +1,57 @@
+Getting ('http://example.com', 319)
+	dl http://example.com/favicon.ico
+	404 from /favicon.ico
+	Trying to find favicon by parsing html
+	Could not find a favicon
+Getting ('https://www.thebiggame.org', 321)
+	Already exists!
+Getting ('https://www.shinylan.co.uk', 322)
+	Already exists!
+Getting ('https://lanops.co.uk/', 323)
+	Already exists!
+Getting ('https://www.altlan.co.uk', 324)
+	Already exists!
+Getting ('http://www.a-lan.co.uk', 325)
+	Already exists!
+Getting ('https://www.stratlan.co.uk', 326)
+	Already exists!
+Getting ('https://continuumgaming.co.uk', 327)
+	Already exists!
+Getting ('https://www.epiclan.co.uk/', 328)
+	Already exists!
+Getting ('https://westlan.co.uk', 329)
+	Already exists!
+Getting ('https://aurora-lan.com/', 330)
+	dl https://aurora-lan.com//favicon.ico
+	404 from /favicon.ico
+	Trying to find favicon by parsing html
+	Could not find a favicon
+Getting ('https://breachlan.party', 331)
+	Already exists!
+Getting ('https://www.llamalan.co.uk', 332)
+	Already exists!
+Getting ('https://www.lincslan.com', 333)
+	Already exists!
+Getting ('https://dreamhack.com', 334)
+	Already exists!
+Getting ('http://www.thereality.nl', 338)
+	Already exists!
+Getting ('https://www.1024lan.de', 337)
+	Already exists!
+Getting ('https://www.convention-x-treme.de', 339)
+	Already exists!
+Getting ('https://www.lan-team.de', 340)
+	Already exists!
+Getting ('http://zeropingheroes.co.uk', 341)
+	Already exists!
+Getting ('https://skynetwales.co.uk', 342)
+	dl https://skynetwales.co.uk/favicon.ico
+	404 from /favicon.ico
+	Trying to find favicon by parsing html
+	Could not find a favicon
+Getting ('https://w2tj.net', 343)
+	Already exists!
+Getting ('https://verein.northcon.de/', 344)
+	Already exists!
+Getting ('https://xlinegamers.com/', 345)
+	Already exists!
