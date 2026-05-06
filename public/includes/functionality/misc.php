@@ -209,7 +209,7 @@ function getListOfNextEvents($count = 10)
 
     $count = intval($count);
 
-    $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, v.country, o.id AS organizerId FROM events e LEFT JOIN venues v ON e.venue = v.id LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
+    $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, v.country, o.id AS organizerId, o.title AS organizerTitle, o.useFavicon FROM events e LEFT JOIN venues v ON e.venue = v.id LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
 
     $events = $db->query($sql)->fetchAll();
     $events = normalizeEvents($events);

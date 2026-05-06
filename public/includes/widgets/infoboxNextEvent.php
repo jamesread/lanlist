@@ -5,9 +5,9 @@
 
     echo '<ul class = "nextEvents">';
     foreach (getListOfNextEvents() as $tag => $events) {
-        echo "<li><strong>$tag</strong></li>";
+        echo '<li class = "nextEvents-month"><strong>' . htmlspecialchars((string)$tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</strong></li>';
         foreach ($events as $event) {
-            echo '<li>';
+            echo '<li class = "nextEvents-item">';
             switch ($event['country']) {
                 // https://symbl.cc/en/emoji/flags/country-flag/
                 case 'United Kingdom':  echo '&#127468;&#127463;'; break;
@@ -17,9 +17,18 @@
                 case 'United States':   echo '&#127482;&#127480;'; break;
 				case 'Canada':          echo '&#127464;&#127462;'; break;
                 default:
-                    echo $event['country'];
+                    echo htmlspecialchars((string)$event['country'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
             }
-            echo ' ' . $event['dayStartHuman'] . ' <a href = "viewEvent.php?id=' . $event['id'] . '">' . $event['title'] . '</a>';
+            echo ' ' . htmlspecialchars((string)$event['dayStartHuman'], ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' ';
+            if (!empty($event['useFavicon']) && !empty($event['organizerId'])) {
+                $organizerId = intval($event['organizerId']);
+                $organizerTitle = htmlspecialchars((string)($event['organizerTitle'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $ariaLabel = $organizerTitle !== '' ? 'Organizer: ' . $organizerTitle : 'Organizer';
+                echo '<a class = "nextEvents-organizer-link" href = "viewOrganizer.php?id=' . $organizerId . '" title = "' . $organizerTitle . '" aria-label = "' . $ariaLabel . '">';
+                echo '<img class = "nextEvents-organizer-icon" src = "resources/images/organizer-favicons/' . $organizerId . '.png" width = "16" height = "16" alt = "" decoding = "async" />';
+                echo '</a>&nbsp;';
+            }
+            echo '<a href = "viewEvent.php?id=' . intval($event['id']) . '">' . htmlspecialchars((string)$event['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</a>';
             echo '</li>';
         }
     }

@@ -518,9 +518,36 @@ ul.nextEvents {
   padding: 0;
 }
 
-ul.nextEvents li {
+ul.nextEvents li.nextEvents-month {
+  border-bottom: none;
+  margin-bottom: .4em;
+}
+
+ul.nextEvents li.nextEvents-item {
   border-bottom: 1px solid #efefef;
   margin-bottom: .8em;
+}
+
+ul.nextEvents a.nextEvents-organizer-link {
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+ul.nextEvents a.nextEvents-organizer-link:focus img.nextEvents-organizer-icon,
+ul.nextEvents a.nextEvents-organizer-link:hover img.nextEvents-organizer-icon {
+  border-color: #0071eb;
+}
+
+ul.nextEvents .nextEvents-organizer-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  background-color: white;
+  padding: .3em;
+  border-radius: 1em;
+  border: 2px solid #999;
+  box-sizing: content-box;
+  object-fit: contain;
 }
 
 ul.property-list {
