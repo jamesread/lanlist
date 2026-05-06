@@ -33,18 +33,48 @@ function showInfobox(eventObject, marker)
         window.infoBox.close();
     }
 
-    contentHtml = "";
-    contentHtml += '<img class = "bannerSmall" src = "' + eventObject.bannerUrl + '" />';
-    contentHtml += "<h2><a href = \"viewEvent.php?id=" + eventObject.id + "\">" + eventObject.organizerTitle + " - " + eventObject.eventTitle + "</a></h2>";
-    contentHtml += '<p>';
-    contentHtml += '<strong>Starts:</strong> ' + eventObject.dateStartHuman + '<br />';
-    contentHtml += '<strong>Finishes:</strong> ' + eventObject.dateFinishHuman + '<br />';
-    contentHtml += '<strong>Seats:</strong> ' + eventObject.numberOfSeats + '<br /><br />';
-    contentHtml += '<a href = "viewEvent.php?id=' + eventObject.id + '">More info...</a>'
-    contentHtml += '</p>';
+    const wrap = document.createElement('div');
+
+    const bannerUrl = eventObject.bannerUrl;
+    if (typeof bannerUrl === 'string' && bannerUrl.indexOf('resources/images/organizer-logos/') === 0) {
+        const img = document.createElement('img');
+        img.className = 'bannerSmall';
+        img.alt = '';
+        img.src = bannerUrl;
+        wrap.appendChild(img);
+    }
+
+    const eventId = Number(eventObject.id);
+    const safeId = Number.isFinite(eventId) ? String(eventId) : '';
+
+    const h2 = document.createElement('h2');
+    const titleLink = document.createElement('a');
+    titleLink.href = 'viewEvent.php?id=' + safeId;
+    titleLink.textContent = (eventObject.organizerTitle || '') + ' - ' + (eventObject.eventTitle || '');
+    h2.appendChild(titleLink);
+    wrap.appendChild(h2);
+
+    const p = document.createElement('p');
+    const appendLabeledLine = function (label, value) {
+        const strong = document.createElement('strong');
+        strong.textContent = label;
+        p.appendChild(strong);
+        p.appendChild(document.createTextNode(' ' + (value != null ? String(value) : '')));
+        p.appendChild(document.createElement('br'));
+    };
+    appendLabeledLine('Starts:', eventObject.dateStartHuman);
+    appendLabeledLine('Finishes:', eventObject.dateFinishHuman);
+    appendLabeledLine('Seats:', eventObject.numberOfSeats);
+    p.appendChild(document.createElement('br'));
+
+    const more = document.createElement('a');
+    more.href = 'viewEvent.php?id=' + safeId;
+    more.textContent = 'More info...';
+    p.appendChild(more);
+    wrap.appendChild(p);
 
     window.infoBox = new google.maps.InfoWindow({
-        content: contentHtml
+        content: wrap
     });
 
     window.infoBox.open(window.map, marker);
