@@ -143,6 +143,7 @@ CREATE TABLE `logs` (
   `priority` varchar(8) DEFAULT NULL,
   `eventType` varchar(64) DEFAULT '',
   `relatedUser` int(11) DEFAULT NULL,
+  `relatedOrganizer` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=64242 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -200,6 +201,7 @@ CREATE TABLE `organizers` (
   `created` datetime NOT NULL,
   `assumedStale` datetime DEFAULT NULL,
   `useFavicon` tinyint default 0,
+  `faviconRefetch` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=319 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -94,6 +94,93 @@ p.description {
   padding: .2em;
 }
 
+p.contact-discord-help {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.65em;
+  row-gap: 0.45em;
+}
+
+.technowax-discord-help {
+  margin: 1em 0 1.25em 0;
+}
+
+.technowax-discord-help > p:first-of-type {
+  margin-top: 0;
+  max-width: 42em;
+}
+
+form fieldset.organizer-banner-fieldset {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+form fieldset.organizer-banner-fieldset .organizer-banner-paste-wrap {
+  flex: 0 0 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.organizer-banner-paste-wrap .description {
+  display: block;
+  max-width: 40em;
+}
+
+.organizer-banner-paste-zone {
+  box-sizing: border-box;
+  border: 2px dashed #aaa;
+  border-radius: 0.6em;
+  padding: 1em 1.25em;
+  margin: 0.5em 0 0 0;
+  min-height: 3.5rem;
+  cursor: text;
+  background-color: #fafafa;
+  outline: none;
+  max-width: 40em;
+}
+
+.organizer-banner-paste-zone:focus {
+  border-color: #333;
+  background-color: #f9ffaa;
+  box-shadow: 0 0 0 2px rgba(72, 132, 72, 0.35);
+}
+
+.organizer-banner-paste-hint {
+  color: #555;
+  font-size: 0.95em;
+}
+
+.organizer-banner-paste-preview {
+  display: none;
+  max-width: 100%;
+  max-height: 140px;
+  margin-top: 0.75em;
+  border: 1px solid LightGray;
+  border-radius: 0.6em;
+  vertical-align: top;
+}
+
+.organizer-banner-paste-status {
+  margin: 0.35em 0 0 0;
+  font-size: 0.9em;
+}
+
+.organizer-banner-paste-status--error {
+  color: #b00020;
+}
+
+.organizer-banner-paste-wrap kbd {
+  display: inline-block;
+  padding: 0.15em 0.45em;
+  font-size: 0.85em;
+  font-family: inherit;
+  border: 1px solid #aaa;
+  border-radius: 0.35em;
+  background-color: #f5f5f5;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+}
+
 input {
 }
 
@@ -662,6 +749,31 @@ td.audit {
 
   .alert {
     color: black;
+  }
+
+  .organizer-banner-paste-zone {
+    border-color: #666;
+    background-color: #2a2a2a;
+  }
+
+  .organizer-banner-paste-zone:focus {
+    border-color: #999;
+    background-color: #333;
+    box-shadow: 0 0 0 2px rgba(100, 180, 255, 0.25);
+  }
+
+  .organizer-banner-paste-hint {
+    color: #ccc;
+  }
+
+  .organizer-banner-paste-wrap kbd {
+    border-color: #666;
+    background-color: #333;
+    color: #eee;
+  }
+
+  .organizer-banner-paste-status--error {
+    color: #ff8a80;
   }
 }
 

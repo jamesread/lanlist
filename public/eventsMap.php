@@ -43,7 +43,10 @@ use libAllure\Session;
                     echo 'You can get the list in <a href = "eventsList.php">many different formats</a>, or you can add your own events if you <a href = "login.php">login</a>. ';
                 }
                 ?>
-                lanlist is open source and involves 0 money (no ads, etc). You can make feature requests, or report bugs via the project page on <a href = "https://github.com/jamesread/lanlist">GitHub</a>, or get in <a href = "contact.php">contact</a>.
+
+				<br /> 
+				<br /> 
+                lanlist is <strong>free software</strong> and <strong>open source</strong> - it involves 0 money - <em>no adverts</em>, <em>no paid features</em>, <em>no tracking</em>, etc. It's provided purely for the benefit of the LAN party community. You can make feature requests, or report bugs via the project page on <a href = "https://github.com/jamesread/lanlist">GitHub</a>, or get in <a href = "contact.php">contact</a> via email, discord, etc.
             </p>
         </div>
     </div>

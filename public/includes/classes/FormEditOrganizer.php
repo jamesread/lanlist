@@ -32,26 +32,177 @@ class FormEditOrganizer extends Form
         $this->addElement(new ElementInput('discordInviteUrl', 'Discord invite URL', htmlify($organizer['discordInviteUrl'])));
         $this->getElement('discordInviteUrl')->setMinMaxLengths(0, 255);
         $this->addElement(new ElementTextbox('blurb', 'Blurb', $organizer['blurb']));
-                $this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG, maximum image size is 468x160'));
+                $this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG. Maximum size after upload is 810×306 (larger images are scaled). You can pick a file above or paste from the clipboard using the box below.'));
                 $this->getElement('banner')->tempDir = UPLOAD_TEMP_DIR;
         $this->getElement('banner')->destinationDir = 'resources/images/organizer-logos/';
         $this->getElement('banner')->destinationFilename = $organizer['id'] . '.jpg';
         $this->getElement('banner')->setMaxImageBounds(810, 306);
 
                 $this->addElement(new ElementCheckbox('useFavicon', 'Use site favicon', $organizer['useFavicon'], 'Favicons are collected periodically (about once per day). You can see which favicon the site collected for you at this URL: <a href = "resources/images/organizer-favicons/' . $organizer['id'] . '.png">HERE</a>'));
+        $this->addElement(new ElementCheckbox('faviconRefetch', 'Refetch favicon on next crawl', !empty($organizer['faviconRefetch'] ?? 0), 'If checked: the nightly favicon job deletes the downloaded icon for this organizer and downloads it again. This flag turns off automatically after a successful fetch.'));
 
-        if (!Session::hasPriv('EDIT_ORGANIZER') && Session::getUser()->getData('organization') != $organizer['id']) {
+        if (
+            !Session::hasPriv('EDIT_ORGANIZER')
+            && !Session::hasPriv('MODERATOR')
+            && Session::getUser()->getData('organization') != $organizer['id']
+        ) {
             throw new libAllure\exceptions\SimpleFatalError('You do not have permission to edit this organization.');
         }
 
                 $this->addDefaultButtons('Save');
+
+        $this->addScript(<<<'JS'
+(function () {
+    function findFileInput() {
+        var form = document.getElementById('formEditOrganizer');
+        if (!form) {
+            return null;
+        }
+        return form.querySelector('input[type="file"][name="formEditOrganizer-banner"]');
+    }
+
+    function injectPasteUi(input) {
+        var fieldset = input.closest('fieldset');
+        if (!fieldset || fieldset.querySelector('#formEditOrganizer-bannerPasteZone')) {
+            return;
+        }
+        fieldset.classList.add('organizer-banner-fieldset');
+        var wrap = document.createElement('div');
+        wrap.className = 'organizer-banner-paste-wrap';
+        wrap.innerHTML = '' +
+            '<p class = "description"><img src = "resources/images/icons/help.png" class = "imageIcon" alt = "" /> Paste from clipboard: click in the dashed box, then press <kbd>Ctrl+V</kbd> (Windows/Linux) or <kbd>Cmd+V</kbd> (Mac). The image is attached to the banner file field so you can submit the form as usual—no need to save a file first.</p>' +
+            '<div id = "formEditOrganizer-bannerPasteZone" class = "organizer-banner-paste-zone" tabindex = "0" role = "region" aria-label = "Paste organizer banner image from clipboard"><span class = "organizer-banner-paste-hint">Click here, then paste your image</span></div>' +
+            '<p id = "formEditOrganizer-bannerPasteStatus" class = "organizer-banner-paste-status" hidden = "hidden"></p>' +
+            '<img id = "formEditOrganizer-bannerPastePreview" class = "organizer-banner-paste-preview" alt = "Banner preview after paste" />';
+        fieldset.appendChild(wrap);
+    }
+
+    function init() {
+        var input = findFileInput();
+        if (!input) {
+            return;
+        }
+        injectPasteUi(input);
+
+        var zone = document.getElementById('formEditOrganizer-bannerPasteZone');
+        var preview = document.getElementById('formEditOrganizer-bannerPastePreview');
+        var statusEl = document.getElementById('formEditOrganizer-bannerPasteStatus');
+        if (!zone) {
+            return;
+        }
+
+        var lastPreviewUrl = null;
+
+        function setStatus(msg, isError) {
+            if (!statusEl) {
+                return;
+            }
+            if (!msg) {
+                statusEl.textContent = '';
+                statusEl.hidden = true;
+                statusEl.classList.remove('organizer-banner-paste-status--error');
+                return;
+            }
+            statusEl.textContent = msg;
+            statusEl.hidden = false;
+            if (isError) {
+                statusEl.classList.add('organizer-banner-paste-status--error');
+            } else {
+                statusEl.classList.remove('organizer-banner-paste-status--error');
+            }
+        }
+
+        zone.addEventListener('paste', function (e) {
+            var cd = e.clipboardData;
+            if (!cd) {
+                return;
+            }
+            var file = null;
+            var i;
+            if (cd.files && cd.files.length) {
+                for (i = 0; i < cd.files.length; i++) {
+                    if (cd.files[i].type.indexOf('image/') === 0) {
+                        file = cd.files[i];
+                        break;
+                    }
+                }
+            }
+            if (!file && cd.items && cd.items.length) {
+                for (i = 0; i < cd.items.length; i++) {
+                    if (cd.items[i].kind === 'file' && cd.items[i].type.indexOf('image/') === 0) {
+                        file = cd.items[i].getAsFile();
+                        break;
+                    }
+                }
+            }
+            if (!file) {
+                setStatus('No image found in the clipboard—copy an image first, then try again.', true);
+                return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var dt = new DataTransfer();
+            var name = file.name || 'clipboard-image';
+            if (name.indexOf('.') === -1) {
+                var ext = '';
+                if (file.type === 'image/png') {
+                    ext = '.png';
+                } else if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                    ext = '.jpg';
+                } else if (file.type === 'image/gif') {
+                    ext = '.gif';
+                } else if (file.type === 'image/webp') {
+                    ext = '.webp';
+                }
+                try {
+                    name = 'clipboard-' + Date.now() + ext;
+                } catch (err) {
+                    name = 'clipboard' + ext;
+                }
+                file = new File([file], name, { type: file.type });
+            }
+            dt.items.add(file);
+
+            try {
+                input.files = dt.files;
+            } catch (err) {
+                setStatus('Could not attach the pasted image in this browser. Please use Choose file instead.', true);
+                return;
+            }
+
+            setStatus('Image pasted—will upload when you save.', false);
+
+            if (preview) {
+                if (lastPreviewUrl) {
+                    URL.revokeObjectURL(lastPreviewUrl);
+                }
+                try {
+                    lastPreviewUrl = URL.createObjectURL(file);
+                    preview.src = lastPreviewUrl;
+                    preview.style.display = 'block';
+                } catch (err2) {
+                    preview.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+JS);
     }
 
     public function process()
     {
         global $db;
 
-        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, discordInviteUrl = :discordInviteUrl, blurb = :blurb, useFavicon = :useFavicon WHERE id = :id LIMIT 1';
+        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, discordInviteUrl = :discordInviteUrl, blurb = :blurb, useFavicon = :useFavicon, faviconRefetch = :faviconRefetch WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->bindValue(':title', $this->getElementValue('title'));
@@ -62,6 +213,7 @@ class FormEditOrganizer extends Form
         $stmt->bindValue(':discordInviteUrl', $this->getElementValue('discordInviteUrl'));
         $stmt->bindValue(':blurb', $this->getElementValue('blurb'));
         $stmt->bindValue(':useFavicon', $this->getElementValue('useFavicon'));
+        $stmt->bindValue(':faviconRefetch', $this->getElementValue('faviconRefetch'));
 
         if (Session::getUser()->hasPriv('PUBLISH_ORGANIZERS')) {
             $stmt->bindValue(':published', $this->getElementValue('published'));

@@ -59,7 +59,8 @@ SELECT
 	o.discordInviteUrl,
 	o.blurb,
         o.genericEmail,
-        o.useFavicon
+        o.useFavicon,
+        o.faviconRefetch
 
 FROM 
 	organizers o
@@ -141,6 +142,8 @@ SELECT
 	o.title AS organizerTitle, 
 	o.id AS organizerId, 
         o.useFavicon,
+        o.steamGroupUrl,
+        o.discordInviteUrl,
 	v.id AS venueId,
 	v.title AS venueTitle,
 	v.lat AS venueLat,
@@ -186,6 +189,8 @@ SQL;
 	$stmt->execute();
 
 	$event['tickets'] = $stmt->fetchAll();
+
+    applyOrganizerPlatformInviteHrefs($event);
 
     return $event;
 }

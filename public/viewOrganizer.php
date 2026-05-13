@@ -19,20 +19,7 @@ if ($ogImageAbs !== null) {
 require_once 'includes/widgets/header.php';
 
 $organizer['logoUrl'] = getOrganizerLogoUrl($organizer['id']);
-if (!empty($organizer['steamGroupUrl'])) {
-    $href = trim($organizer['steamGroupUrl']);
-    if (strpos($href, 'http://') !== 0 && strpos($href, 'https://') !== 0) {
-        $href = 'https://' . $href;
-    }
-    $organizer['steamGroupHref'] = htmlspecialchars($href, ENT_QUOTES, 'UTF-8');
-}
-if (!empty($organizer['discordInviteUrl'])) {
-    $href = trim($organizer['discordInviteUrl']);
-    if (strpos($href, 'http://') !== 0 && strpos($href, 'https://') !== 0) {
-        $href = 'https://' . $href;
-    }
-    $organizer['discordInviteHref'] = htmlspecialchars($href, ENT_QUOTES, 'UTF-8');
-}
+applyOrganizerPlatformInviteHrefs($organizer);
 $tpl->assign('organizer', $organizer);
 
 $events = fetchEventsFromOrganizerId($organizer['id']);

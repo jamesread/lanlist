@@ -1,4 +1,6 @@
 public/includes/config.php
+__pycache__/
+*.py[cod]
 public/resources/images/organizer-logos
 public/resources/images/organizer-favicons
 /vendor/

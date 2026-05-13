@@ -6,6 +6,10 @@ use libAllure\Session;
 use libAllure\Shortcuts;
 use libAllure\ErrorHandler;
 
+if (!isset($_REQUEST['action'])) {
+    throw new InvalidArgumentException('action is required.');
+}
+
 switch ($_REQUEST['action']) {
     case 'toggleEvent':
         requirePriv('TOGGLE_EVENT_PUBLISHED');

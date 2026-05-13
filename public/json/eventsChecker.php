@@ -1,5 +1,7 @@
 <?php
 
+die("disabled until we have auth");
+
 set_include_path(get_include_path() . PATH_SEPARATOR . '../');
 
 require_once 'includes/common.php';

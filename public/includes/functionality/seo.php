@@ -8,6 +8,11 @@ function seoCurrentPageUrl(): string
 {
     $base = rtrim(SITE_BASE_URL, '/');
     $scriptName = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '/';
+
+    if (basename($scriptName) === 'eventsMap.php') {
+        return $base . '/';
+    }
+
     $query = '';
 
     if (!empty($_SERVER['QUERY_STRING'])) {

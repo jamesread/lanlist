@@ -10,6 +10,9 @@
 	<strong>Organizer: </strong> {if empty($event.organizerId)}???{else}{if $event.useFavicon}<img class = "imageIcon favicon" src = "resources/images/organizer-favicons/{$event.organizerId}.png" width = "16" height = "16" alt = "" decoding = "async" /> {/if}<a href = "viewOrganizer.php?id={$event.organizerId}">{$event.organizerTitle|default:"???"}</a>{/if}<br />
 	<strong>Event website: </strong> {$event.website|externUrlOr:"None"}	<br /><br />
 
+	{include file = 'organizerSteamDiscordRow.tpl' orgTitle = $event.organizerTitle steamGroupUrl = $event.steamGroupUrl steamGroupHref = $event.steamGroupHref discordInviteUrl = $event.discordInviteUrl discordInviteHref = $event.discordInviteHref showOrganizerSteamNone = 0}
+
+	<br />
 	<ul class = "property-list">
 		<li>
 			<img src = "resources/images/svg/calendar.svg" /><strong>Dates: </strong> {$event.dateStartHuman} - {$event.dateFinishHuman}
@@ -45,9 +48,10 @@
 	<a href = "formHandler.php?formClazz=FormAddTicket&addticket-eventId={$event['id']}">Add ticket</a>
 	{/if}
 
-
+	{if $event.blurb}
 	<h3>Additional details</h3>
 	{$event.blurb|default:"Nothing"|stripslashes|htmlify} 
+	{/if}
 </div>
 
 <div class = "paralellContainer">
@@ -65,17 +69,17 @@
 			<img src = "resources/images/svg/shower.svg" /><strong>Showers?: </strong> {$event.showers|lookupField:'showers'}
 		</li>
 		<li>
-			<img src = "resources/images/svg/smoking.svg" /><strong>Smoking area?: </strong> {$event.smoking|lookupField:'smoking'} 
+			<img src = "resources/images/svg/smoking.svg" /><strong>Smoking policy: </strong> {$event.smoking|lookupField:'smoking'} 
 		</li>
 		<li>
-			<img src = "resources/images/svg/alcohol.svg" /><strong>Alcohol allowed?: </strong> {$event.alcohol|lookupField:'alcohol'} 
+			<img src = "resources/images/svg/alcohol.svg" /><strong>Alcohol policy: </strong> {$event.alcohol|lookupField:'alcohol'} 
 		</li>
 		<li>
-			<img src = "resources/images/svg/network.svg" /><strong>Network connection: </strong> {$event.networkMbps|default:"None"}mbps
+			<img src = "resources/images/svg/network.svg" /><strong>Network connection: </strong> {$event.networkMbpsHuman|default:"None"}
 		</li>
 
 		<li>
-			<img src = "resources/images/svg/network.svg" /><strong>Internet connection: </strong> {$event.internetMbps|default:"None"}mbps
+			<img src = "resources/images/svg/network.svg" /><strong>Internet connection: </strong> {$event.internetMbpsHuman|default:"None"}
 		</li>
 	</ul>
 	</div>

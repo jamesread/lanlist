@@ -26,11 +26,11 @@ if (isset($_REQUEST['test'])) {
 if (isset($_REQUEST['full'])) {
     echo '<h2>Full Logs</h2>';
 
-    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority FROM logs l ORDER BY l.id DESC LIMIT 100';
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedOrganizer FROM logs l ORDER BY l.id DESC LIMIT 100';
 } else {
     echo '<h2>New logs</h2>';
 
-    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority FROM logs l WHERE l.isread = 0 ORDER BY l.id DESC';
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedOrganizer FROM logs l WHERE l.isread = 0 ORDER BY l.id DESC';
 }
 
 $logs = $db->query($sql)->fetchAll();

@@ -26,6 +26,32 @@ function htmlify($input)
     return nl2br(htmlentities(stripslashes($input)));
 }
 
+/**
+ * Adds steamGroupHref / discordInviteHref for templates when platform URLs are set.
+ *
+ * @param array<string, mixed> $row
+ */
+function applyOrganizerPlatformInviteHrefs(array &$row): void
+{
+    $row['steamGroupHref'] = '';
+    $row['discordInviteHref'] = '';
+
+    if (!empty($row['steamGroupUrl'])) {
+        $href = trim((string) $row['steamGroupUrl']);
+        if (strpos($href, 'http://') !== 0 && strpos($href, 'https://') !== 0) {
+            $href = 'https://' . $href;
+        }
+        $row['steamGroupHref'] = htmlspecialchars($href, ENT_QUOTES, 'UTF-8');
+    }
+    if (!empty($row['discordInviteUrl'])) {
+        $href = trim((string) $row['discordInviteUrl']);
+        if (strpos($href, 'http://') !== 0 && strpos($href, 'https://') !== 0) {
+            $href = 'https://' . $href;
+        }
+        $row['discordInviteHref'] = htmlspecialchars($href, ENT_QUOTES, 'UTF-8');
+    }
+}
+
 function sendEmailToAdmins($content, $subject)
 {
     return sendEmailToGroup(ADMIN_GID, $content, $subject);
@@ -123,8 +149,34 @@ function normalizeEvent($event)
     $event['dayFinishHuman'] = date_format($dateFinish, 'D jS');
     $event['dateTag'] = date_format(date_create($event['dateStart']), 'M Y');
     $event['bannerUrl'] = getOrganizerLogoUrl($event['organizerId']);
+    $event['networkMbpsHuman'] = formatConnectionMbpsHuman($event['networkMbps'] ?? null);
+    $event['internetMbpsHuman'] = formatConnectionMbpsHuman($event['internetMbps'] ?? null);
 
     return $event;
+}
+
+/** Human-readable Mbps for event pages; DB stays integer. Returns null when unknown/not set. */
+function formatConnectionMbpsHuman($mbps): ?string
+{
+    if ($mbps === null || $mbps === '') {
+        return null;
+    }
+
+    $n = (int) $mbps;
+
+    if ($n === 0) {
+        return 'None';
+    }
+
+    if ($n === 1000) {
+        return 'Gigabit';
+    }
+
+    if ($n === 10000) {
+        return '10-Gig';
+    }
+
+    return $n . ' Mbps';
 }
 
 function getOrganizerLogoUrl($organizerId)
@@ -269,14 +321,30 @@ function getEventRating($eventId)
     return $average;
 }
 
-function logMessageToDatabase($priority, $content, $eventId)
+function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
 {
     global $db;
 
-    $stmtLog = $db->prepare('INSERT INTO logs (priority, content, eventType, timestamp) VALUES (:priority, :content, :eventType, now()) ');
+    $relatedOrganizer = null;
+    if (is_array($metadata) && array_key_exists('relatedOrganizer', $metadata)) {
+        $v = $metadata['relatedOrganizer'];
+        if ($v !== null && $v !== '') {
+            $n = (int) $v;
+            if ($n > 0) {
+                $relatedOrganizer = $n;
+            }
+        }
+    }
+
+    $stmtLog = $db->prepare('INSERT INTO logs (priority, content, eventType, relatedOrganizer, timestamp) VALUES (:priority, :content, :eventType, :relatedOrganizer, now()) ');
     $stmtLog->bindValue(':priority', $priority);
     $stmtLog->bindValue(':content', $content);
-    $stmtLog->bindValue(':eventType', $eventId);
+    $stmtLog->bindValue(':eventType', $eventType);
+    if ($relatedOrganizer === null) {
+        $stmtLog->bindValue(':relatedOrganizer', null, \PDO::PARAM_NULL);
+    } else {
+        $stmtLog->bindValue(':relatedOrganizer', $relatedOrganizer, \PDO::PARAM_INT);
+    }
     $stmtLog->execute();
 }
 

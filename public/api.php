@@ -16,7 +16,7 @@ if ($siteHost === '') {
 }
 
 if (!isset($_REQUEST['function'])) {
-    throw new Exception('The requrest argument "function" is required.');
+    throw new Exception('The request argument "function" is required.');
 } else {
     define('FUNC', $sanitizer->filterIdentifier('function'));
 }
@@ -46,7 +46,7 @@ switch (FUNC) {
 
         requirePriv('VIEW_LOGS');
 
-        $sql = 'SELECT l.id, l.timestamp, l.priority, l.eventType, l.content FROM logs l ORDER BY id DESC LIMIT 3000';
+        $sql = 'SELECT l.id, l.timestamp, l.priority, l.eventType, l.relatedOrganizer, l.content FROM logs l ORDER BY id DESC LIMIT 3000';
         $logs = $db->query($sql)->fetchAll();
 
         switch (FORMAT) {
@@ -119,7 +119,7 @@ switch (FUNC) {
                 break;
             case 'ical':
                 header('Content-Type: text/calendar');
-                header('Content-Disposition: inline, filename="lanlist.info.ics"');
+                header('Content-Disposition: inline; filename="lanlist.info.ics"');
                 define('X_DATE_ICAL', 'Ymd\Thi00');
 
                 echo "BEGIN:VCALENDAR\r\nVERSION:2.0\r\n";

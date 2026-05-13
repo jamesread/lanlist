@@ -83,6 +83,9 @@ EOF;
 
         global $tpl;
 
+        $tpl->assign('siteBaseUrl', SITE_BASE_URL);
+        $tpl->assign('siteTitle', SITE_TITLE);
+
         if (!empty($this->user)) {
             $tpl->assign('username', $this->user->getUsername());
             $tpl->assign('organizationUrl', SITE_BASE_URL . '/viewOrganizer.php?id=' . $this->user->getData('organization'));

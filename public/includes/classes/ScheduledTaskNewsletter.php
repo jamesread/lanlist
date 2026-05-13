@@ -44,6 +44,9 @@ class ScheduledTaskNewsletter extends SchedulerTask
 
         $tpl->assign('issuesList', $this->issuesList);
 
+        $tpl->assign('siteBaseUrl', SITE_BASE_URL);
+        $tpl->assign('siteTitle', SITE_TITLE);
+
         return $tpl->fetch('newsletter.tpl');
     }
 

@@ -1,4 +1,5 @@
 <h2>Account</h2>
+
 {if empty($usernameDiscord)} 
 	<p>
 		<img src = "resources/images/discord.png" style = "float: left; padding-right: 1em;" />
@@ -7,6 +8,7 @@
 	<br />
 {/if}
 
+<h3>Control Panel</h3>
 <p>What would you like to do?</p>
 <ul>
 {if isset($organization)}
@@ -30,4 +32,11 @@
 
 </ul>
 
-{{$geoip}}
+<h3>Need help?</h3>
+{include file = 'discordHelpTechnowax.tpl'}
+
+<h3>Localization</h3>
+<p>
+This site tries to localize content for you. Based on your GeoIP, the site things you are in <strong>{{$geoip}}</strong>
+</p>
+
