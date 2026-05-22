@@ -25,6 +25,7 @@ class FormEditOrganizer extends Form
                 $this->addElement(new ElementInput('title', 'Title', $organizer['title']));
         $this->addElement(new ElementHidden('id', null, $organizer['id']));
         $this->addElement(new ElementInput('websiteUrl', 'Website', $organizer['websiteUrl']));
+        $this->getElement('websiteUrl')->setMinMaxLengths(0, 255);
         $this->addElement(new ElementDate('assumedStale', 'Assumed stale since', $organizer['assumedStale']));
         $this->addElement(new ElementInput('genericEmail', 'Generic email', $organizer['genericEmail']));
         $this->addElement(new ElementInput('steamGroupUrl', 'Steam group URL', htmlify($organizer['steamGroupUrl'])));
@@ -223,9 +224,74 @@ JS);
 
         $stmt->execute();
 
-        $this->getElement('banner')->savePng();
+        $this->saveOrganizerBanner();
 
         Logger::messageAudit('Organizer ' . $this->getElementValue('title') . ' (' . $this->getElementValue('id') . ') edited by: ' . Session::getUser()->getUsername(), 'EDIT_ORGANIZER');
         redirect('viewOrganizer.php?id=' . $this->getElementValue('id'), 'Organizer updated.');
+    }
+
+    private function saveOrganizerBanner(): void
+    {
+        $banner = $this->getElement('banner');
+        if (!$banner->wasAnythingUploaded()) {
+            return;
+        }
+
+        $organizerId = (int) $this->getElementValue('id');
+        $destDir = $banner->destinationDir;
+        $destPath = $destDir . DIRECTORY_SEPARATOR . $banner->destinationFilename;
+        $logMeta = ['relatedOrganizer' => $organizerId];
+        $user = Session::getUser()->getUsername();
+
+        if (!is_dir($destDir)) {
+            Logger::messageWarning(
+                'Organizer banner save failed: destination directory does not exist: '
+                . $destDir . ' (organizer ' . $organizerId . ', user ' . $user . ')',
+                'ORGANIZER_BANNER_SAVE',
+                $logMeta
+            );
+            return;
+        }
+
+        if (!is_writable($destDir)) {
+            Logger::messageWarning(
+                'Organizer banner save failed: permission denied writing to '
+                . $destDir . ' (organizer ' . $organizerId . ', user ' . $user . ')',
+                'ORGANIZER_BANNER_SAVE',
+                $logMeta
+            );
+            return;
+        }
+
+        $phpError = null;
+        set_error_handler(static function ($severity, $message) use (&$phpError) {
+            $phpError = $message;
+            return true;
+        });
+        try {
+            $banner->savePng();
+        } finally {
+            restore_error_handler();
+        }
+
+        clearstatcache(true, $destPath);
+
+        if ($phpError !== null || !is_file($destPath)) {
+            $detail = $phpError ?? 'file was not written (possible disk full or permission denied)';
+            Logger::messageWarning(
+                'Organizer banner save failed: ' . $detail
+                . ' (path ' . $destPath . ', organizer ' . $organizerId . ', user ' . $user . ')',
+                'ORGANIZER_BANNER_SAVE',
+                $logMeta
+            );
+            return;
+        }
+
+        Logger::messageNormal(
+            'Organizer banner saved to ' . $destPath
+            . ' (organizer ' . $organizerId . ', user ' . $user . ')',
+            'ORGANIZER_BANNER_SAVE',
+            $logMeta
+        );
     }
 }

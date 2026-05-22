@@ -2,6 +2,7 @@
 
 use libAllure\Form;
 use libAllure\Session;
+use libAllure\Logger;
 use libAllure\ElementSelect;
 use libAllure\ElementHtml;
 use libAllure\ElementTextbox;
@@ -38,12 +39,23 @@ class FormJoinOrganizer extends Form
     {
         global $db;
 
+        $organizerId = (int) $this->getElementValue('organization');
+        $organizer = fetchOrganizer($organizerId);
+        $user = Session::getUser();
+
         $sql = 'INSERT INTO organization_join_requests (user, organizer, comments) VALUES (:user, :organization, :comments) ';
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':user', Session::getUser()->getId());
-        $stmt->bindValue(':organization', $this->getElementValue('organization'));
+        $stmt->bindValue(':user', $user->getId());
+        $stmt->bindValue(':organization', $organizerId);
         $stmt->bindValue(':comments', $this->getElementValue('comments'));
         $stmt->execute();
+
+        Logger::messageNormal(
+            'Join request submitted by ' . $user->getUsername() . ' (user ' . $user->getId() . ') for organizer '
+            . $organizer['title'] . ' (' . $organizerId . ')',
+            'JOIN_REQUEST',
+            ['relatedOrganizer' => $organizerId]
+        );
 
         redirect('account.php', 'Thanks, your request to join will be approved or denied as quickly as possible!');
     }

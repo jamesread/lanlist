@@ -26,6 +26,7 @@ class FormNewOrganizer extends Form
 
         $this->addElement(new ElementInput('title', 'Title'));
         $this->addElement(new ElementInput('websiteUrl', 'Website URL'));
+        $this->getElement('websiteUrl')->setMinMaxLengths(0, 255);
         $this->addElement(new ElementTextbox('blurb', 'Blurb', null, 'A blurb describes the organizer, prehaps the year you started, how experienced you are, or if you like cake. Its best to leave event specific information to when you go to create events.'));
 
         $this->addDefaultButtons('Create Organizer');
