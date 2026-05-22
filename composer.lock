@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f27c4ddda6398e96997b977f7f07ae2",
+    "content-hash": "0ffdb62cca09cb0a7bf5b12b5ac0f304",
     "packages": [
         {
             "name": "iignatov/lightopenid",
@@ -103,6 +103,47 @@
                 "source": "https://github.com/jamesread/libAllure/tree/8.3.0"
             },
             "time": "2025-12-03T09:27:54+00:00"
+        },
+        {
+            "name": "jwread/olivetin-bindings-php",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OliveTin/OliveTin-bindings-php.git",
+                "reference": "81c924c634a13a451bff3a92e9c2cb9c0fec6e10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OliveTin/OliveTin-bindings-php/zipball/81c924c634a13a451bff3a92e9c2cb9c0fec6e10",
+                "reference": "81c924c634a13a451bff3a92e9c2cb9c0fec6e10",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^10.5.62",
+                "squizlabs/php_codesniffer": "^3.13"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OliveTin\\Api\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "PHP client for the OliveTin Connect RPC API — start actions with bearer API-key style credentials",
+            "support": {
+                "issues": "https://github.com/OliveTin/OliveTin-bindings-php/issues",
+                "source": "https://github.com/OliveTin/OliveTin-bindings-php/tree/1.0.0"
+            },
+            "time": "2026-05-21T15:53:13+00:00"
         },
         {
             "name": "pear/auth_sasl",
@@ -726,5 +767,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

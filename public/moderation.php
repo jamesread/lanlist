@@ -75,7 +75,25 @@ $selectedOrganizer = $organizers[0];
 
 applyOrganizerPlatformInviteHrefs($selectedOrganizer);
 
+require_once __DIR__ . '/includes/functionality/async_jobs.php';
+
 $oid = (int) $selectedOrganizer['id'];
+
+$latestFaviconAsyncJob = lanlistFetchLatestOrganizerFaviconAsyncJob($oid);
+$hasActiveFaviconAsyncJob = lanlistSelectActiveOrganizerFaviconJob($oid) !== false;
+if ($latestFaviconAsyncJob !== null) {
+    $latestFaviconAsyncJob['metadataDecoded'] = [];
+    if (isset($latestFaviconAsyncJob['metadata'])) {
+        $md = $latestFaviconAsyncJob['metadata'];
+        if (is_string($md)) {
+            $decoded = json_decode($md, true);
+            $latestFaviconAsyncJob['metadataDecoded'] = is_array($decoded) ? $decoded : [];
+        } elseif (is_array($md)) {
+            $latestFaviconAsyncJob['metadataDecoded'] = $md;
+        }
+    }
+}
+
 $logoFs = __DIR__ . '/resources/images/organizer-logos/' . $oid . '.jpg';
 $faviconFs = __DIR__ . '/resources/images/organizer-favicons/' . $oid . '.png';
 $selectedOrganizer['logoFileExists'] = is_file($logoFs);
@@ -105,6 +123,8 @@ foreach ($events as $k => $event) {
 
 $selectedOrganizer['events'] = $events;
 
+$tpl->assign('latestFaviconAsyncJob', $latestFaviconAsyncJob);
+$tpl->assign('hasActiveFaviconAsyncJob', $hasActiveFaviconAsyncJob);
 $tpl->assign('organizer', $selectedOrganizer);
 $tpl->display('moderation.tpl');
 

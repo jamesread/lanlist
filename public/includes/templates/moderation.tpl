@@ -89,6 +89,42 @@ li {
 	{if $organizer.useFaviconEnabled && !$organizer.faviconFileExists}
 		<p><em>Favicon collection is enabled but file is missing (job may not have run yet, or fetch failed).</em></p>
 	{/if}
+
+	{if $latestFaviconAsyncJob}
+		<p style="margin-top:1em;"><strong>Latest OliveTin favicon job:</strong></p>
+		<dl style="margin-top:0;">
+			<dt>Job ID</dt>
+			<dd>{$latestFaviconAsyncJob.id}</dd>
+			<dt>Status</dt>
+			<dd>{$latestFaviconAsyncJob.status}</dd>
+			<dt>OliveTin tracking</dt>
+			<dd>{if !empty($latestFaviconAsyncJob.execution_tracking_id)}{$latestFaviconAsyncJob.execution_tracking_id|escape:'html'}{else}<em>Awaiting dispatch or not yet confirmed</em>{/if}</dd>
+			<dt>Queued</dt>
+			<dd>{$latestFaviconAsyncJob.created_at}</dd>
+			<dt>Accepted by OliveTin</dt>
+			<dd>{if !empty($latestFaviconAsyncJob.started_at)}{$latestFaviconAsyncJob.started_at}{else}—{/if}</dd>
+			<dt>Finished</dt>
+			<dd>{if !empty($latestFaviconAsyncJob.finished_at)}{$latestFaviconAsyncJob.finished_at}{else}—{/if}</dd>
+			{if !empty($latestFaviconAsyncJob.error_message)}
+			<dt>Note</dt>
+			<dd class="warn">{$latestFaviconAsyncJob.error_message|escape:'html'}</dd>
+			{/if}
+			{if !empty($latestFaviconAsyncJob.metadataDecoded.enqueuedByUserId)}
+			<dt>Queued by user id</dt>
+			<dd>{$latestFaviconAsyncJob.metadataDecoded.enqueuedByUserId}</dd>
+			{/if}
+		</dl>
+	{/if}
+
+	{if $organizer.useFaviconEnabled && !$hasActiveFaviconAsyncJob && !empty($organizer.websiteUrl)}
+	<form method="post" action="misc.php" style="margin-top:.75em;">
+		<input type="hidden" name="action" value="enqueueOrganizerFaviconFetch" />
+		<input type="hidden" name="organizerId" value="{$organizer.id}" />
+		<button type="submit">Queue favicon fetch (async via OliveTin)</button>
+	</form>
+	{elseif $organizer.useFaviconEnabled && $hasActiveFaviconAsyncJob}
+		<p style="margin-top:.75em;"><em>A favicon queue job is already pending or processing for this organizer.</em></p>
+	{/if}
 	</dd>
 </dl>
 
