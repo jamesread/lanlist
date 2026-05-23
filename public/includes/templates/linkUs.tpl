@@ -11,7 +11,7 @@
 	</thead>
 
 	<tbody>
-		{include file = "linkUsButton.tpl" imageDescription = "Main, transparent banner." imageFilename = "resources/images/lanlist.info-banner.png" imageX = "128" imageY = "32"}
+		{include file = "linkUsButton.tpl" imageDescription = "Main, transparent banner." imageFilename = "resources/images/lanlist.org-banner.png" imageX = "128" imageY = "32"}
 		{include file = "linkUsButton.tpl" imageDescription = "Classic" imageFilename = "resources/images/lanlistClassicButton.png" imageX = "88" imageY = "31"}
 		{include file = "linkUsButton.tpl" imageDescription = "Tiny" imageFilename = "resources/images/favicon.png" imageX = "16" imageY = "16"}
 	</tbody>
@@ -31,5 +31,5 @@
 <p>If you want to say something nice about us, erm, try this; </p>
 
 <p class = "infobox">
-	lanlist.info is a list of LAN parties. It was built for punters to easily keep up with their faveourite organizers and find new events. Organizers can advertise their events on the site for free. 	
+    lanlist.info is a list of LAN Parties for the community - free, open source, community submitted and community moderated with no ads, just LAN parties.
 </p>
