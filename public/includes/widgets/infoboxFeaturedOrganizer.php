@@ -1,9 +1,13 @@
 <?php
 
-$sql = 'SELECT o.title, o.id, o.blurb FROM organizers o ORDER BY rand() LIMIT 1';
+$sql = 'SELECT o.title, o.id, o.blurb FROM organizers o WHERE 1=1' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY rand() LIMIT 1';
 $stmt = $db->prepare($sql);
 $stmt->execute();
 $org = $stmt->fetchRow();
+
+if ($org === false) {
+    return;
+}
 
 ?>
 

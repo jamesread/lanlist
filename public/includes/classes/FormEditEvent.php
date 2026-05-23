@@ -119,6 +119,11 @@ EOF;
     {
         global $db;
 
+        require_once __DIR__ . '/../functionality/edit_notifications.php';
+
+        $eventId = (int) $this->getElementValue('id');
+        $before = $this->getEvent();
+
 		$networkMbps = $this->getElementValue('networkMbps');
 
 		if (empty($networkMbps)) {
@@ -157,6 +162,14 @@ EOF;
         }
 
         $stmt->execute();
+
+        $after = $this->getEvent();
+        $changes = lanlistCollectEventEditChanges($before, $after);
+        lanlistSendEventEditNotifications(
+            $eventId,
+            Session::getUser()->getUsername(),
+            $changes
+        );
 
         Logger::messageAudit('Event ' . $this->getElementValue('title') . ' (' . $this->getElementValue('id') . ') edited by: ' . Session::getUser()->getUsername(), 'EDIT_EVENT');
 

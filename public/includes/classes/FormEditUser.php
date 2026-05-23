@@ -10,9 +10,13 @@ use libAllure\ElementSelect;
 use libAllure\ElementHtml;
 use libAllure\ElementPassword;
 use libAllure\DatabaseFactory;
+use libAllure\Logger;
 
 class FormEditUser extends Form
 {
+    private $showModeratorNewsletterFrequency = false;
+    private $showOrganizerEmailPreferences = false;
+
     public function __construct()
     {
         parent::__construct('formEditUser', 'Edit User');
@@ -32,6 +36,49 @@ class FormEditUser extends Form
         $discord = $this->addElement(new ElementInput('discordUser', 'Discord User ID', $user['discordUser']));
         $discord->setMinMaxLengths(0, 128);
         $discord->description = 'Open Discord, click your profile icon in the bottom-left, and click "Copy User ID". This field is visible by admins, so they can message you.';
+
+        if ((int) $user['group'] === MODERATOR_GID) {
+            $this->showModeratorNewsletterFrequency = true;
+
+            $newsletterFrequency = new ElementSelect(
+                'moderatorNewsletterFrequency',
+                'Moderator newsletter',
+                $user['moderatorNewsletterFrequency'] ?? 'daily'
+            );
+            foreach (lanlistModeratorNewsletterFrequencyOptions() as $value => $label) {
+                $newsletterFrequency->addOption($label, $value);
+            }
+            $newsletterFrequency->description = 'How often you receive the automated moderator site-checks email.';
+            $this->addElement($newsletterFrequency);
+        }
+
+        if ((int) ($user['organization'] ?? 0) > 0) {
+            $this->showOrganizerEmailPreferences = true;
+
+            $this->addElement(new ElementHtml(null, null, 'Email notifications'));
+
+            $organizerUpdates = new ElementSelect(
+                'organizerUpdateEmails',
+                'Organizer update emails',
+                $user['organizerUpdateEmails'] ?? 'always'
+            );
+            foreach (lanlistOrganizerUpdateEmailOptions() as $value => $label) {
+                $organizerUpdates->addOption($label, $value);
+            }
+            $organizerUpdates->description = 'When someone edits your organizer profile on lanlist.';
+            $this->addElement($organizerUpdates);
+
+            $eventUpdates = new ElementSelect(
+                'eventUpdateEmails',
+                'Event update emails',
+                $user['eventUpdateEmails'] ?? 'always'
+            );
+            foreach (lanlistEventUpdateEmailOptions() as $value => $label) {
+                $eventUpdates->addOption($label, $value);
+            }
+            $eventUpdates->description = 'When someone edits an event for your organizer.';
+            $this->addElement($eventUpdates);
+        }
 
         if (Session::hasPriv('EDIT_USER')) {
             $this->addElement(new ElementHtml(null, null, 'Admin fields'));
@@ -101,25 +148,84 @@ class FormEditUser extends Form
     {
         global $db;
 
-        $sql = 'UPDATE users SET `group` = :group, email = :email, organization = :organizer, usernameSteam = :usernameSteam, discordUser = :discordUser WHERE id = :id';
+        $targetGroup = Session::getUser()->hasPriv('EDIT_USER')
+            ? (int) $this->getElementValue('group')
+            : (int) $this->getUser()['group'];
+
+        $sql = 'UPDATE users SET `group` = :group, email = :email, organization = :organizer, usernameSteam = :usernameSteam, discordUser = :discordUser';
+        if ($this->showModeratorNewsletterFrequency && $targetGroup === MODERATOR_GID) {
+            $frequency = $this->getElementValue('moderatorNewsletterFrequency');
+            if (!array_key_exists($frequency, lanlistModeratorNewsletterFrequencyOptions())) {
+                $frequency = 'daily';
+            }
+
+            $sql .= ', moderatorNewsletterFrequency = :moderatorNewsletterFrequency';
+        }
+
+        if ($this->showOrganizerEmailPreferences) {
+            $organizerUpdateEmails = $this->getElementValue('organizerUpdateEmails');
+            if (!array_key_exists($organizerUpdateEmails, lanlistOrganizerUpdateEmailOptions())) {
+                $organizerUpdateEmails = 'always';
+            }
+
+            $eventUpdateEmails = $this->getElementValue('eventUpdateEmails');
+            if (!array_key_exists($eventUpdateEmails, lanlistEventUpdateEmailOptions())) {
+                $eventUpdateEmails = 'always';
+            }
+
+            $sql .= ', organizerUpdateEmails = :organizerUpdateEmails, eventUpdateEmails = :eventUpdateEmails';
+        }
+
+        $sql .= ' WHERE id = :id';
+
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('uid'));
         $stmt->bindValue(':email', $this->getElementValue('email'));
         $stmt->bindValue(':usernameSteam', $this->getElementValue('usernameSteam'));
         $stmt->bindValue(':discordUser', $this->getElementValue('discordUser'));
 
+        if ($this->showModeratorNewsletterFrequency && $targetGroup === MODERATOR_GID) {
+            $stmt->bindValue(':moderatorNewsletterFrequency', $frequency);
+        }
+
+        if ($this->showOrganizerEmailPreferences) {
+            $stmt->bindValue(':organizerUpdateEmails', $organizerUpdateEmails);
+            $stmt->bindValue(':eventUpdateEmails', $eventUpdateEmails);
+        }
+
         if (Session::getUser()->hasPriv('EDIT_USER')) {
-            $stmt->bindValue(':organizer', $this->getElementValue('organizer'));
-            $stmt->bindValue(':group', $this->getElementValue('group'));
+            $userBefore = $this->getUser();
+            $uid = (int) $this->getElementValue('uid');
+            $newOrganizer = (int) $this->getElementValue('organizer');
+            $newGroup = $targetGroup;
+
+            $stmt->bindValue(':organizer', $newOrganizer);
+            $stmt->bindValue(':group', $newGroup);
             $stmt->execute();
+
+            $details = 'User ' . $userBefore['username'] . ' (' . $uid . ') edited by '
+                . Session::getUser()->getUsername();
+            if ((int) $userBefore['organization'] !== $newOrganizer) {
+                $details .= '; organization ' . $userBefore['organization'] . ' → ' . $newOrganizer;
+            }
+            if ((int) $userBefore['group'] !== $newGroup) {
+                $details .= '; group ' . $userBefore['group'] . ' → ' . $newGroup;
+            }
 
             $newPassword = $this->getElementValue('password');
 
             if (!empty($newPassword)) {
                 $this->changePassword($newPassword);
+                $details .= '; password changed';
             }
 
-            redirect('viewUser.php?id=' . $this->getElementValue('uid'), 'User edited.');
+            $logMeta = ['relatedUser' => $uid];
+            if ($newOrganizer > 0) {
+                $logMeta['relatedOrganizer'] = $newOrganizer;
+            }
+            Logger::messageAudit($details, 'EDIT_USER', $logMeta);
+
+            redirect('viewUser.php?id=' . $uid, 'User edited.');
         } else {
             $user = $this->getUser();
             $stmt->bindValue(':organizer', $user['organization']);

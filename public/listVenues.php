@@ -7,14 +7,16 @@ define(
 );
 require_once 'includes/widgets/header.php';
 
+$eventJoinOn = 'e.venue = v.id AND e.dateStart > NOW() AND ' . lanlistSqlPublicVisibleEventJoinConditions('e');
+
 if (isset($_REQUEST['country'])) {
-    $sql = 'SELECT v.id, v.title, v.country, count(e.id) AS upcommingEvents FROM venues v LEFT JOIN events e ON e.venue = v.id AND e.dateStart > now() AND e.venue = v.id WHERE v.country = :country GROUP BY v.id ORDER BY v.title';
+    $sql = 'SELECT v.id, v.title, v.country, count(e.id) AS upcommingEvents FROM venues v LEFT JOIN events e ON ' . $eventJoinOn . ' WHERE v.country = :country GROUP BY v.id ORDER BY v.title';
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':country', $_REQUEST['country']);
 
     echo '<p>Showing all venues known to host events in: <strong>' . htmlentities($_REQUEST['country']) . '</strong></p>';
 } else {
-    $sql = 'SELECT v.id, v.title, v.country, count(e.id) AS upcommingEvents FROM venues v LEFT JOIN events e ON e.venue = v.id AND e.dateStart > now() AND e.venue = v.id GROUP BY v.id ORDER BY v.title';
+    $sql = 'SELECT v.id, v.title, v.country, count(e.id) AS upcommingEvents FROM venues v LEFT JOIN events e ON ' . $eventJoinOn . ' GROUP BY v.id ORDER BY v.title';
     $stmt = $db->prepare($sql);
 }
 

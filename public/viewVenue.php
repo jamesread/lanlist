@@ -37,10 +37,15 @@ require_once 'includes/widgets/infoboxListFilter.php';
 if (Session::isLoggedIn()) {
     $organizer = Session::getUser()->getData('organization');
 
-    if (Session::hasPriv('EDIT_VENUE')) {
+    if (Session::hasPriv('EDIT_VENUE') || Session::hasPriv('SUPERUSER')) {
         $menu = new HtmlLinksCollection('Venue admin');
-        $menu->add('formHandler.php?formClazz=FormEditVenue&amp;formEditVenue-id=' . $venue['id'], 'Edit');
-        $menu->add('formHandler.php?formClazz=FormNewOrganizer', 'New Organizer');
+        if (Session::hasPriv('EDIT_VENUE')) {
+            $menu->add('formHandler.php?formClazz=FormEditVenue&amp;formEditVenue-id=' . $venue['id'], 'Edit');
+            $menu->add('formHandler.php?formClazz=FormNewOrganizer', 'New Organizer');
+        }
+        if (Session::hasPriv('SUPERUSER')) {
+            $menu->add('formHandler.php?formClazz=FormDeleteVenue&amp;formDeleteVenue-id=' . $venue['id'], 'Delete');
+        }
         $tpl->assign('linkCollection', $menu);
         $tpl->display('linkCollection.tpl');
     }

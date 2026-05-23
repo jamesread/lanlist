@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @deprecated Use OliveTin to run scripts/run-newsletter.php on a schedule instead of cron → this entrypoint.
+ */
+
 if (php_sapi_name() !== 'cli') {
     http_response_code(403);
     header('Content-Type: text/plain; charset=UTF-8');
@@ -7,16 +11,17 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
-require_once 'includes/common.php';
-require_once 'includes/classes/ScheduledTaskNewsletter.php';
-require_once 'includes/classes/ScheduledTaskKeepalive.php';
+fwrite(
+    STDERR,
+    "DEPRECATED: public/scheduler.php — remove this from cron and configure OliveTin to run scripts/run-newsletter.php.\n"
+);
 
-use libAllure\Scheduler;
-
-$s = new Scheduler($db);
-
-if (in_array('--force', $_SERVER['argv'])) {
-    $s->executeEverything();
-} else {
-    $s->executeOverdueJobs();
+$repoRoot = dirname(__DIR__);
+$runner = $repoRoot . '/scripts/run-newsletter.php';
+if (!is_file($runner)) {
+    fwrite(STDERR, "ERROR: missing {$runner}\n");
+    exit(1);
 }
+
+passthru(PHP_BINARY . ' ' . escapeshellarg($runner), $exitCode);
+exit((int) $exitCode);

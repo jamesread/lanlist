@@ -28,8 +28,12 @@
 	<h3>Tickets</h3>
 
 	{if empty($event.tickets)}
+	{if $hasTicketInformation}
 	<strong>On door: </strong> {if $event.priceOnDoor == 0}Not Applicable{else}{$event.priceOnDoor|floatToMoney:$event.currency}{/if} <br />
 	<strong>In advance: </strong> {$event.priceInAdv|floatToMoney:$event.currency} <br /><br />
+	{else}
+	<p>No information about tickets yet, check the event website or check back here soon!</p>
+	{/if}
 	{else}
 	    {if count($event.tickets) eq 1 && $event.tickets[0].cost == 0}
 		<p>Tickets are free for this event!</p>
@@ -46,6 +50,16 @@
 	
 	{if $canEditEvent}
 	<a href = "formHandler.php?formClazz=FormAddTicket&addticket-eventId={$event['id']}">Add ticket</a>
+	{/if}
+
+	{if $isModerator && ($canSilenceTicketWarning || $ticketWarningSilenced)}
+	<p>
+		{if $ticketWarningSilenced}
+			Ticket warning silenced for {$ticketWarningSilencedDaysRemaining} more day{if $ticketWarningSilencedDaysRemaining != 1}s{/if} (until {$ticketWarningSilencedUntil|escape:'html'}).
+		{else}
+			<a href="misc.php?action=markTicketsNotReleased&amp;id={$event.id}&amp;return=event">Mark tickets not yet released</a>
+		{/if}
+	</p>
 	{/if}
 
 	{if $event.blurb}

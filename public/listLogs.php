@@ -16,6 +16,11 @@ if (isset($_REQUEST['ack'])) {
     $sql = 'UPDATE logs l SET l.isread = 1 ';
     $db->query($sql);
 
+    Logger::messageAudit(
+        'Unread logs dismissed by ' . Session::getUser()->getUsername(),
+        'CLEAR_LOGS'
+    );
+
     echo '<p>New logs cleared.</p>';
 }
 
@@ -26,11 +31,11 @@ if (isset($_REQUEST['test'])) {
 if (isset($_REQUEST['full'])) {
     echo '<h2>Full Logs</h2>';
 
-    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedOrganizer FROM logs l ORDER BY l.id DESC LIMIT 100';
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedUser, l.relatedOrganizer, u.username AS relatedUsername FROM logs l LEFT JOIN users u ON u.id = l.relatedUser ORDER BY l.id DESC LIMIT 100';
 } else {
     echo '<h2>New logs</h2>';
 
-    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedOrganizer FROM logs l WHERE l.isread = 0 ORDER BY l.id DESC';
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedUser, l.relatedOrganizer, u.username AS relatedUsername FROM logs l LEFT JOIN users u ON u.id = l.relatedUser WHERE l.isread = 0 ORDER BY l.id DESC';
 }
 
 $logs = $db->query($sql)->fetchAll();

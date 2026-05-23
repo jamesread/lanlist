@@ -10,6 +10,9 @@
 		</p>
 		<p>lanlist &copy; <a href = "licensing.php">The Lan Party Community</a></p>
 	</footer>
+{if ($includeInlineEdit|default:false) || ($isModerator|default:false)}
+	<script type="text/javascript" src="resources/javascript/inline-edit.js?v=2"></script>
+{/if}
 </body>
 
 </html>

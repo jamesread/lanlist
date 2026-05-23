@@ -4,6 +4,7 @@
 
 $actions = array(
     'Upcoming events',
+    'country' => 'By country',
     'perOrganizer' => 'Next events per Organizer',
     'everything' => 'Everything',
 );

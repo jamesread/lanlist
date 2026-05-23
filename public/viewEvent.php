@@ -6,6 +6,12 @@ use libAllure\Session;
 
 $event = fetchEvent(fromRequestRequireInt('id'));
 
+if (!lanlistEventIsPubliclyVisible($event) && !canEditEvent($event['organizerId'])) {
+    throw new Exception('Event not found.');
+}
+
+require_once __DIR__ . '/includes/functionality/site_checks.php';
+
 addHistoryLink('viewEvent.php?id=' . $event['id'], 'View event: ' . $event['eventTitle']);
 
 define('META_DESCRIPTION', seoEventMetaDescription($event));
@@ -42,7 +48,26 @@ require_once 'includes/widgets/header.php';
 
 $canEditEvent = canEditEvent($event['organizerId']);
 
+$hasTicketInformation = !empty($event['tickets'])
+    || (!empty($event['priceInAdv']) && (float) $event['priceInAdv'] != 0.0)
+    || (!empty($event['priceOnDoor']) && (float) $event['priceOnDoor'] != 0.0);
+$hasMissingTicketPrices = empty($event['tickets']) && empty($event['priceInAdv']);
+$ticketWarningSilenced = $hasMissingTicketPrices && lanlistEventSilencesMissingTickets($event);
+$canSilenceTicketWarning = $hasMissingTicketPrices
+    && !$ticketWarningSilenced
+    && lanlistNextTicketsNotReleasedUntil($event['dateStart']) !== null;
+
 $tpl->assign('canEditEvent', $canEditEvent);
+$tpl->assign('hasTicketInformation', $hasTicketInformation);
+$tpl->assign('canSilenceTicketWarning', $canSilenceTicketWarning);
+$tpl->assign('ticketWarningSilenced', $ticketWarningSilenced);
+if ($ticketWarningSilenced) {
+    $tpl->assign(
+        'ticketWarningSilencedDaysRemaining',
+        lanlistTicketsNotReleasedDaysRemaining($event['ticketsNotReleasedUntil'] ?? null)
+    );
+    $tpl->assign('ticketWarningSilencedUntil', $event['ticketsNotReleasedUntil']);
+}
 $tpl->assign('event', $event);
 
 $marker = jsMapMarker($event, true);

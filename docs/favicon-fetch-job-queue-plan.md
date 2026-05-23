@@ -16,7 +16,8 @@ Implementation checklist derived from planning session:
 - Python [`scripts/favicon-get.py`](../scripts/favicon-get.py) downloads `{org_id}.ico` under the **`scripts/`** working directory (per [`scripts/Makefile`](../scripts/Makefile)).
 - [`scripts/favicon-build.sh`](../scripts/favicon-build.sh) runs ImageMagick over `*.ico` and writes PNGs under `public/resources/images/organizer-favicons/{id}.png`.
 - `organizers.faviconRefetch` forces deletion of existing ICO before fetch; Python clears the flag on successful download path only (warnings/errors leave the flag behaviour as today).
-- [`public/scheduler.php`](../public/scheduler.php) handles **scheduled PHP tasks** (`scheduler_tasks`); favicon draining stays in the **`scripts/`** Python/ImageMagick toolchain.
+- Admin newsletter: OliveTin runs [`scripts/run-newsletter.php`](../scripts/run-newsletter.php) (see [`olivetin-newsletter-ops.md`](olivetin-newsletter-ops.md)); `public/scheduler.php` is deprecated.
+- Favicon draining stays in the **`scripts/`** Python/ImageMagick toolchain via OliveTin.
 
 ## Target design
 

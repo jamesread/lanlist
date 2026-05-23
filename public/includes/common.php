@@ -22,6 +22,7 @@ Logger::open();
 Logger::addListener('logMessageToDatabase');
 
 require_once 'includes/functionality/misc.php';
+require_once 'includes/functionality/organizer_visibility.php';
 require_once 'includes/functionality/seo.php';
 require_once 'includes/functionality/dbal.php';
 

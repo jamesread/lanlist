@@ -5,7 +5,7 @@
 	<thead>
 		<tr>
 			<th>Venue name</th>
-			<th># of upcomming events</th>
+			<th># of upcoming events</th>
 			<th>Country</th>
 		</tr>
 	</thead>

@@ -57,7 +57,7 @@
 				<li><a href = "eventsMap.php">Map</a></li>
 				<li><a href = "eventsList.php">List</a></li>
 			{if $isModerator}
-				<li><a href = "moderation.php">Moderation</a></li>
+				<li><a href = "siteChecks.php">Moderation</a></li>
 			{/if}
 			{if $isLoggedIn}
 				<li><strong><a href = "account.php">{$username}</a></strong></li>

@@ -1,74 +1,78 @@
 <html>
 <body>
 
-<style type = "text/css">
+<style type="text/css">
 {literal}
-.good {
-	color: green;
-}
-
 .bad {
 	color: red;
 }
 
 h1 {
-	font-size: 9pt;
+	font-size: 11pt;
+	margin-top: 1.2em;
+}
+
+ul {
+	padding-left: 1.2em;
 }
 {/literal}
 </style>
 
 <p>Hey.</p>
 
-<p>This is a {$siteTitle} newsletter for updates between {$newsletterStartDate} and {$newsletterFinishDate}. </p>
+<p>This is a {$siteTitle} <strong>moderator newsletter</strong> — the same site-check snapshot as the <a href="{$siteBaseUrl}/siteChecks.php">moderator control panel</a>, as of {$newsletterFinishDate}.</p>
 
-{if !empty($listNewUsers) || !empty($listNewEvents) || !empty($listNewOrganizers)}
-<h1>News</h1>
+{if $listEventsWithIssues|@count gt 0}
+<h1>Events with issues ({$listEventsWithIssues|@count})</h1>
+<ul>
+{foreach from=$listEventsWithIssues item="issueEvent"}
+	<li>
+		<a href="{$siteBaseUrl}/viewEvent.php?id={$issueEvent.id}">{$issueEvent.title|escape:'html'}</a>
+		{if !empty($issueEvent.organizerTitle)} ({$issueEvent.organizerTitle|escape:'html'}){/if}:
+		{$issueEvent.issueDescription|escape:'html'}
+		{if $issueEvent.issueDescription == 'No tickets defined for event'}
+			&mdash; <a href="{$siteBaseUrl}/misc.php?action=markTicketsNotReleased&amp;id={$issueEvent.id}">Mark tickets not yet released</a>
+		{/if}
+	</li>
+{/foreach}
+</ul>
 {/if}
 
-{if $listNewUsers|@count gt 0}
-	<ul>
-	{foreach from = $listNewUsers item = "item"}
-		<li>User "{$item.username}" registered.</li>
-	{/foreach}
-	</ul>
+{if $listEventsWithSilencedTicketWarning|@count gt 0}
+<h1>Silenced ticket warnings ({$listEventsWithSilencedTicketWarning|@count})</h1>
+<ul>
+{foreach from=$listEventsWithSilencedTicketWarning item="silencedEvent"}
+	<li>
+		<a href="{$siteBaseUrl}/viewEvent.php?id={$silencedEvent.id}">{$silencedEvent.title|escape:'html'}</a>
+		{if !empty($silencedEvent.organizerTitle)} ({$silencedEvent.organizerTitle|escape:'html'}){/if}:
+		Ticket warning silenced for {$silencedEvent.ticketsNotReleasedDaysRemaining} more day{if $silencedEvent.ticketsNotReleasedDaysRemaining != 1}s{/if}
+	</li>
+{/foreach}
+</ul>
 {/if}
 
-{if $listNewEvents|@count gt 0}
-	<ul>
-	{foreach from = $listNewEvents item = "item"}
-		<li>Event "{$item.title}" created by "{$item.createdBy}"</li>
-	{/foreach}
-	</ul>
+{if $listUnpublishedOrganizers|@count gt 0}
+<h1>Unpublished organizers ({$listUnpublishedOrganizers|@count})</h1>
+<ul>
+{foreach from=$listUnpublishedOrganizers item="itemOrganizer"}
+	<li>
+		<a href="{$siteBaseUrl}/viewOrganizer.php?id={$itemOrganizer.id}">{$itemOrganizer.title|escape:'html'}</a>
+		{if !empty($itemOrganizer.websiteUrl)} — {$itemOrganizer.websiteUrl|escape:'html'}{/if}
+	</li>
+{/foreach}
+</ul>
 {/if}
 
-{if $listNewOrganizers|@count gt 0}
-	<ul>
-	{foreach from = $listNewOrganizers item = "item"}
-		<li>New organizer "{$item.title}" registered.</li>
-	{/foreach}
-	</ul>
-{/if}
-
-{if !empty($listJoinRequests)}
-<h1>Actions Needed</h1>
-{/if}
-
-{if $listJoinRequests|@count gt 0}
-	<ul>
-	{foreach from = $listJoinRequests item = "item"}
-		<li class = "bad">The user "{$item.username}" wants to join organizer "{$item.organizerName}".</li>
-	{/foreach}
-	</ul>
-{/if}
-
-{if $issuesList|@count gt 0}
-<h1>Issues ({$issuesList|@count})</h1>
-
-	<ul>
-	{foreach from = $issuesList item = "issue"}
-		<li><a href = "{$siteBaseUrl}/viewEvent.php?id={$issue.id}">{$issue.title}</a>: {$issue.issueDescription}</li>
-	{/foreach}
-	</ul>
+{if $listOrganizers|@count gt 0}
+<h1>Organizers with no upcoming events ({$listOrganizers|@count})</h1>
+<ul>
+{foreach from=$listOrganizers item="itemOrganizer"}
+	<li>
+		<a href="{$siteBaseUrl}/viewOrganizer.php?id={$itemOrganizer.id}">{$itemOrganizer.title|escape:'html'}</a>
+		{if !empty($itemOrganizer.websiteUrl)} — {$itemOrganizer.websiteUrl|escape:'html'}{/if}
+	</li>
+{/foreach}
+</ul>
 {/if}
 
 <p>End of newsletter.</p>

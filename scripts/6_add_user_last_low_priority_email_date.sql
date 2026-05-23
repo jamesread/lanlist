@@ -1,0 +1,4 @@
+-- Migration 6: throttle low-priority notification emails (event updated) per user.
+-- Apply after migration 5. New installs pick up from schema.sql. Next migration: 7_*.sql
+ALTER TABLE users
+  ADD COLUMN lastLowPriorityEmailDate datetime DEFAULT NULL AFTER eventUpdateEmails;

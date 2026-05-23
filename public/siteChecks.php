@@ -1,27 +1,29 @@
 <?php
 
 require_once 'includes/common.php';
+require_once 'includes/functionality/site_checks.php';
 
-requirePriv('SITE_CHECKS');
+requirePriv('MODERATOR');
 
 define('MAIN_NOPADDING', true);
-define('TITLE', 'Site Checks');
+define('TITLE', 'Moderator control panel');
+$tpl->assign('includeInlineEdit', true);
 require_once 'includes/widgets/header.php';
 
-require_once 'includes/classes/EventsChecker.php';
+$tpl->display('moderatorControlPanel.tpl');
 
-$checker = new EventsChecker();
-$checker->checkAllEvents();
-$events = $checker->getEventsList();
+$panel = lanlistFetchModeratorPanelData();
 
-$tpl->assign('listEventsWithIssues', $events);
+$tpl->assign('listEventsWithIssues', $panel['eventsWithIssues']);
 $tpl->display('eventsWithIssues.tpl');
 
-$sql = 'SELECT o.id, o.title, o.websiteUrl, o.lastChecked, count(u.id) assUserCount, o.assumedStale FROM organizers o LEFT JOIN users u ON u.organization = o.id AND u.email IS NOT NULL LEFT JOIN events e ON o.id = e.organizer AND e.dateFinish > now() WHERE e.id IS null GROUP BY o.id ORDER BY o.title';
-$result = $db->query($sql);
-$orgies = $result->fetchAll();
+$tpl->assign('listEventsWithSilencedTicketWarning', $panel['eventsWithSilencedTicketWarning']);
+$tpl->display('eventsWithSilencedTicketWarning.tpl');
 
-$tpl->assign('listOrganizers', $orgies);
+$tpl->assign('listUnpublishedOrganizers', $panel['unpublishedOrganizers']);
+$tpl->display('unpublishedOrganizers.tpl');
+
+$tpl->assign('listOrganizers', $panel['organizersWithNoEvents']);
 $tpl->display('organizersWithNoEvents.tpl');
 
 startSidebar();

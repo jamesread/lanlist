@@ -38,9 +38,24 @@ foreach (
     echo '  <url><loc>' . $h($base . $path) . "</loc></url>\n";
 }
 
+echo '  <url><loc>' . $h($base . '/eventsList.php?mode=country') . "</loc></url>\n";
+
+foreach (getCountriesWithUpcomingEventCounts() as $row) {
+    $country = (string)$row['country'];
+    if (getCountryFlagHtml($country) === '') {
+        continue;
+    }
+
+    $loc = $base . '/eventsList.php?mode=country&country=' . rawurlencode($country);
+    echo '  <url><loc>' . $h($loc) . "</loc></url>\n";
+}
+
 $sql = <<<SQL
-SELECT id, createdDate FROM events WHERE published = 1 ORDER BY id ASC
+SELECT e.id, e.createdDate FROM events e
+INNER JOIN organizers o ON e.organizer = o.id
+WHERE e.published = 1
 SQL;
+$sql .= lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY e.id ASC';
 $stmt = $db->prepare($sql);
 $stmt->execute();
 
@@ -59,7 +74,7 @@ foreach ($stmt->fetchAll() as $row) {
     echo '  <url><loc>' . $h($loc) . '</loc><lastmod>' . $h($lastmod) . "</lastmod></url>\n";
 }
 
-$sql = 'SELECT DISTINCT organizer AS id FROM events WHERE published = 1 AND organizer IS NOT NULL ORDER BY organizer ASC';
+$sql = 'SELECT DISTINCT o.id FROM organizers o INNER JOIN events e ON e.organizer = o.id WHERE e.published = 1' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY o.id ASC';
 $stmt = $db->prepare($sql);
 $stmt->execute();
 
@@ -68,7 +83,7 @@ foreach ($stmt->fetchAll() as $row) {
     echo '  <url><loc>' . $h($loc) . "</loc></url>\n";
 }
 
-$sql = 'SELECT DISTINCT venue AS id FROM events WHERE published = 1 AND venue IS NOT NULL ORDER BY venue ASC';
+$sql = 'SELECT DISTINCT e.venue AS id FROM events e INNER JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.venue IS NOT NULL' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY e.venue ASC';
 $stmt = $db->prepare($sql);
 $stmt->execute();
 

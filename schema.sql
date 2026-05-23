@@ -95,6 +95,7 @@ CREATE TABLE `events` (
   `createdDate` datetime NOT NULL,
   `createdBy` int(11) NOT NULL,
   `ageRestrictions` varchar(255) DEFAULT null,
+  `ticketsNotReleasedUntil` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=573 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -308,6 +309,10 @@ CREATE TABLE `users` (
   `location` varchar(24) DEFAULT NULL,
   `email` varchar(128) DEFAULT NULL,
   `discordUser` varchar(128) DEFAULT NULL,
+  `moderatorNewsletterFrequency` varchar(16) NOT NULL DEFAULT 'daily',
+  `organizerUpdateEmails` varchar(16) NOT NULL DEFAULT 'always',
+  `eventUpdateEmails` varchar(16) NOT NULL DEFAULT 'always',
+  `lastLowPriorityEmailDate` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=543 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

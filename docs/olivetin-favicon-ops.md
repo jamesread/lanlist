@@ -10,15 +10,8 @@ OliveTin’s YAML changes between releases—confirm **`actions`** / **`bindings
 # Example only — align field names with your OliveTin version.
 actions:
   - title: "Lanlist: fetch organizer favicon"
-    shell: false
+    shell: run-favicon-job.sh --job-id {{ jobId }} --organizer-id {{ organizerId }}
     id: favicon-async
-    bindings:
-      - id: lanlist-org-favicon
-        title: Dispatch favicon runner
-        icon: ""
-    # Place the shell command where your version expects it (e.g. exec, commands).
-    # Use only numeric jobId / organizerId from OliveTin arguments (no shell concatenation from untrusted input in PHP).
-    # exec: |
     #   cd /path/to/lanlist/scripts && \
     #   MYSQL_USER=... MYSQL_PASS=... MYSQL_DATABASE=lanlist \
     #   ./run-favicon-job.py --job-id {{ jobId }} --organizer-id {{ organizerId }}

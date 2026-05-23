@@ -58,15 +58,8 @@ li {
 	</dd>
 
 	<dt>Discord invite</dt>
-	<dd class = "{$organizer.discordInviteRowClass}">
-	{if not empty($organizer.discordInviteUrl)}
-		<a target = "_blank" rel = "noopener noreferrer" href = "{$organizer.discordInviteHref}">{$organizer.discordInviteUrl|escape:'html'}</a>
-		{if $organizer.discordInviteRowClass eq 'warn'}
-			<em>&nbsp;(Does not match typical Discord URLs — verify manually.)</em>
-		{/if}
-	{else}
-		<em>Not set</em>
-	{/if}
+	<dd class = "{$organizer.discordInviteRowClass}" data-inline-row-class-target>
+	{include file='organizerInlineDiscordInvite.tpl' organizer=$organizer}
 	</dd>
 
 	<dt>Banner logo</dt>
@@ -129,11 +122,11 @@ li {
 </dl>
 
 
-<h3>Events</h3>
+<h3>Upcoming events</h3>
 
-{if $organizer.events|@count == 0}
+{if $organizer.futureEvents|@count == 0}
 	<p class = "bad">No future events found.</p>
-	
+
 	<a href = "formHandler.php?formClazz=FormEditOrganizer&amp;formEditOrganizer-id={$organizer.id}">Edit organizer</a>
 	&nbsp;|&nbsp;
 	<a href = "formHandler.php?formClazz=FormNewEvent&formNewEvent-organizer={$organizer.id}">Create new event</a>
@@ -149,16 +142,10 @@ li {
 		</tr>
 	</thead>
 	<tbody>
-
-	{foreach from = $organizer.events item = event}
-		<tr class = "{if $event.inPast}subtle{else}{/if}">
-
-		<td>
-		{$event.dateStart}
-		</td>
-		<td>
-		<a href = "viewEvent.php?id={$event.id}">{$event.title}</a>
-		</td>
+	{foreach from = $organizer.futureEvents item = event}
+		<tr>
+		<td>{$event.dateStart}</td>
+		<td><a href = "viewEvent.php?id={$event.id}">{$event.title}</a></td>
 		<td>
 		{if !empty($event.venueId)}
 			<a href = "viewVenue.php?id={$event.venueId}">{$event.venueTitle}</a>
@@ -166,10 +153,46 @@ li {
 			<span class = "subtle">No venue</span>
 		{/if}
 		</td>
+		<td>created by <a href = "viewUser.php?id={$event.uid}">{$event.username}</a></td>
 		<td>
-		created by <a href = "viewUser.php?id={$event.uid}">{$event.username}</a>
-
+		<a href="misc.php?action=cloneEvent&id={$event.id}">Clone</a>
+		|
+		<a href = "formHandler.php?formClazz=FormEditEvent&amp;formEditEvent-id={$event.id}">Edit</a>
 		</td>
+		</tr>
+	{/foreach}
+	</tbody>
+	</table>
+{/if}
+
+<h3>Past events</h3>
+
+{if $organizer.pastEvents|@count == 0}
+	<p class = "subtle">No past events.</p>
+{else}
+	<table>
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Title</th>
+			<th>Venue</th>
+			<th>Created By</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+	{foreach from = $organizer.pastEvents item = event}
+		<tr class = "subtle">
+		<td>{$event.dateStart}</td>
+		<td><a href = "viewEvent.php?id={$event.id}">{$event.title}</a></td>
+		<td>
+		{if !empty($event.venueId)}
+			<a href = "viewVenue.php?id={$event.venueId}">{$event.venueTitle}</a>
+		{else}
+			<span class = "subtle">No venue</span>
+		{/if}
+		</td>
+		<td>created by <a href = "viewUser.php?id={$event.uid}">{$event.username}</a></td>
 		<td>
 		<a href="misc.php?action=cloneEvent&id={$event.id}">Clone</a>
 		|

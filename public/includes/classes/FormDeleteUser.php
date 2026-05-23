@@ -3,6 +3,8 @@
 use libAllure\Form;
 use libAllure\ElementHtml;
 use libAllure\Session;
+use libAllure\Logger;
+use libAllure\User;
 
 class FormDeleteUser extends Form
 {
@@ -21,10 +23,20 @@ class FormDeleteUser extends Form
     {
         global $db;
 
+        $uid = (int) $this->getElementValue('uid');
+        $target = User::getUserById($uid);
+        $targetUsername = $target ? $target->getUsername() : '(unknown)';
+
         $sql = 'DELETE FROM users WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':id', $this->getElementValue('uid'));
+        $stmt->bindValue(':id', $uid);
         $stmt->execute();
+
+        Logger::messageAudit(
+            'User ' . $targetUsername . ' (' . $uid . ') deleted by ' . Session::getUser()->getUsername(),
+            'DELETE_USER',
+            ['relatedUser' => $uid]
+        );
 
         redirect('listUsers.php', 'Dead and gone.');
     }

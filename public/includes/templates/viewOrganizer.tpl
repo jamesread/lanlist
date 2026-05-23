@@ -22,6 +22,12 @@
 
 <div style = "clear:both;">&nbsp;</div>
 
+{if $isModerator}
+<div class = "paralellContainer organizer-moderator-fields">
+	{include file='organizerModeratorFields.tpl'}
+</div>
+{/if}
+
 <div class = "paralellContainer">
 	<h3>Events ({$events|@count})</h3>
 

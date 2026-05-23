@@ -63,18 +63,30 @@ class FormRegister extends Form
 
     public function process()
     {
-        global $db;
+        global $db, $tpl;
+
+        $username = $this->getElementValue('username');
+        $email = $this->getElementValue('email');
 
         $sql = 'INSERT INTO users (username, password, registered, email) VALUES (:username, :password, now(), :email) ';
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':username', $this->getElementValue('username'));
+        $stmt->bindValue(':username', $username);
         $stmt->bindValue(':password', sha1($this->getElementValue('password1')));
-        $stmt->bindValue(':email', $this->getElementValue('email'));
+        $stmt->bindValue(':email', $email);
         $stmt->execute();
 
-        Logger::messageNormal('New user registration: ' . $this->getElementValue('username'), 'USER_REGISTERED');
-        sendEmailToAdmins('Username: ' . $this->getElementValue('username'), 'New user registration: ' . $this->getElementValue('username'));
+        Logger::messageNormal('New user registration: ' . $username, 'USER_REGISTERED');
+        sendEmailToAdmins('Username: ' . $username, 'New user registration: ' . $username);
 
-        redirect('login.php?formLogin-username=' . $this->getElementValue('username'), 'Registeration complete!');
+        $tpl->assign('siteBaseUrl', SITE_BASE_URL);
+        $tpl->assign('siteTitle', SITE_TITLE);
+        $tpl->assign('username', $username);
+        $tpl->assign(
+            'loginUrl',
+            SITE_BASE_URL . '/login.php?formLogin-username=' . rawurlencode($username)
+        );
+        sendEmail($email, $tpl->fetch('email.welcome.tpl'), 'Welcome!');
+
+        redirect('login.php?formLogin-username=' . $username, 'Registeration complete!');
     }
 }

@@ -723,10 +723,92 @@ td.audit {
 
   form {
     background-color: #1e1e1e;
+    color: #ddd;
+    color-scheme: dark;
   }
 
-  ul.nextEvents li {
-    border-bottom: 1px solid #444;
+  fieldset {
+    border-color: #515151;
+  }
+
+  label {
+    color: #ddd;
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: #2a2a2a;
+    border-color: #515151;
+    color: #eee;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    background-color: #333;
+    border-color: #999;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(100, 180, 255, 0.25);
+  }
+
+  option {
+    background-color: #2a2a2a;
+    color: #eee;
+  }
+
+  button {
+    background-color: #488448;
+    color: #fff;
+  }
+
+  button:hover {
+    background-color: #3a6f3a;
+  }
+
+  button:disabled,
+  .paginate_disabled_previous,
+  .paginate_disabled_next {
+    background-color: #444;
+    color: #888;
+    border-color: #555;
+  }
+
+  hr {
+    border-bottom-color: #515151;
+  }
+
+  h3 {
+    color: #ccc;
+  }
+
+  p.description {
+    color: #bbb;
+  }
+
+  p.notification {
+    background-color: #1e1e1e;
+    color: #ddd;
+  }
+
+  #licenseBlock {
+    background-color: #1e1e1e;
+    border-color: #515151;
+    color: #ddd;
+  }
+
+  .ui-autocomplete {
+    background-color: #2a2a2a;
+    border-color: #515151;
+    color: #eee;
+  }
+
+  .organizer-banner-paste-preview {
+    border-color: #515151;
+  }
+
+  ul.nextEvents li.nextEvents-item {
+    border-bottom: 1px solid #515151;
   }
 
   td {
@@ -775,6 +857,62 @@ td.audit {
   .organizer-banner-paste-status--error {
     color: #ff8a80;
   }
+
+  .inline-edit__form {
+    margin-top: 0.35em;
+  }
+
+  .inline-edit__input {
+    background-color: #2a2a2a;
+    border-color: #515151;
+    color: #eee;
+    max-width: 100%;
+    width: min(24em, 100%);
+  }
+
+  .inline-edit__error {
+    color: #ff8a80;
+    margin: 0.35em 0 0 0;
+  }
+
+  .inline-edit__edit,
+  .inline-edit__save,
+  .inline-edit__cancel,
+  .inline-edit__publish,
+  .inline-edit__unpublish {
+    margin-left: 0.5em;
+  }
+
+  .inline-edit--compact .inline-edit__publish {
+    margin-left: 0;
+  }
+}
+
+.inline-edit__form {
+  margin-top: 0.35em;
+}
+
+.inline-edit__input {
+  max-width: 100%;
+  width: min(24em, 100%);
+}
+
+.inline-edit__error {
+  color: #b00020;
+  margin: 0.35em 0 0 0;
+  font-size: 0.9em;
+}
+
+.inline-edit__edit,
+.inline-edit__save,
+.inline-edit__cancel,
+.inline-edit__publish,
+.inline-edit__unpublish {
+  margin-left: 0.5em;
+}
+
+.inline-edit--compact .inline-edit__publish {
+  margin-left: 0;
 }
 
 @media screen and (max-device-width: 1024px) {

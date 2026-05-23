@@ -6,6 +6,7 @@ use libAllure\ElementInput;
 use libAllure\ElementHidden;
 use libAllure\ElementTextbox;
 use libAllure\ElementReadOnly;
+use libAllure\Logger;
 
 class FormSendEmailToUser extends Form
 {
@@ -18,7 +19,7 @@ class FormSendEmailToUser extends Form
     {
         parent::__construct('formSendEmailToUser', 'Send email to user');
 
-        Session::requirePriv('SEND_EMAIL');
+        Session::requirePriv('EDIT_USER');
 
         $elUid = $this->addElementReadOnly('User', 0, 'uid');
 
@@ -125,6 +126,20 @@ EOF;
 
 
         sendEmail($this->getElementValue('email'), $content, $subject, false);
+
+        $recipient = $this->getElementValue('email');
+        $logContent = 'Staff email sent by ' . Session::getUser()->getUsername()
+            . ' to ' . $recipient . ', subject: ' . $subject;
+        $logMeta = null;
+        if (!empty($this->user)) {
+            $logContent .= ' (user ' . $this->user->getUsername() . ' #' . $this->user->getId() . ')';
+            $logMeta = ['relatedUser' => (int) $this->user->getId()];
+            $orgId = (int) ($this->organizer['id'] ?? 0);
+            if ($orgId > 0) {
+                $logMeta['relatedOrganizer'] = $orgId;
+            }
+        }
+        Logger::messageAudit($logContent, 'STAFF_EMAIL_SENT', $logMeta);
 
         redirect('listUsers.php?', 'Email sent.');
     }

@@ -1,17 +1,19 @@
 <?php
 
 require_once 'includes/common.php';
+require_once 'includes/functionality/async_jobs.php';
+require_once 'includes/functionality/olivetin.php';
 
 requirePriv('SCHEDULER_LIST');
 
 require_once 'includes/widgets/header.php';
 
-$sql = 'SELECT className, frequency, lastRunTime FROM scheduler_tasks';
-$stmt = $db->prepare($sql);
-$stmt->execute();
+$newsletterWatermark = lanlistFetchNewsletterLastRunTime();
 
-$tpl->assign('listScheduledTasks', $stmt->fetchAll());
-$tpl->display('listScheduledTasks.tpl');
+$tpl->assign('listAsyncJobs', lanlistFetchAsyncJobsForAdminList(100));
+$tpl->assign('newsletterWatermark', $newsletterWatermark);
+$tpl->assign('oliveTinConnection', lanlistOliveTinConnectionTest());
+$tpl->display('listAsyncJobs.tpl');
 
 startSidebar();
 require_once 'includes/widgets/adminBox.php';

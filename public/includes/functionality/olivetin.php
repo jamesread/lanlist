@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use OliveTin\Api\OliveTinApiException;
 use OliveTin\Api\OliveTinClient;
 
 /**
@@ -75,4 +76,49 @@ function lanlistOliveTinClient(): OliveTinClient
     $client = new OliveTinClient(rtrim($baseUrl, '/'), $apiKey, $apiPrefix);
 
     return $client;
+}
+
+/**
+ * Probe OliveTin via Init RPC (TLS, API path, and bearer auth).
+ *
+ * @return array{
+ *     configured: bool,
+ *     ok: bool,
+ *     baseUrl: string,
+ *     error: ?string,
+ *     init: ?array<string, mixed>,
+ * }
+ */
+function lanlistOliveTinConnectionTest(): array
+{
+    [$baseUrl] = lanlistResolveOliveTinConfig();
+    $result = [
+        'configured' => lanlistOliveTinConfigured(),
+        'ok' => false,
+        'baseUrl' => rtrim($baseUrl, '/'),
+        'error' => null,
+        'init' => null,
+    ];
+
+    if (!$result['configured']) {
+        $result['error'] = 'OliveTin is not configured (set OLIVETIN_BASE_URL and OLIVETIN_API_KEY).';
+
+        return $result;
+    }
+
+    try {
+        $result['init'] = lanlistOliveTinClient()->init();
+        $result['ok'] = true;
+    } catch (OliveTinApiException $e) {
+        $message = $e->getMessage();
+        $status = $e->httpStatus();
+        if ($status > 0) {
+            $message .= ' (HTTP ' . $status . ')';
+        }
+        $result['error'] = $message;
+    } catch (\InvalidArgumentException $e) {
+        $result['error'] = $e->getMessage();
+    }
+
+    return $result;
 }

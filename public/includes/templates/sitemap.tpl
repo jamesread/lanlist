@@ -9,6 +9,18 @@
 	<dt><a href = "eventsList.php">Events</a></dt>
 	<dd>The main part of the site, a list of LAN Parties</dd>
 
+	<dt><a href = "eventsList.php?mode=country">Events by country</a></dt>
+	<dd>Upcoming LAN parties filtered by country.</dd>
+	{if $eventsListCountries|@count > 0}
+	<dd>
+		<ul>
+		{foreach from = $eventsListCountries item = "country"}
+			<li><a href = "eventsList.php?mode=country&amp;country={$country|escape:'url'}">{$country|escape}</a></li>
+		{/foreach}
+		</ul>
+	</dd>
+	{/if}
+
 	<dt><a href = "listOrganizers.php">Organizers</a></dt>
 	<dd>A list of organizers of LAN Parties.</dd>
 

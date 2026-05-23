@@ -26,12 +26,13 @@ $stmt->execute();
 
 $tpl->assign('listMembers', $stmt->fetchAll());
 
-$sql = 'SELECT p.`key`, p.description FROM privileges_g gp LEFT JOIN permissions p ON gp.permission = p.id WHERE gp.group = :gid ORDER BY p.`key`';
+$sql = 'SELECT p.id AS permissionId, p.`key`, p.description FROM privileges_g gp LEFT JOIN permissions p ON gp.permission = p.id WHERE gp.group = :gid ORDER BY p.`key`';
 $stmt = Shortcuts::stmt($sql);
 $stmt->bindValue(':gid', $groupId);
 $stmt->execute();
 
 $tpl->assign('listPrivileges', $stmt->fetchAll());
+$tpl->assign('canDropGroupPermissions', Session::hasPriv('SUPERUSER'));
 $tpl->display('viewGroup.tpl');
 
 startSidebar();

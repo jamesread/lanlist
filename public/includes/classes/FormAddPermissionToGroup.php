@@ -4,6 +4,7 @@ use libAllure\Form;
 use libAllure\Session;
 use libAllure\Shortcuts;
 use libAllure\ElementSelect;
+use libAllure\Logger;
 
 if (!Session::hasPriv('SUPERUSER')) {
     die('Permission denied');
@@ -53,6 +54,21 @@ class FormAddPermissionToGroup extends Form
         $stmt->bindValue(':permission', $this->getElementValue('permission'));
         $stmt->bindValue(':group', $this->getElementValue('usergroup'));
         $stmt->execute();
+
+        $permId = (int) $this->getElementValue('permission');
+        $permKey = (string) $permId;
+        $pk = $db->prepare('SELECT p.key FROM permissions p WHERE p.id = :id LIMIT 1');
+        $pk->bindValue(':id', $permId, \PDO::PARAM_INT);
+        $pk->execute();
+        if ($pk->numRows() > 0) {
+            $permKey = $pk->fetchRow()['key'];
+        }
+
+        Logger::messageAudit(
+            'Permission ' . $permKey . ' granted to group #' . $this->getElementValue('usergroup')
+            . ' by ' . Session::getUser()->getUsername(),
+            'GRANT_GROUP_PERMISSION'
+        );
 
         redirect('viewGroup.php?id=' . $this->getElementValue('usergroup'), 'Permission created');
     }

@@ -26,7 +26,7 @@ function fetchEventsFromVenueId($id)
 {
     global $db;
 
-    $sql = 'SELECT e.title, e.dateStart, e.dateFinish, e.id, o.id AS organizerId FROM events e LEFT JOIN venues v ON v.id = e.venue LEFT JOIN organizers o ON e.organizer = o.id WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId';
+    $sql = 'SELECT e.title, e.dateStart, e.dateFinish, e.id, o.id AS organizerId FROM events e LEFT JOIN venues v ON v.id = e.venue INNER JOIN organizers o ON e.organizer = o.id WHERE e.venue = v.id AND e.dateStart >= now() AND v.id = :venueId AND ' . lanlistSqlPublicVisibleEventJoinConditions('e');
     $stmt = $db->prepare($sql);
     $stmt->bindValue('venueId', $id);
         $stmt->execute();
@@ -138,6 +138,7 @@ SELECT
 	e.createdBy,
         e.createdDate,
         e.ageRestrictions,
+        e.ticketsNotReleasedUntil,
 	u.username AS createdByUsername,
 	o.title AS organizerTitle, 
 	o.id AS organizerId, 

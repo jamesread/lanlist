@@ -46,7 +46,7 @@ switch (FUNC) {
 
         requirePriv('VIEW_LOGS');
 
-        $sql = 'SELECT l.id, l.timestamp, l.priority, l.eventType, l.relatedOrganizer, l.content FROM logs l ORDER BY id DESC LIMIT 3000';
+        $sql = 'SELECT l.id, l.timestamp, l.priority, l.eventType, l.relatedUser, l.relatedOrganizer, l.content FROM logs l ORDER BY id DESC LIMIT 3000';
         $logs = $db->query($sql)->fetchAll();
 
         switch (FORMAT) {
@@ -72,9 +72,9 @@ switch (FUNC) {
         }
 
         if (empty($_REQUEST['includePast'])) {
-            $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, o.title AS organizer FROM events e LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now()';
+            $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, o.title AS organizer FROM events e LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now()' . lanlistSqlPublicOrganizerVisible('o');
         } else {
-            $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, o.title AS organizer FROM events e LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1';
+            $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, o.title AS organizer FROM events e LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1' . lanlistSqlPublicOrganizerVisible('o');
         }
 
         $result = $db->query($sql);

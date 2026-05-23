@@ -71,6 +71,96 @@ function sendEmailToGroup($groupId, $content, $subject)
     }
 }
 
+function lanlistModeratorNewsletterFrequencyOptions(): array
+{
+    return [
+        'daily' => 'Daily',
+        'fridays_only' => 'Fridays only',
+        'never' => 'Never',
+    ];
+}
+
+function lanlistOrganizerUpdateEmailOptions(): array
+{
+    return [
+        'always' => 'Always',
+        'never' => 'Never',
+    ];
+}
+
+function lanlistEventUpdateEmailOptions(): array
+{
+    return [
+        'always' => 'Always',
+        'never' => 'Never',
+    ];
+}
+
+function lanlistUserReceivesOrganizerUpdateEmails(array $user): bool
+{
+    return ($user['organizerUpdateEmails'] ?? 'always') !== 'never';
+}
+
+function lanlistUserReceivesEventUpdateEmails(array $user): bool
+{
+    return ($user['eventUpdateEmails'] ?? 'always') !== 'never';
+}
+
+function lanlistUserReceivesModeratorNewsletterToday(array $user): bool
+{
+    $frequency = $user['moderatorNewsletterFrequency'] ?? 'daily';
+
+    if ($frequency === 'never') {
+        return false;
+    }
+
+    if ($frequency === 'fridays_only') {
+        return (int) date('N') === 5;
+    }
+
+    return true;
+}
+
+/**
+ * @return int number of emails sent
+ */
+function sendModeratorNewsletter($content, $subject): int
+{
+    global $db;
+
+    $sql = 'SELECT id, username, email, moderatorNewsletterFrequency FROM users WHERE `group` = :moderator_gid OR `group` = :admin_gid';
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':moderator_gid', MODERATOR_GID);
+    $stmt->bindValue(':admin_gid', MODERATOR_GID);
+    $stmt->execute();
+
+    $sentCount = 0;
+
+    foreach ($stmt->fetchAll() as $user) {
+        if (!lanlistUserReceivesModeratorNewsletterToday($user)) {
+            continue;
+        }
+
+        sendEmail($user['email'], $content, $subject);
+        $sentCount++;
+    }
+
+    return $sentCount;
+}
+
+function lanlistStandardEmailFooterHtml(): string
+{
+    $profileUrl = htmlspecialchars(SITE_BASE_URL . '/formHandler.php?formClazz=FormEditUser', ENT_QUOTES, 'UTF-8');
+    $discordUrl = htmlspecialchars('https://discord.gg/jhYWWpNJ3v', ENT_QUOTES, 'UTF-8');
+    $siteTitle = htmlspecialchars(SITE_TITLE, ENT_QUOTES, 'UTF-8');
+
+    return '<p><small>'
+        . '— ' . $siteTitle . '<br />'
+        . 'Manage email settings in <a href="' . $profileUrl . '">your profile</a>.<br />'
+        . 'Questions? Join the <a href="' . $discordUrl . '">TechnoWax Discord</a> server (#lanlist channel).'
+        . '</small></p>';
+}
+
 function sendEmail($recipient, $content, $subject = 'Notification', $includeStandardFooter = true)
 {
     $subject = SITE_TITLE . ' - ' . $subject;
@@ -87,7 +177,7 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
     $content = wordwrap($content);
 
     if ($includeStandardFooter) {
-        $content .= "\n\n- " . SITE_TITLE;
+        $content .= lanlistStandardEmailFooterHtml();
     }
 
 //    ErrorHandler::getInstance()->beLazy();
@@ -255,13 +345,85 @@ function getCountUnreadLogs()
     }
 }
 
+function getCountryFlagHtml(string $country): string
+{
+    switch ($country) {
+        // https://symbl.cc/en/emoji/flags/country-flag/
+        case 'United Kingdom':
+            return '&#127468;&#127463;';
+        case 'Sweden':
+            return '&#127480;&#127466;';
+        case 'Netherlands':
+            return '&#127475;&#127473;';
+        case 'Germany':
+            return '&#127465;&#127466;';
+        case 'Italy':
+            return '&#127470;&#127481;';
+        case 'United States':
+            return '&#127482;&#127480;';
+        case 'Canada':
+            return '&#127464;&#127462;';
+        case 'Denmark':
+            return '&#127465;&#127472;';
+        case 'Austria':
+            return '&#127462;&#127481;';
+        case 'Belgium':
+            return '&#127463;&#127466;';
+        case 'Spain':
+            return '&#127466;&#127480;';
+        default:
+            return '';
+    }
+}
+
+function echoCountryFlagOrName(string $country, bool $linkFlag = false): void
+{
+    $flag = getCountryFlagHtml($country);
+    if ($flag !== '') {
+        if ($linkFlag) {
+            echo '<a href = "eventsList.php?mode=country&amp;country=';
+            echo urlencode($country);
+            echo '" title = "Upcoming events in ';
+            echo htmlspecialchars($country, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            echo '">';
+            echo $flag;
+            echo '</a>';
+            return;
+        }
+
+        echo $flag;
+        return;
+    }
+
+    echo htmlspecialchars($country, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
+function getCountriesWithUpcomingEventCounts(): array
+{
+    global $db;
+
+    $sql = 'SELECT v.country, COUNT(e.id) AS eventCount
+        FROM events e
+        INNER JOIN venues v ON e.venue = v.id
+        INNER JOIN organizers o ON e.organizer = o.id
+        WHERE e.published = 1
+            AND e.dateStart > NOW()
+            AND v.country IS NOT NULL
+            AND v.country != \'\'' . lanlistSqlPublicOrganizerVisible('o') . '
+        GROUP BY v.country
+        HAVING eventCount > 0
+        ORDER BY v.country ASC';
+
+    return $db->query($sql)->fetchAll();
+}
+
 function getListOfNextEvents($count = 10)
 {
     global $db;
 
     $count = intval($count);
 
-    $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, v.country, o.id AS organizerId, o.title AS organizerTitle, o.useFavicon FROM events e LEFT JOIN venues v ON e.venue = v.id LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY dateStart ASC LIMIT ' . $count;
+    $sql = 'SELECT e.id, e.title, e.dateStart, e.dateFinish, v.country, o.id AS organizerId, o.title AS organizerTitle, o.useFavicon FROM events e LEFT JOIN venues v ON e.venue = v.id LEFT JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now()' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY dateStart ASC LIMIT ' . $count;
 
     $events = $db->query($sql)->fetchAll();
     $events = normalizeEvents($events);
@@ -286,7 +448,7 @@ function getNextEvent($organizerId = null)
     global $db;
 
     if (empty($organizerId)) {
-        $sql = 'SELECT e.id, e.title, e.dateStart FROM events e WHERE e.published = 1 AND e.dateStart > now() ORDER BY dateStart ASC limit 1';
+        $sql = 'SELECT e.id, e.title, e.dateStart FROM events e INNER JOIN organizers o ON e.organizer = o.id WHERE e.published = 1 AND e.dateStart > now()' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY dateStart ASC limit 1';
         $result = $db->query($sql);
 
         return $result->fetchRow();
@@ -325,6 +487,17 @@ function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
 {
     global $db;
 
+    $relatedUser = null;
+    if (is_array($metadata) && array_key_exists('relatedUser', $metadata)) {
+        $v = $metadata['relatedUser'];
+        if ($v !== null && $v !== '') {
+            $n = (int) $v;
+            if ($n > 0) {
+                $relatedUser = $n;
+            }
+        }
+    }
+
     $relatedOrganizer = null;
     if (is_array($metadata) && array_key_exists('relatedOrganizer', $metadata)) {
         $v = $metadata['relatedOrganizer'];
@@ -336,10 +509,15 @@ function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
         }
     }
 
-    $stmtLog = $db->prepare('INSERT INTO logs (priority, content, eventType, relatedOrganizer, timestamp) VALUES (:priority, :content, :eventType, :relatedOrganizer, now()) ');
+    $stmtLog = $db->prepare('INSERT INTO logs (priority, content, eventType, relatedUser, relatedOrganizer, timestamp) VALUES (:priority, :content, :eventType, :relatedUser, :relatedOrganizer, now()) ');
     $stmtLog->bindValue(':priority', $priority);
     $stmtLog->bindValue(':content', $content);
     $stmtLog->bindValue(':eventType', $eventType);
+    if ($relatedUser === null) {
+        $stmtLog->bindValue(':relatedUser', null, \PDO::PARAM_NULL);
+    } else {
+        $stmtLog->bindValue(':relatedUser', $relatedUser, \PDO::PARAM_INT);
+    }
     if ($relatedOrganizer === null) {
         $stmtLog->bindValue(':relatedOrganizer', null, \PDO::PARAM_NULL);
     } else {
@@ -412,7 +590,7 @@ function jsForEvents()
 {
     global $db;
 
-    $sql = 'SELECT e.id, o.id AS organizerId, o.title AS organizerTitle, e.numberOfSeats, e.title AS eventTitle, v.lat as venueLat, v.lng as venueLng, e.dateStart, e.dateFinish, o.useFavicon FROM events e LEFT JOIN (venues v) ON e.venue = v.id LEFT JOIN (organizers o) ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now() ORDER BY e.dateStart DESC';
+    $sql = 'SELECT e.id, o.id AS organizerId, o.title AS organizerTitle, e.numberOfSeats, e.title AS eventTitle, v.lat as venueLat, v.lng as venueLng, e.dateStart, e.dateFinish, o.useFavicon FROM events e LEFT JOIN (venues v) ON e.venue = v.id LEFT JOIN (organizers o) ON e.organizer = o.id WHERE e.published = 1 AND e.dateFinish > now()' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY e.dateStart DESC';
     $stmt = $db->prepare($sql);
     $stmt->execute();
 

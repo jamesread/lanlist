@@ -31,6 +31,35 @@ abstract class FormHelpers
         return $el;
     }
 
+    /**
+     * @return array<int, array<int, array{id: int|string, title: string, country: string}>>
+     */
+    public static function fetchVenuesUsedByOrganizers(): array
+    {
+        global $db;
+
+        $sql = 'SELECT e.organizer AS organizerId, v.id, v.title, v.country, MAX(e.dateStart) AS lastUsed
+                FROM events e
+                INNER JOIN venues v ON e.venue = v.id
+                WHERE e.organizer IS NOT NULL
+                GROUP BY e.organizer, v.id, v.title, v.country
+                ORDER BY e.organizer ASC, lastUsed DESC';
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+
+        $byOrganizer = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $organizerId = (int) $row['organizerId'];
+            $byOrganizer[$organizerId][] = [
+                'id' => $row['id'],
+                'title' => $row['title'],
+                'country' => $row['country'],
+            ];
+        }
+
+        return $byOrganizer;
+    }
+
 
     public static function getElementCountry($currentValue = null)
     {

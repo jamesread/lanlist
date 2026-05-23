@@ -42,11 +42,9 @@ class FormEditOrganizer extends Form
                 $this->addElement(new ElementCheckbox('useFavicon', 'Use site favicon', $organizer['useFavicon'], 'Favicons are collected periodically (about once per day). You can see which favicon the site collected for you at this URL: <a href = "resources/images/organizer-favicons/' . $organizer['id'] . '.png">HERE</a>'));
         $this->addElement(new ElementCheckbox('faviconRefetch', 'Refetch favicon on next crawl', !empty($organizer['faviconRefetch'] ?? 0), 'If checked: the nightly favicon job deletes the downloaded icon for this organizer and downloads it again. This flag turns off automatically after a successful fetch.'));
 
-        if (
-            !Session::hasPriv('EDIT_ORGANIZER')
-            && !Session::hasPriv('MODERATOR')
-            && Session::getUser()->getData('organization') != $organizer['id']
-        ) {
+        require_once __DIR__ . '/../functionality/inline_edit.php';
+
+        if (!lanlistUserCanEditOrganizer((int) $organizer['id'])) {
             throw new libAllure\exceptions\SimpleFatalError('You do not have permission to edit this organization.');
         }
 
@@ -203,6 +201,12 @@ JS);
     {
         global $db;
 
+        require_once __DIR__ . '/../functionality/edit_notifications.php';
+
+        $organizerId = (int) $this->getElementValue('id');
+        $before = fetchOrganizer($organizerId);
+        $bannerUploaded = $this->getElement('banner')->wasAnythingUploaded();
+
         $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, discordInviteUrl = :discordInviteUrl, blurb = :blurb, useFavicon = :useFavicon, faviconRefetch = :faviconRefetch WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
@@ -225,6 +229,21 @@ JS);
         $stmt->execute();
 
         $this->saveOrganizerBanner();
+
+        $after = fetchOrganizer($organizerId);
+        $changes = lanlistCollectOrganizerEditChanges($before, $after);
+        if ($bannerUploaded) {
+            $changes[] = [
+                'label' => 'Banner image',
+                'old' => '(previous image)',
+                'new' => 'Updated',
+            ];
+        }
+        lanlistSendOrganizerEditNotifications(
+            $organizerId,
+            Session::getUser()->getUsername(),
+            $changes
+        );
 
         Logger::messageAudit('Organizer ' . $this->getElementValue('title') . ' (' . $this->getElementValue('id') . ') edited by: ' . Session::getUser()->getUsername(), 'EDIT_ORGANIZER');
         redirect('viewOrganizer.php?id=' . $this->getElementValue('id'), 'Organizer updated.');

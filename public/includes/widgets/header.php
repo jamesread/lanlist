@@ -31,6 +31,17 @@ $tpl->assign(
 $tpl->assign('ogType', defined('META_OG_TYPE') ? META_OG_TYPE : 'website');
 $tpl->assign('isLoggedIn', Session::isLoggedIn());
 $tpl->assign('isModerator', Session::hasPriv('MODERATOR'));
+$tpl->assign(
+    'canPublishOrganizer',
+    Session::isLoggedIn()
+        && (Session::hasPriv('PUBLISH_ORGANIZERS') || Session::hasPriv('MODERATOR'))
+);
+$tplVars = $tpl->getTemplateVars();
+$pageIncludeInlineEdit = is_array($tplVars) && !empty($tplVars['includeInlineEdit']);
+$tpl->assign(
+    'includeInlineEdit',
+    $pageIncludeInlineEdit || Session::hasPriv('MODERATOR')
+);
 $tpl->assign('username', Session::isLoggedIn() ? Session::getUser()->getUsername() : 'Guest');
 
 $includeMaps = defined('INCLUDE_GOOGLE_MAPS') ? (bool)INCLUDE_GOOGLE_MAPS : false;

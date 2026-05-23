@@ -23,12 +23,15 @@ ID: {$itemGroup.id}
 	</tbody>
 </table>
 
-<h3>Permissions<h3>
+<h3>Permissions</h3>
 <table>
 	<thead>
 		<tr>
 			<th>Key</th>
 			<th>Description</th>
+			{if $canDropGroupPermissions}
+			<th>Actions</th>
+			{/if}
 		</tr>
 	</thead>
 
@@ -38,6 +41,15 @@ ID: {$itemGroup.id}
 		<tr>
 			<td>{$itemPermission.key}</td>
 			<td>{$itemPermission.description}</td>
+			{if $canDropGroupPermissions}
+			<td>
+				{if !empty($itemPermission.permissionId)}
+				<a href="formHandler.php?formClazz=FormRemovePermissionFromGroup&amp;formRemovePermissionFromGroup-usergroup={$itemGroup.id}&amp;formRemovePermissionFromGroup-permission={$itemPermission.permissionId}">Drop</a>
+				{else}
+				<span class="subtle">&mdash;</span>
+				{/if}
+			</td>
+			{/if}
 		</tr>
 		{/foreach}
 	</tbody>

@@ -2,17 +2,18 @@
 """
 One-shot favicon async job runner for OliveTin (see docs/favicon-fetch-job-queue-plan.md).
 
-Requires MYSQL_USER / MYSQL_PASS; optional MYSQL_HOST (default localhost), MYSQL_DATABASE (default lanlist).
-Also requires ImageMagick (`magick`) on PATH, same as scripts/favicon-build.sh.
+Loads MYSQL_* from /etc/lanlist/config.env when present (same as other lanlist ops).
+Optional overrides: MYSQL_HOST (default localhost), MYSQL_DATABASE (default lanlist).
 
 Example (from repo root, after cd scripts):
-  MYSQL_USER=... MYSQL_PASS=... ./run-favicon-job.py --job-id 12 --organizer-id 34
+  ./run-favicon-job.py --job-id 12 --organizer-id 34
 """
 
 from __future__ import annotations
 
 import argparse
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -20,10 +21,54 @@ from pathlib import Path
 import mysql.connector
 
 JOB_TYPE_ORGANIZER_FAVICON_FETCH = "organizer_favicon_fetch"
+LANLIST_CONFIG_ENV = Path("/etc/lanlist/config.env")
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 PNG_DIR = REPO_ROOT / "public" / "resources" / "images" / "organizer-favicons"
+
+
+def _parse_config_env_line(line: str) -> tuple[str, str] | None:
+    line = line.strip()
+    if not line or line.startswith("#"):
+        return None
+    if line.startswith("export "):
+        line = line[7:].strip()
+    if "=" not in line:
+        return None
+    key, _, raw_value = line.partition("=")
+    key = key.strip()
+    if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", key):
+        return None
+    value = raw_value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
+        value = value[1:-1]
+    return key, value
+
+
+def _load_lanlist_config_env() -> None:
+    if not LANLIST_CONFIG_ENV.is_file():
+        return
+    for line in LANLIST_CONFIG_ENV.read_text(encoding="utf-8").splitlines():
+        parsed = _parse_config_env_line(line)
+        if parsed is None:
+            continue
+        key, value = parsed
+        if key.startswith("MYSQL_"):
+            os.environ[key] = value
+
+
+def _mysql_connect():
+    missing = [name for name in ("MYSQL_USER", "MYSQL_PASS") if not os.environ.get(name)]
+    if missing:
+        hint = f"Set {', '.join(missing)} or provide {LANLIST_CONFIG_ENV}."
+        raise RuntimeError(hint)
+    return mysql.connector.connect(
+        host=os.environ.get("MYSQL_HOST", "localhost"),
+        user=os.environ["MYSQL_USER"],
+        password=os.environ["MYSQL_PASS"],
+        database=os.environ.get("MYSQL_DATABASE", "lanlist"),
+    )
 
 
 def _fail(cursor, conn, *, job_pk: int, organizer_id: int, message: str) -> None:
@@ -70,12 +115,13 @@ def main() -> int:
     job_pk = int(args.job_id)
     organizer_id = int(args.organizer_id)
 
-    mydb = mysql.connector.connect(
-        host=os.environ.get("MYSQL_HOST", "localhost"),
-        user=os.environ["MYSQL_USER"],
-        password=os.environ["MYSQL_PASS"],
-        database=os.environ.get("MYSQL_DATABASE", "lanlist"),
-    )
+    _load_lanlist_config_env()
+
+    try:
+        mydb = _mysql_connect()
+    except RuntimeError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
     cur = mydb.cursor(dictionary=True)
     try:
         cur.execute(

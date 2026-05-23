@@ -5,6 +5,7 @@ use libAllure\Session;
 use libAllure\ElementHtml;
 use libAllure\ElementInput;
 use libAllure\ElementTextbox;
+use libAllure\Logger;
 
 class FormNewOrganizer extends Form
 {
@@ -66,7 +67,14 @@ class FormNewOrganizer extends Form
             $stmt->bindValue(':published', 1);
             $stmt->execute();
 
-            $orgId = $db->lastInsertId();
+            $orgId = (int) $db->lastInsertId();
+
+            Logger::messageAudit(
+                'Organizer ' . $this->getElementValue('title') . ' (' . $orgId . ') created (published) by '
+                . Session::getUser()->getUsername(),
+                'CREATE_ORGANIZER',
+                ['relatedOrganizer' => $orgId]
+            );
 
             addHistoryLink('viewOrganizer.php?id=' . $orgId, 'Created org: ' . $this->getElementValue('title'));
 

@@ -5,6 +5,7 @@ require_once 'includes/common.php';
 use libAllure\Session;
 use libAllure\Shortcuts;
 use libAllure\ErrorHandler;
+use libAllure\Logger;
 use OliveTin\Api\OliveTinApiException;
 
 if (!isset($_REQUEST['action'])) {
@@ -15,12 +16,23 @@ switch ($_REQUEST['action']) {
     case 'toggleEvent':
         requirePriv('TOGGLE_EVENT_PUBLISHED');
 
+        $eventId = fromRequestRequireInt('id');
+        $eventBefore = fetchEvent($eventId);
+        $wasPublished = (int) ($eventBefore['published'] ?? 0);
+
         $sql = 'UPDATE events SET published = !published WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':id', fromRequestRequireInt('id'));
+        $stmt->bindValue(':id', $eventId);
         $stmt->execute();
 
-        $event = fetchEvent(fromRequestRequireInt('id'));
+        $event = fetchEvent($eventId);
+        $nowPublished = (int) ($event['published'] ?? 0);
+        Logger::messageAudit(
+            'Event ' . $event['eventTitle'] . ' (' . $eventId . ') publish toggled by '
+            . Session::getUser()->getUsername() . ': published ' . $wasPublished . ' → ' . $nowPublished,
+            'TOGGLE_EVENT_PUBLISHED',
+            ['relatedOrganizer' => (int) $event['organizerId']]
+        );
 
         $sql = 'SELECT u.id, u.username, u.email FROM users u WHERE u.organization = :organization';
         $stmt = $db->prepare($sql);
@@ -73,6 +85,13 @@ switch ($_REQUEST['action']) {
         $stmt->bindValue(':user', Session::getUser()->getId());
         $stmt->execute();
 
+        Logger::messageAudit(
+            'Event ' . $event['eventTitle'] . ' (' . $event['id'] . ') cloned to #' . $newEventId . ' by '
+            . Session::getUser()->getUsername(),
+            'CLONE_EVENT',
+            ['relatedOrganizer' => (int) $event['organizerId']]
+        );
+
         redirect('viewEvent.php?id=' . $newEventId, 'Event Cloned');
 
         break;
@@ -88,6 +107,12 @@ switch ($_REQUEST['action']) {
         $stmt->execute([
             ':id' => $id,
         ]);
+
+        Logger::messageAudit(
+            'Organizer ' . $org['title'] . ' (' . $id . ') deleted by ' . Session::getUser()->getUsername(),
+            'DELETE_ORGANIZER',
+            ['relatedOrganizer' => $id]
+        );
 
         redirect('listOrganizers.php', 'Organizer deleted');
 
@@ -111,10 +136,17 @@ switch ($_REQUEST['action']) {
         $stmt->bindValue(':id', $event['id']);
         $stmt->execute();
 
+        Logger::messageAudit(
+            'Event ' . $event['eventTitle'] . ' (' . $event['id'] . ') deleted by '
+            . Session::getUser()->getUsername(),
+            'DELETE_EVENT',
+            ['relatedOrganizer' => (int) $event['organizerId']]
+        );
+
         redirect('index.php', 'Event deleted');
         break;
     case 'updateOrganizerLastChecked':
-        requirePriv('SITE_CHECKS');
+        requirePriv('MODERATOR');
 
         $organizer = fetchOrganizer(fromRequestRequireInt('id'));
 
@@ -123,7 +155,51 @@ switch ($_REQUEST['action']) {
         $stmt->bindValue(':id', $organizer['id']);
         $stmt->execute();
 
-        redirect('siteChecks.php', 'Updated last checked field for organizer: ' . $organizer['title']);
+        Logger::messageNormal(
+            'Organizer ' . $organizer['title'] . ' (' . $organizer['id'] . ') lastChecked updated by '
+            . Session::getUser()->getUsername() . ' (moderator control panel)',
+            'ORGANIZER_LAST_CHECKED',
+            ['relatedOrganizer' => (int) $organizer['id']]
+        );
+
+        $organizerId = (int) $organizer['id'];
+        $returnToOrganizer = isset($_REQUEST['return']) && $_REQUEST['return'] === 'organizer';
+        $redirectUrl = $returnToOrganizer ? ('viewOrganizer.php?id=' . $organizerId) : 'siteChecks.php';
+
+        redirect($redirectUrl, 'Updated last checked field for organizer: ' . $organizer['title']);
+        break;
+    case 'markTicketsNotReleased':
+        requirePriv('MODERATOR');
+        require_once __DIR__ . '/includes/functionality/site_checks.php';
+
+        $eventId = fromRequestRequireInt('id');
+        $event = fetchEvent($eventId);
+        $until = lanlistNextTicketsNotReleasedUntil($event['dateStart']);
+        $returnToEvent = isset($_REQUEST['return']) && $_REQUEST['return'] === 'event';
+        $redirectUrl = $returnToEvent ? ('viewEvent.php?id=' . $eventId) : 'siteChecks.php';
+
+        if ($until === null) {
+            redirect($redirectUrl, 'No silence window remains for this event.');
+            break;
+        }
+
+        $sql = 'UPDATE events SET ticketsNotReleasedUntil = :until WHERE id = :id LIMIT 1';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':until', $until);
+        $stmt->bindValue(':id', $eventId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        Logger::messageNormal(
+            'Event ' . $event['eventTitle'] . ' (' . $eventId . ') marked tickets not yet released until '
+            . $until . ' by ' . Session::getUser()->getUsername(),
+            'EVENT_TICKETS_NOT_RELEASED',
+            ['relatedOrganizer' => (int) $event['organizerId']]
+        );
+
+        redirect(
+            $redirectUrl,
+            'Ticket warning silenced for ' . $event['eventTitle'] . ' until ' . $until . '.'
+        );
         break;
     case 'enqueueOrganizerFaviconFetch':
         requirePriv('MODERATOR');
@@ -132,12 +208,12 @@ switch ($_REQUEST['action']) {
         require_once __DIR__ . '/includes/functionality/olivetin.php';
 
         $organizerId = fromRequestRequireInt('organizerId');
-        fetchOrganizer($organizerId);
+        $organizerForLog = fetchOrganizer($organizerId);
 
         $active = lanlistSelectActiveOrganizerFaviconJob($organizerId);
         if ($active !== false) {
             redirect(
-                'moderation.php',
+                'moderation-rando.php',
                 'Favicon fetch is already queued or running for this organizer (job #' . (int) $active['id'] . ').'
             );
             break;
@@ -145,11 +221,11 @@ switch ($_REQUEST['action']) {
 
         $bindingId = lanlistOrganizerFaviconOliveTinBindingId();
         if ($bindingId === '') {
-            redirect('moderation.php', 'OLIVETIN_BINDING_ORGANIZER_FAVICON_FETCH is not set in config.');
+            redirect('moderation-rando.php', 'OLIVETIN_BINDING_ORGANIZER_FAVICON_FETCH is not set in config.');
             break;
         }
         if (!lanlistOliveTinConfigured()) {
-            redirect('moderation.php', 'OliveTin is not configured (set OLIVETIN_BASE_URL and OLIVETIN_API_KEY).');
+            redirect('moderation-rando.php', 'OliveTin is not configured (set OLIVETIN_BASE_URL and OLIVETIN_API_KEY).');
             break;
         }
 
@@ -164,7 +240,7 @@ switch ($_REQUEST['action']) {
             $lk->execute();
             $lockResult = $lk->fetch(\PDO::FETCH_NUM);
             if (!$lockResult || (int) $lockResult[0] !== 1) {
-                redirect('moderation.php', 'Could not obtain enqueue lock; try again in a moment.');
+                redirect('moderation-rando.php', 'Could not obtain enqueue lock; try again in a moment.');
                 break;
             }
             $lockHeld = true;
@@ -172,7 +248,7 @@ switch ($_REQUEST['action']) {
             $activeUnderLock = lanlistSelectActiveOrganizerFaviconJob($organizerId);
             if ($activeUnderLock !== false) {
                 redirect(
-                    'moderation.php',
+                    'moderation-rando.php',
                     'Favicon fetch is already queued or running for this organizer (job #' . (int) $activeUnderLock['id'] . ').'
                 );
                 break;
@@ -229,7 +305,7 @@ switch ($_REQUEST['action']) {
                     $fail->bindValue(':jid', $jobId, \PDO::PARAM_INT);
                     $fail->bindValue(':jt', LANLIST_JOB_TYPE_ORGANIZER_FAVICON_FETCH);
                     $fail->execute();
-                    redirect('moderation.php', 'Queued job #' . $jobId . ' but could not confirm OliveTin execution id.');
+                    redirect('moderation-rando.php', 'Queued job #' . $jobId . ' but could not confirm OliveTin execution id.');
                     break;
                 }
 
@@ -242,7 +318,15 @@ switch ($_REQUEST['action']) {
                 $proc->bindValue(':jt', LANLIST_JOB_TYPE_ORGANIZER_FAVICON_FETCH);
                 $proc->execute();
 
-                redirect('moderation.php', 'Favicon fetch job #' . $jobId . ' queued (OliveTin tracking: ' . $traceId . ').');
+                Logger::messageNormal(
+                    'Organizer ' . $organizerForLog['title'] . ' (' . $organizerId . ') favicon fetch job #'
+                    . $jobId . ' enqueued by ' . Session::getUser()->getUsername()
+                    . ' (OliveTin: ' . $traceId . ')',
+                    'ENQUEUE_ORGANIZER_FAVICON_FETCH',
+                    ['relatedOrganizer' => $organizerId]
+                );
+
+                redirect('moderation-rando.php', 'Favicon fetch job #' . $jobId . ' queued (OliveTin tracking: ' . $traceId . ').');
                 break;
             } catch (OliveTinApiException | \InvalidArgumentException $e) {
                 $msg = 'dispatch failed: ' . $e->getMessage();
@@ -255,7 +339,7 @@ switch ($_REQUEST['action']) {
                 $fail->execute();
 
                 redirect(
-                    'moderation.php',
+                    'moderation-rando.php',
                     'Job #' . $jobId . ' created but OliveTin dispatch failed. Check OliveTin configuration and error text on the job row.'
                 );
                 break;
@@ -267,6 +351,30 @@ switch ($_REQUEST['action']) {
                 $rl->execute();
             }
         }
+        break;
+    case 'abandonAsyncJob':
+        requirePriv('SCHEDULER_LIST');
+
+        require_once __DIR__ . '/includes/functionality/async_jobs.php';
+
+        $jobId = fromRequestRequireInt('id');
+        $deleted = lanlistAbandonAsyncJob($jobId);
+        if ($deleted === false) {
+            redirect('listSchedulerTasks.php', 'Completed jobs cannot be abandoned.');
+            break;
+        }
+        if ($deleted === null) {
+            redirect('listSchedulerTasks.php', 'Job not found.');
+            break;
+        }
+
+        Logger::messageAudit(
+            'Async job #' . $jobId . ' (' . $deleted['job_type'] . ', ' . $deleted['status'] . ') abandoned by '
+            . Session::getUser()->getUsername(),
+            'ABANDON_ASYNC_JOB'
+        );
+
+        redirect('listSchedulerTasks.php', 'Job #' . $jobId . ' abandoned.');
         break;
     default:
         throw new InvalidArgumentException('action not handled.');

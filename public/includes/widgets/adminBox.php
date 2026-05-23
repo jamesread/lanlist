@@ -28,7 +28,7 @@ $menuOrganizer->addIfPriv('CREATE_ORGANIZER', 'formHandler.php?formClazz=FormNew
 
 $countJoinRequests = getCountJoinRequests();
 $joinRequestsNotification = ($countJoinRequests == 0) ? null : '<strong>(' . $countJoinRequests . ')</strong>';
-$menuOrganizer->addIfPriv('JOIN_REQUESTS', 'joinRequests.php', 'Join requests ' . $joinRequestsNotification);
+$menuOrganizer->addIfPriv('JOIN_REQUESTS', 'joinRequests.php', 'Join requests ' . $joinRequestsNotification, 'system-users.png');
 
 $ll->addIfPriv('MODERATE_VENUES', 'listVenues.php', 'Venues', 'go-home.png');
 $menuVenues = new HtmlLinksCollection();
@@ -51,16 +51,16 @@ $issuesChecker = new EventsChecker();
 $issuesChecker->checkAllEvents();
 $eventIssuesNotification = $issuesChecker->getCount();
 $eventIssuesNotification = empty($eventIssuesNotification) ? null : '<strong>(' . $eventIssuesNotification . ')</strong>';
-$menuSystem->addIfPriv('SITE_CHECKS', 'siteChecks.php', 'Site checks ' . $eventIssuesNotification);
-$menuSystem->addIfPriv('SCHEDULER_VIEW', 'listSchedulerTasks.php', 'Scheduler', 'time.png');
+$menuSystem->addIfPriv('MODERATOR', 'siteChecks.php', 'Moderation ' . $eventIssuesNotification, 'edit-find.png');
+$menuSystem->addIfPriv('SCHEDULER_LIST', 'listSchedulerTasks.php', 'Jobs', 'time.png');
 $menuSystem->addIfPriv('USERLIST', 'listUsers.php', 'Users', 'system-users.png');
 $menuSystem->addIfPriv('GROUPLIST', 'listGroups.php', 'Groups', 'system-users.png');
-$menuSystem->addIfPriv('SUPERUSER', 'formHandler.php?formClazz=FormCreatePermission', 'Create Permission');
+$menuSystem->addIfPriv('SUPERUSER', 'formHandler.php?formClazz=FormCreatePermission', 'Create Permission', 'create.png');
 $menuSystem->addIfPriv('NEWSLIST', 'listNews.php', 'News', 'news.png');
 
 $newLogNotification = getCountUnreadLogs();
 $newLogNotification = empty($newLogNotification) ? null : '<strong>(' . $newLogNotification . ')</strong>';
-$menuSystem->add('listLogs.php', 'Logs ' . $newLogNotification, 'log.png');
+$menuSystem->addIfPriv('VIEW_LOGS', 'listLogs.php', 'Logs ' . $newLogNotification, 'log.png');
 
 $ll->addIfPriv('ADMIN_GOOGLE_ACCOUNTS', null, 'External');
 $menuExternalLinks = new HtmlLinksCollection();

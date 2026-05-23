@@ -9,7 +9,7 @@ require_once 'includes/widgets/header.php';
 
 use libAllure\Session;
 
-$sql = 'SELECT o.id, o.published, o.title, o.websiteUrl, count(e.id) AS eventCount, u.username, u.id AS userId FROM organizers o LEFT JOIN events e ON e.organizer = o.id LEFT JOIN users u ON u.organization = o.id GROUP BY o.id ORDER BY o.title';
+$sql = 'SELECT o.id, o.published, o.title, o.websiteUrl, count(e.id) AS eventCount, u.username, u.id AS userId FROM organizers o LEFT JOIN events e ON e.organizer = o.id AND e.published = 1 LEFT JOIN users u ON u.organization = o.id WHERE 1=1' . lanlistSqlPublicOrganizerVisible('o') . ' GROUP BY o.id ORDER BY o.title';
 $stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
 $stmt->execute();
 

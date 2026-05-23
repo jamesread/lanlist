@@ -2,6 +2,9 @@
 
 require_once 'includes/common.php';
 
+use libAllure\Logger;
+use libAllure\Session;
+
 requirePriv('JOIN_REQUESTS');
 
 if (isset($_REQUEST['action'])) {
@@ -9,7 +12,9 @@ if (isset($_REQUEST['action'])) {
         case 'approve':
             $id = fromRequestRequireInt('id');
 
-            $sql = 'SELECT r.organizer AS organization, r.user AS uid FROM organization_join_requests r WHERE id = :id';
+            $sql = 'SELECT r.organizer AS organization, r.user AS uid, u.username, o.title AS organizerTitle '
+                . 'FROM organization_join_requests r '
+                . 'JOIN users u ON r.user = u.id JOIN organizers o ON r.organizer = o.id WHERE r.id = :id';
             $stmt = $db->prepare($sql);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
@@ -31,10 +36,42 @@ if (isset($_REQUEST['action'])) {
             $stmt->bindValue(':id', $id);
             $stmt->execute();
 
+            Logger::messageAudit(
+                'Join request #' . $id . ' approved by ' . Session::getUser()->getUsername()
+                . ': user ' . $request['username'] . ' (' . $request['uid'] . ') → organizer '
+                . $request['organizerTitle'] . ' (' . $request['organization'] . ')',
+                'JOIN_REQUEST_APPROVED',
+                [
+                    'relatedUser' => (int) $request['uid'],
+                    'relatedOrganizer' => (int) $request['organization'],
+                ]
+            );
+
             redirect('joinRequests.php', 'Approve');
             break;
         case 'deny':
             $id = fromRequestRequireInt('id');
+
+            $sql = 'SELECT r.organizer AS organization, r.user AS uid, u.username, o.title AS organizerTitle '
+                . 'FROM organization_join_requests r '
+                . 'JOIN users u ON r.user = u.id JOIN organizers o ON r.organizer = o.id WHERE r.id = :id';
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+
+            if ($stmt->numRows() > 0) {
+                $request = $stmt->fetchRow();
+                Logger::messageAudit(
+                    'Join request #' . $id . ' denied by ' . Session::getUser()->getUsername()
+                    . ': user ' . $request['username'] . ' (' . $request['uid'] . ') for organizer '
+                    . $request['organizerTitle'] . ' (' . $request['organization'] . ')',
+                    'JOIN_REQUEST_DENIED',
+                    [
+                        'relatedUser' => (int) $request['uid'],
+                        'relatedOrganizer' => (int) $request['organization'],
+                    ]
+                );
+            }
 
             $sql = 'DELETE FROM organization_join_requests WHERE id = :id';
             $stmt = $db->prepare($sql);

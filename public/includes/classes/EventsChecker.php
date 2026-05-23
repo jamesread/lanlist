@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../functionality/site_checks.php';
+
 use libAllure\DatabaseFactory;
 
 class EventsChecker
@@ -18,7 +20,7 @@ class EventsChecker
 
     public function getInitialEventsList()
     {
-        $sql = 'SELECT e.*, o.id AS organizerId, o.title AS organizerTitle, count(t.id) AS ticketCount FROM events e LEFT JOIN tickets t on e.id = t.event LEFT JOIN organizers o ON e.organizer = o.id WHERE e.dateStart > now() GROUP BY e.id';
+        $sql = 'SELECT e.*, o.id AS organizerId, o.title AS organizerTitle, o.published AS organizerPublished, count(t.id) AS ticketCount FROM events e LEFT JOIN tickets t on e.id = t.event LEFT JOIN organizers o ON e.organizer = o.id WHERE e.dateStart > now() GROUP BY e.id';
         $stmt = DatabaseFactory::getInstance()->prepare($sql);
         $stmt->execute();
 
@@ -37,6 +39,7 @@ class EventsChecker
                 $this->checkPublished($event);
                 $this->checkEventWebsite($event);
                 $this->checkHasOrganizer($event);
+                $this->checkOrganizerPublished($event);
                 $this->checkTicketPrices($event);
                 $this->checkDurationIsntShort($event);
             } catch (Exception $e) {
@@ -69,16 +72,29 @@ class EventsChecker
         }
     }
 
+    public function checkOrganizerPublished(&$event)
+    {
+        if (!empty($event['organizer']) && lanlistOrganizerIsModerationExcluded((int) $event['organizer'])) {
+            return;
+        }
+
+        if (empty($event['organizerPublished'])) {
+            throw new Exception('Organizer not published');
+        }
+    }
+
     public function checkTicketPrices(&$event)
     {
         if (empty($event['priceInAdv'])) {
-			if (empty($event['ticketCount'])) {
-				throw new Exception('No tickets defined for event');
-			} else {
-				return; // Tickets are defined, which is the more modern approach.
-			}
+            if (empty($event['ticketCount'])) {
+                if (lanlistEventSilencesMissingTickets($event)) {
+                    return;
+                }
 
-            throw new Exception('No cost for tickets in advance');
+                throw new Exception('No tickets defined for event');
+            }
+
+            return; // Tickets are defined, which is the more modern approach.
         }
     }
 

@@ -20,18 +20,37 @@ class FormNewEvent extends Form
             redirect('login.php', 'You should login before creating events!');
         }
 
+        $organizerIdForVenues = null;
+        $hasOrganizerSelect = false;
+
+        if (Session::getUser()->hasPriv('CREATE_EVENTS')) {
+            if (isset($_REQUEST['formNewEvent-organizer'])) {
+                $organizerIdForVenues = (int) $_REQUEST['formNewEvent-organizer'];
+            } else {
+                $hasOrganizerSelect = true;
+            }
+        } elseif (Session::getUser()->getData('organization')) {
+            $organizerIdForVenues = (int) Session::getUser()->getData('organization');
+        }
+
         if (isset($_REQUEST['formNewEvent-venue'])) {
             $this->addElementReadOnly('venue', $_REQUEST['formNewEvent-venue'], 'venue');
         } else {
-            $this->addElement(FormHelpers::getVenueListElement());
+            $venueEl = FormHelpers::getVenueListElement();
+            $this->addElement($venueEl);
+
+            if ($organizerIdForVenues || $hasOrganizerSelect) {
+                $venueEl->description .= '<br /><span id="formNewEvent-recentVenues" class="subtle"></span>';
+                $this->addOrganizerVenueQuickPickScript($organizerIdForVenues, $hasOrganizerSelect);
+            }
         }
 
         if (Session::getUser()->hasPriv('CREATE_EVENTS')) {
             $this->addElement(new ElementHtml('msg', null, 'Hi superuser.'));
 
             if (isset($_REQUEST['formNewEvent-organizer'])) {
-                $organizerId = intval($_REQUEST['formNewEvent-organizer']);
-                $this->addElement(new ElementHidden('organizer', 'Organizer', $organizerId));
+                $organizerId = (int) $_REQUEST['formNewEvent-organizer'];
+                $this->addPresetOrganizerFields($organizerId);
             } else {
                 $this->addElement(FormHelpers::getOrganizerList(true));
             }
@@ -76,9 +95,110 @@ EOF;
         $this->addDefaultButtons('Create event');
     }
 
+    private function addPresetOrganizerFields(int $organizerId): void
+    {
+        $organizer = fetchOrganizer($organizerId);
+
+        $this->addElement(new ElementHidden('organizer', 'Organizer', $organizerId));
+
+        $organizerEl = $this->addElementReadOnly(
+            'Organizer',
+            htmlspecialchars((string) $organizer['title'], ENT_QUOTES, 'UTF-8')
+        );
+
+        if (!empty($organizer['websiteUrl'])) {
+            $websiteUrl = htmlspecialchars((string) $organizer['websiteUrl'], ENT_QUOTES, 'UTF-8');
+            $organizerEl->description = '<a href="' . $websiteUrl . '" target="_blank" rel="noopener noreferrer">' . $websiteUrl . '</a>';
+        }
+    }
+
+    private function addOrganizerVenueQuickPickScript(?int $organizerIdForVenues, bool $hasOrganizerSelect): void
+    {
+        $organizerVenuesJson = json_encode(
+            FormHelpers::fetchVenuesUsedByOrganizers(),
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        );
+        $initialOrganizerId = $organizerIdForVenues ? (string) $organizerIdForVenues : 'null';
+
+        $script = <<<JS
+(function () {
+    const venueSelect = document.getElementById('formNewEvent-venue');
+    const recentVenuesEl = document.getElementById('formNewEvent-recentVenues');
+    if (!venueSelect || !recentVenuesEl) {
+        return;
+    }
+
+    const organizerVenues = {$organizerVenuesJson};
+    const organizerSelect = document.getElementById('formNewEvent-organizer');
+    const fixedOrganizerId = {$initialOrganizerId};
+
+    function renderRecentVenues(organizerId) {
+        const venues = organizerVenues[String(organizerId)] || [];
+        recentVenuesEl.replaceChildren();
+
+        if (venues.length === 0) {
+            recentVenuesEl.hidden = true;
+            return;
+        }
+
+        recentVenuesEl.hidden = false;
+        recentVenuesEl.append('Previously used venues: ');
+
+        venues.forEach((venue, index) => {
+            if (index > 0) {
+                recentVenuesEl.append(', ');
+            }
+
+            const link = document.createElement('a');
+            link.href = '#';
+            link.className = 'venue-quick-pick';
+            link.dataset.venueId = String(venue.id);
+            link.textContent = venue.country + ', ' + venue.title;
+            recentVenuesEl.append(link);
+        });
+    }
+
+    recentVenuesEl.addEventListener('click', (event) => {
+        const link = event.target.closest('.venue-quick-pick');
+        if (!link) {
+            return;
+        }
+
+        event.preventDefault();
+        venueSelect.value = link.dataset.venueId;
+        venueSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    function updateRecentVenues() {
+        const organizerId = organizerSelect
+            ? parseInt(organizerSelect.value, 10)
+            : fixedOrganizerId;
+
+        if (!organizerId) {
+            recentVenuesEl.replaceChildren();
+            recentVenuesEl.hidden = true;
+            return;
+        }
+
+        renderRecentVenues(organizerId);
+    }
+
+    if (organizerSelect) {
+        organizerSelect.addEventListener('change', updateRecentVenues);
+    }
+
+    updateRecentVenues();
+})();
+JS;
+
+        $this->addScript($script);
+    }
+
     public function process()
     {
         global $db;
+
+        $organizerId = null;
 
         $sql = 'INSERT INTO events (title, dateStart, dateFinish, organizer, venue, published, website, createdDate, createdBy) VALUES (:title, :dateStart, :dateFinish, :organizer, :venue, :published, :website, now(), :createdBy)';
         $stmt = $db->prepare($sql);
@@ -90,21 +210,23 @@ EOF;
 
         if (Session::getUser()->hasPriv('CREATE_EVENTS')) {
             $this->addElement(new ElementHtml('msg', null, 'Hi superuser.'));
-            $stmt->bindValue(':organizer', $this->getElementValue('organizer'));
+            $organizerId = (int) $this->getElementValue('organizer');
+            $stmt->bindValue(':organizer', $organizerId ?: null);
             $stmt->bindValue(':published', 1);
             $stmt->bindValue(':venue', $this->getElementValue('venue'));
         } elseif (Session::getUser()->getData('organization') != null) {
             $stmt->bindValue(':venue', $this->getElementValue('venue'));
 
             $organizer = fetchOrganizer(Session::getUser()->getData('organization'));
+            $organizerId = (int) $organizer['id'];
 
             if ($organizer['published']) {
                 $this->addElement(new ElementHtml('msg', null, 'You are authorized to create public events for your organization.'));
-                $stmt->bindValue(':organizer', $organizer['id']);
+                $stmt->bindValue(':organizer', $organizerId);
                 $stmt->bindValue(':published', 1);
             } else {
                 $this->addElement(new ElementHtml('msg', null, 'Your event will be linked to your organization, but will not be public until your organization has been approved.'));
-                $stmt->bindValue(':organizer', $organizer['id']);
+                $stmt->bindValue(':organizer', $organizerId);
                 $stmt->bindValue(':published', 0);
             }
         } else {
@@ -115,7 +237,17 @@ EOF;
         }
 
         $stmt->execute();
-        $eventId = $db->lastInsertId();
+        $eventId = (int) $db->lastInsertId();
+
+        if ($organizerId) {
+            require_once __DIR__ . '/../functionality/edit_notifications.php';
+            lanlistSendNewEventNotifications(
+                $eventId,
+                (int) Session::getUser()->getId(),
+                Session::getUser()->getUsername(),
+                (int) Session::getUser()->getData('group')
+            );
+        }
 
         Logger::messageDebug('Event ' . $this->getElementValue('title') . ' created by: ' . Session::getUser()->getUsername(), 'CREATE_EVENT');
         redirect('viewEvent.php?id=' . $eventId, 'Event created.');

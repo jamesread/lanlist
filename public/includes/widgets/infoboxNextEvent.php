@@ -8,20 +8,7 @@
         echo '<li class = "nextEvents-month"><strong>' . htmlspecialchars((string)$tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</strong></li>';
         foreach ($events as $event) {
             echo '<li class = "nextEvents-item">';
-            switch ($event['country']) {
-                // https://symbl.cc/en/emoji/flags/country-flag/
-                case 'United Kingdom':  echo '&#127468;&#127463;'; break;
-                case 'Sweden':          echo '&#127480;&#127466;'; break;
-                case 'Netherlands':     echo '&#127475;&#127473;'; break;
-                case 'Germany':         echo '&#127465;&#127466;'; break;
-                case 'United States':   echo '&#127482;&#127480;'; break;
-				case 'Canada':          echo '&#127464;&#127462;'; break;
-				case 'Austria':         echo '&#127462;&#127481;'; break;
-				case 'Belgium':         echo '&#127463;&#127466;'; break;
-				case 'Spain':           echo '&#127466;&#127480;'; break;
-                default:
-                    echo htmlspecialchars((string)$event['country'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            }
+            echoCountryFlagOrName((string)$event['country'], true);
             echo ' ' . htmlspecialchars((string)$event['dayStartHuman'], ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' ';
             if (!empty($event['useFavicon']) && !empty($event['organizerId'])) {
                 $organizerId = intval($event['organizerId']);
