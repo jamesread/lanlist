@@ -1,10 +1,10 @@
 # lanlist.org
 
-A list of LAN Parties.
+A free and open list of LAN parties. It's provided purely for the benefit of the LAN party community.
 
 ## Development
 
-This code was first created in approx 2013 or something like that. It's functional, just a bit of a sign of the times.
+This code was first created in approx 2013, the site grew to a few hundred LANs and the VM died! IT was resurrected again several years ago, and the code and functionality has been updated substancially! 
 
 `composer update` should be all you need to get things running, and a `includes/config.php` file.
 
