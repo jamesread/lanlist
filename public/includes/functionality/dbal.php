@@ -60,7 +60,13 @@ SELECT
 	o.blurb,
         o.genericEmail,
         o.useFavicon,
-        o.faviconRefetch
+        o.faviconRefetch,
+        o.validBanner,
+        o.lppsUrl,
+        o.lppsLastCrawl,
+        o.lppsCrawlSuccess,
+        o.lppsCrawlResult,
+        o.lppsAdminDisabled
 
 FROM 
 	organizers o
@@ -147,6 +153,7 @@ SELECT
         o.discordInviteUrl,
 	v.id AS venueId,
 	v.title AS venueTitle,
+	v.country,
 	v.lat AS venueLat,
 	v.lng AS venueLng
 FROM 

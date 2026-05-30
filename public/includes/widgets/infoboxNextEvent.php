@@ -24,7 +24,16 @@
     }
 
     echo '</ul>';
-    echo '<p>You can also view a list of <a href = "eventsList.php">all upcoming events</a> if that tickles your fancy.</p>'
+    echo '<p>You can also view a list of <a href = "eventsList.php">all upcoming events</a> if that tickles your fancy.</p>';
+
+    $geoCountry = getGeoIpCountryWithUpcomingEvents();
+    if ($geoCountry !== null) {
+        $countryUrl = 'eventsList.php?mode=country&amp;country=' . rawurlencode($geoCountry);
+        echo '<p>Show events in <a href = "' . $countryUrl . '">';
+        echo getCountryFlagHtml($geoCountry) . ' ';
+        echo htmlspecialchars($geoCountry, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        echo '</a>.</p>';
+    }
     ?>
 </div>
 

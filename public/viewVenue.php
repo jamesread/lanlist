@@ -7,6 +7,7 @@ use libAllure\HtmlLinksCollection;
 
 $id = fromRequestRequireInt('id');
 $venue = fetchVenue($id);
+$venue['countryFlagHtml'] = empty($venue['country']) ? '' : getCountryFlagHtml((string) $venue['country']);
 
 addHistoryLink('viewVenue.php?id=' . $id, 'View venue: ' . $venue['title']);
 
@@ -35,19 +36,27 @@ startSidebar();
 require_once 'includes/widgets/infoboxListFilter.php';
 
 if (Session::isLoggedIn()) {
-    $organizer = Session::getUser()->getData('organization');
-
     if (Session::hasPriv('EDIT_VENUE') || Session::hasPriv('SUPERUSER')) {
         $menu = new HtmlLinksCollection('Venue admin');
         if (Session::hasPriv('EDIT_VENUE')) {
             $menu->add('formHandler.php?formClazz=FormEditVenue&amp;formEditVenue-id=' . $venue['id'], 'Edit');
-            $menu->add('formHandler.php?formClazz=FormNewOrganizer', 'New Organizer');
         }
         if (Session::hasPriv('SUPERUSER')) {
             $menu->add('formHandler.php?formClazz=FormDeleteVenue&amp;formDeleteVenue-id=' . $venue['id'], 'Delete');
         }
         $tpl->assign('linkCollection', $menu);
         $tpl->display('linkCollection.tpl');
+    }
+
+    $canCreateOrganizer = Session::hasPriv('CREATE_ORGANIZER')
+        || Session::hasPriv('NEW_ORGANIZER')
+        || Session::hasPriv('CREATE_ORGANIZERS')
+        || empty(Session::getUser()->getData('organization'));
+
+    if ($canCreateOrganizer) {
+        echo '<div class = "infobox"><h2>Organizer admin</h2>';
+        echo '<a href = "formHandler.php?formClazz=FormNewOrganizer">Create organizer</a>';
+        echo '</div>';
     }
 }
 

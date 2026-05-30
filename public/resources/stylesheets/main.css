@@ -580,6 +580,27 @@ tr.stale {
   color: gray;
 }
 
+.eventsList-countryIntro {
+  font-size: 1.125rem;
+  margin: 0 0 1rem;
+}
+
+.eventsList-countryFlag {
+  font-size: 1.75rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.usefulRelatedSites-group + .usefulRelatedSites-group {
+  margin-top: 1.5rem;
+}
+
+.usefulRelatedSites-groupFlag {
+  font-size: 1.25rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
 #monthHeader {
   text-align: center;
 }
@@ -677,6 +698,191 @@ td.warn {
   background-color: #f7f7ae !important;
 }
 
+.moderator-newsletter-status {
+  margin: 0.75rem 0 1rem;
+  font-size: 0.9rem;
+}
+
+.moderator-newsletter-status--send {
+  color: #9a6700;
+}
+
+.moderator-newsletter-status--skip {
+  color: #1b7f3d;
+}
+
+.moderator-impact {
+  background-color: #f7f8fa;
+  border: 1px solid #e4e7eb;
+  border-radius: 0.75em;
+  padding: 1.25em 1.35em 1.1em;
+  margin-bottom: 1.25em;
+}
+
+.moderator-impact-title {
+  margin: 0 0 0.35em;
+  color: #2f2f2f;
+  font-size: 13pt;
+  font-weight: bold;
+}
+
+.moderator-impact-lede {
+  margin: 0;
+  color: #5f6368;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 42em;
+}
+
+.moderator-impact-section {
+  margin-top: 1.35em;
+  padding-top: 1.15em;
+  border-top: 1px solid #e4e7eb;
+}
+
+.moderator-impact-section--personal {
+  background-color: rgba(255, 255, 255, 0.55);
+  margin-left: -0.65em;
+  margin-right: -0.65em;
+  padding: 1.15em 0.65em 0.35em;
+  border-radius: 0.5em;
+  border-top: 0;
+}
+
+.moderator-impact-section-title {
+  margin: 0 0 0.75em;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #424242;
+}
+
+.moderator-impact-period {
+  font-weight: 400;
+  color: #757575;
+}
+
+.moderator-impact-subtitle {
+  margin: 1em 0 0.55em;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #616161;
+}
+
+.moderator-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.65em;
+}
+
+.moderator-impact-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  padding: 0.65em 0.75em;
+  background-color: #fff;
+  border: 1px solid #eceff1;
+  border-radius: 0.45em;
+}
+
+.moderator-impact-stat--link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.moderator-impact-stat--link:hover,
+.moderator-impact-stat--link:focus {
+  border-color: #c5cae9;
+  background-color: #f8f9ff;
+}
+
+.moderator-impact-stat-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #616161;
+}
+
+.moderator-impact-stat-value {
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #202124;
+}
+
+.moderator-impact-stat-of {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #757575;
+}
+
+.moderator-impact-stat-note {
+  font-size: 0.78rem;
+  color: #757575;
+}
+
+.moderator-impact-stat-note.good,
+.moderator-impact .good {
+  color: #1b7f3d;
+}
+
+.moderator-impact-stat-note.warn,
+.moderator-impact .warn {
+  color: #9a6700;
+}
+
+.moderator-impact-table-wrap {
+  margin-top: 0.85em;
+}
+
+.moderator-impact-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.moderator-impact-table th {
+  padding: 0.45em 0.55em;
+  text-align: left;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #616161;
+  border-bottom: 1px solid #e4e7eb;
+  background-color: transparent;
+}
+
+.moderator-impact-table td {
+  padding: 0.5em 0.55em;
+  background-color: transparent;
+  border-bottom: 1px solid #eef0f2;
+  vertical-align: top;
+}
+
+.moderator-impact-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.moderator-impact-table tbody tr:hover td {
+  background-color: #fafbfc;
+}
+
+.moderator-impact-table-when {
+  white-space: nowrap;
+  color: #616161;
+  font-size: 0.78rem;
+}
+
+.moderator-impact-table-detail {
+  color: #424242;
+  word-break: break-word;
+}
+
+.moderator-impact-footnote {
+  margin: 1.1em 0 0;
+  padding-top: 0.85em;
+  border-top: 1px solid #e4e7eb;
+  font-size: 0.75rem;
+  color: #9aa0a6;
+}
+
 td.audit {
   background-color: lightskyblue !important;
 }
@@ -711,6 +917,72 @@ td.audit {
   
   .infobox {
     border: .3em solid #000;
+  }
+
+  .moderator-impact {
+    background-color: #171717;
+    border-color: #333;
+  }
+
+  .moderator-impact-title {
+    color: #efefef;
+  }
+
+  .moderator-impact-lede,
+  .moderator-impact-period,
+  .moderator-impact-stat-label,
+  .moderator-impact-stat-note,
+  .moderator-impact-table th,
+  .moderator-impact-footnote {
+    color: #9aa0a6;
+  }
+
+  .moderator-impact-section-title,
+  .moderator-impact-subtitle {
+    color: #ccc;
+  }
+
+  .moderator-impact-section {
+    border-top-color: #333;
+  }
+
+  .moderator-impact-section--personal {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+
+  .moderator-impact-stat {
+    background-color: #1e1e1e;
+    border-color: #333;
+  }
+
+  .moderator-impact-stat-value {
+    color: #efefef;
+  }
+
+  .moderator-impact-stat-of {
+    color: #9aa0a6;
+  }
+
+  .moderator-impact-table td {
+    border-bottom-color: #2a2a2a;
+    color: #ddd;
+  }
+
+  .moderator-impact-table th {
+    border-bottom-color: #333;
+    background-color: transparent;
+  }
+
+  .moderator-impact-table tbody tr:hover td {
+    background-color: #252525;
+  }
+
+  .moderator-impact-table-when {
+    color: #9aa0a6;
+  }
+
+  .moderator-impact-footnote {
+    border-top-color: #333;
   }
 
   a, a:visited, a:hover {
@@ -954,5 +1226,22 @@ td.audit {
   main.minimal {
     width: 100%;
   }
+}
+
+.lanpartydb-export-toml {
+  width: 100%;
+  max-width: 100%;
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  margin-bottom: 1.25em;
+}
+
+.lanpartydb-export-toml--all {
+  min-height: 12em;
+}
+
+.lanpartydb-copy-btn {
+  margin-bottom: 0.35em;
 }
 

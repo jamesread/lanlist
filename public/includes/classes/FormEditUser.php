@@ -65,7 +65,7 @@ class FormEditUser extends Form
             foreach (lanlistOrganizerUpdateEmailOptions() as $value => $label) {
                 $organizerUpdates->addOption($label, $value);
             }
-            $organizerUpdates->description = 'When someone edits your organizer profile on lanlist.';
+            $organizerUpdates->description = 'When someone edits your organizer profile, or for occasional post-event reminders.';
             $this->addElement($organizerUpdates);
 
             $eventUpdates = new ElementSelect(

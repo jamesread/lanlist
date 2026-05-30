@@ -31,11 +31,11 @@ if (isset($_REQUEST['test'])) {
 if (isset($_REQUEST['full'])) {
     echo '<h2>Full Logs</h2>';
 
-    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedUser, l.relatedOrganizer, u.username AS relatedUsername FROM logs l LEFT JOIN users u ON u.id = l.relatedUser ORDER BY l.id DESC LIMIT 100';
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedUser, l.relatedOrganizer, u.username AS relatedUsername, o.title AS relatedOrganizerTitle FROM logs l LEFT JOIN users u ON u.id = l.relatedUser LEFT JOIN organizers o ON o.id = l.relatedOrganizer ORDER BY l.id DESC LIMIT 100';
 } else {
     echo '<h2>New logs</h2>';
 
-    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedUser, l.relatedOrganizer, u.username AS relatedUsername FROM logs l LEFT JOIN users u ON u.id = l.relatedUser WHERE l.isread = 0 ORDER BY l.id DESC';
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedUser, l.relatedOrganizer, u.username AS relatedUsername, o.title AS relatedOrganizerTitle FROM logs l LEFT JOIN users u ON u.id = l.relatedUser LEFT JOIN organizers o ON o.id = l.relatedOrganizer WHERE l.isread = 0 ORDER BY l.id DESC';
 }
 
 $logs = $db->query($sql)->fetchAll();

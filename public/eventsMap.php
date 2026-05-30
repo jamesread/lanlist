@@ -6,7 +6,7 @@ global $tpl;
 
 define('MAIN_NOPADDING', true);
 define('INCLUDE_GOOGLE_MAPS', true);
-define('TITLE', 'LAN parties map');
+define('TITLE', 'LAN Party map');
 define(
     'META_DESCRIPTION',
     'Interactive map of upcoming LAN parties and gaming LAN events. Browse by location, open the event list, or add your own events on lanlist.'

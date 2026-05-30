@@ -29,6 +29,7 @@ foreach (
         '/linkus.php',
         '/contact.php',
         '/usefulRelatedSites.php',
+        '/lpps.php',
         '/licensing.php',
         '/cookies.php',
         '/jobAdverts.php',
@@ -42,10 +43,6 @@ echo '  <url><loc>' . $h($base . '/eventsList.php?mode=country') . "</loc></url>
 
 foreach (getCountriesWithUpcomingEventCounts() as $row) {
     $country = (string)$row['country'];
-    if (getCountryFlagHtml($country) === '') {
-        continue;
-    }
-
     $loc = $base . '/eventsList.php?mode=country&country=' . rawurlencode($country);
     echo '  <url><loc>' . $h($loc) . "</loc></url>\n";
 }

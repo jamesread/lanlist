@@ -22,7 +22,7 @@ Bulk helpers:
 |---|---|
 | `sendEmailToAdmins()` | Primary group **admins** (gid 102, `ADMIN_GID`) |
 | `sendEmailToGroup($gid)` | All users whose **primary group** matches |
-| `sendModeratorNewsletter()` | **Moderators** (gid 103, `MODERATOR_GID`), filtered by per-user frequency |
+| `sendModeratorNewsletter()` | **Admins and moderators** (gid 102 `ADMIN_GID` and gid 103 `MODERATOR_GID`), filtered by per-user frequency |
 
 **Important:** recipient targeting uses `users.group` (primary group) only. Organizer affiliation (`users.organization`) is a separate axis used for event notifications.
 
@@ -54,8 +54,9 @@ Organizer-linked users (`organization IS NOT NULL`): 47 total — mostly gid 2 U
 | Trigger | File / entrypoint | When | Subject (before `SITE_TITLE -` prefix) | Content |
 |---|---|---|---|---|
 | New user registration | `FormRegister.php` | Someone completes registration | `New user registration: {username}` | Plain text: username only |
+| Moderator newsletter | `ScheduledTaskNewsletter.php` via `scripts/run-newsletter.php` | Scheduled job runs **and** site-checks panel has issues | `Moderator newsletter for {D j M}, N item(s)` | HTML from `newsletter.tpl` |
 
-Admins do **not** receive the moderator newsletter (that goes to gid 103).
+Admins receive the moderator newsletter on the same terms as moderators (see below).
 
 ---
 
@@ -64,6 +65,8 @@ Admins do **not** receive the moderator newsletter (that goes to gid 103).
 | Trigger | File / entrypoint | When | Subject (before prefix) | Content |
 |---|---|---|---|---|
 | Moderator newsletter | `ScheduledTaskNewsletter.php` via `scripts/run-newsletter.php` | Scheduled job runs **and** site-checks panel has issues | `Moderator newsletter for {D j M}, N item(s)` | HTML from `newsletter.tpl` |
+
+**Newsletter recipients:** users whose primary group is **admins** (gid 102) or **Moderators** (gid 103).
 
 **Newsletter contents:** events with issues, unpublished organizers, organizers with no upcoming events (same snapshot as `siteChecks.php`).
 
@@ -86,8 +89,11 @@ Moderators linked to an organizer (`users.organization` set) can **also** receiv
 |---|---|---|---|---|
 | Password reset | `FormRequestPasswordReset.php` | Guest submits email on reset form (must not be logged in) | `Password Reset Requested` | Plain text reset code |
 | Event published / unpublished | `misc.php?action=toggleEvent` | Moderator toggles publish state | `Event: {title} has been published!` / `…unpublished.` | HTML from `email.eventToggled.tpl` |
+| Post-event reminder | `scripts/run-post-event-reminders.php` (OliveTin daily) | Published event finished ~2 days ago; organizer has no other upcoming events | `How did {title} go?` | HTML from `email.postEventReminder.tpl` |
 
 **Event toggle recipients:** every user where `users.organization = event.organizer`, **regardless of primary group**. In practice mostly gid 2 Users; also includes organizer-linked moderators/admins.
+
+**Post-event reminder recipients:** organizer-linked users with email where `organizerUpdateEmails != 'never'`. Skipped when the organizer still has any published event with `dateFinish > NOW()`. Throttled to one email per user per rolling 30 days (`lastPostEventReminderEmailDate`).
 
 **Not sent to regular users:**
 
@@ -124,7 +130,8 @@ Uses custom HTML footer; calls `sendEmail(..., false)` to skip the standard foot
 | New registration notice | Admins | User self-registration | Yes |
 | Password reset code | Any registered user (matched by email) | User self-service (logged out) | Yes |
 | Event publish / unpublish | Organizer-linked users | Moderator (`TOGGLE_EVENT_PUBLISHED`) | Yes |
-| Moderator newsletter | Moderators (gid 103) | OliveTin / `run-newsletter.php` | Yes |
+| Post-event reminder | Organizer-linked users (`organizerUpdateEmails`) | OliveTin / `run-post-event-reminders.php` | Yes |
+| Moderator newsletter | Admins and moderators (gid 102, 103) | OliveTin / `run-newsletter.php` | Yes |
 | Manual staff email | Any address | Staff with `SEND_EMAIL` (see gaps) | No |
 
 ---
@@ -132,7 +139,7 @@ Uses custom HTML footer; calls `sendEmail(..., false)` to skip the standard foot
 ## What never gets email
 
 - Users without a valid email on their profile (skipped with `SEND_EMAIL_INVALID` log)
-- Moderators on `fridays_only` when the job runs Monday–Thursday
+- Admins and moderators on `fridays_only` when the job runs Monday–Thursday
 - Anyone when `SEND_EMAIL` is false in config
 - Guests / non-registered visitors (except they can trigger a reset email to a registered address)
 - New registrants (no welcome / verification email)

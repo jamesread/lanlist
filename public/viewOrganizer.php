@@ -30,7 +30,9 @@ $tpl->assign('includeInlineEdit', Session::hasPriv('MODERATOR'));
 
 require_once 'includes/widgets/header.php';
 
-$organizer['logoUrl'] = getOrganizerLogoUrl($organizer['id']);
+$organizer['logoUrl'] = !empty((int) ($organizer['validBanner'] ?? 0))
+    ? getOrganizerLogoUrl($organizer['id'])
+    : null;
 applyOrganizerPlatformInviteHrefs($organizer);
 
 if (Session::hasPriv('MODERATOR')) {

@@ -4,7 +4,7 @@
 	<h3>Location</h3>
 	<p><strong>lat</strong>: {$venue.lat}</p>
 	<p><strong>lng</strong>: {$venue.lng}</p>
-	<p><strong>Country</strong>: <a href = "listVenues.php?country={$venue.country}">{$venue.country}</a></p>
+	<p><strong>Country</strong>: <a href = "eventsList.php?mode=country&amp;country={$venue.country|escape:'url'}" title = "LAN Parties in {$venue.country|escape}">{if $venue.countryFlagHtml != ''}{$venue.countryFlagHtml nofilter} {/if}{$venue.country|escape}</a></p>
 </div>
 
 <div class = "paralellContainer">

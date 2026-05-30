@@ -131,16 +131,32 @@ function sendModeratorNewsletter($content, $subject): int
     $sql = 'SELECT id, username, email, moderatorNewsletterFrequency FROM users WHERE `group` = :moderator_gid OR `group` = :admin_gid';
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':moderator_gid', MODERATOR_GID);
-    $stmt->bindValue(':admin_gid', MODERATOR_GID);
+    $stmt->bindValue(':admin_gid', ADMIN_GID);
     $stmt->execute();
 
     $sentCount = 0;
+
+    $recipients = [];
 
     foreach ($stmt->fetchAll() as $user) {
         if (!lanlistUserReceivesModeratorNewsletterToday($user)) {
             continue;
         }
 
+        $recipients[] = $user;
+    }
+
+    if (PHP_SAPI === 'cli') {
+        if ($recipients === []) {
+            fwrite(STDOUT, "newsletter recipients: none\n");
+        } else {
+            foreach ($recipients as $user) {
+                fwrite(STDOUT, 'newsletter recipient username=' . $user['username'] . ' email=' . $user['email'] . "\n");
+            }
+        }
+    }
+
+    foreach ($recipients as $user) {
         sendEmail($user['email'], $content, $subject);
         $sentCount++;
     }
@@ -353,20 +369,36 @@ function getCountryFlagHtml(string $country): string
             return '&#127468;&#127463;';
         case 'Sweden':
             return '&#127480;&#127466;';
+        case 'Switzerland':
+            return '&#127464;&#127469;';
         case 'Netherlands':
             return '&#127475;&#127473;';
+        case 'Norway':
+            return '&#127475;&#127476;';
         case 'Germany':
             return '&#127465;&#127466;';
         case 'Italy':
             return '&#127470;&#127481;';
+        case 'Ireland':
+            return '&#127470;&#127466;';
+        case 'Iceland':
+            return '&#127470;&#127480;';
+        case 'Poland':
+            return '&#127477;&#127473;';
         case 'United States':
             return '&#127482;&#127480;';
         case 'Canada':
             return '&#127464;&#127462;';
         case 'Denmark':
             return '&#127465;&#127472;';
+        case 'Finland':
+            return '&#127467;&#127470;';
+        case 'France':
+            return '&#127467;&#127479;';
         case 'Austria':
             return '&#127462;&#127481;';
+        case 'Australia':
+            return '&#127462;&#127482;';
         case 'Belgium':
             return '&#127463;&#127466;';
         case 'Spain':
@@ -415,6 +447,35 @@ function getCountriesWithUpcomingEventCounts(): array
         ORDER BY v.country ASC';
 
     return $db->query($sql)->fetchAll();
+}
+
+/**
+ * @return array{organizerCount: int, pastEventCount: int, upcomingEventCount: int}
+ */
+function fetchCountryEventStats(string $country): array
+{
+    global $db;
+
+    $sql = 'SELECT
+            COUNT(DISTINCT o.id) AS organizerCount,
+            SUM(CASE WHEN e.dateStart <= NOW() THEN 1 ELSE 0 END) AS pastEventCount,
+            SUM(CASE WHEN e.dateStart > NOW() THEN 1 ELSE 0 END) AS upcomingEventCount
+        FROM events e
+        INNER JOIN venues v ON e.venue = v.id
+        INNER JOIN organizers o ON e.organizer = o.id
+        WHERE e.published = 1
+            AND v.country = :country' . lanlistSqlPublicOrganizerVisible('o');
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':country', $country);
+    $stmt->execute();
+    $row = $stmt->fetch() ?: [];
+
+    return [
+        'organizerCount' => (int) ($row['organizerCount'] ?? 0),
+        'pastEventCount' => (int) ($row['pastEventCount'] ?? 0),
+        'upcomingEventCount' => (int) ($row['upcomingEventCount'] ?? 0),
+    ];
 }
 
 function getListOfNextEvents($count = 10)
@@ -498,6 +559,13 @@ function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
         }
     }
 
+    if ($relatedUser === null && $priority === 'AUDIT' && Session::isLoggedIn()) {
+        $actorId = (int) Session::getUser()->getId();
+        if ($actorId > 0) {
+            $relatedUser = $actorId;
+        }
+    }
+
     $relatedOrganizer = null;
     if (is_array($metadata) && array_key_exists('relatedOrganizer', $metadata)) {
         $v = $metadata['relatedOrganizer'];
@@ -528,12 +596,12 @@ function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
 
 function requirePriv($ident)
 {
-    if (Session::isLoggedIn()) {
-        if (!Session::getUser()->hasPriv($ident)) {
-            throw new \libAllure\exceptions\SimpleFatalError('You dont have the ' . $ident . ' permission.');
-        }
-    } else {
-        throw new \libAllure\exceptions\SimpleFatalError('You are not logged in.');
+    if (!Session::isLoggedIn()) {
+        redirect('login.php', 'You need to login to access this part of the site.');
+    }
+
+    if (!Session::getUser()->hasPriv($ident)) {
+        throw new \libAllure\exceptions\SimpleFatalError('You dont have the ' . $ident . ' permission.');
     }
 }
 
@@ -691,21 +759,45 @@ function outputJson($v) {
     echo json_encode($v);
 }
 
-function getGeoIpCountry() {
+function getGeoIpCountry(): string
+{
     $default = 'United Kingdom';
-    $country = $default;
+    $ip = null;
 
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-
-        $country = geoip_country_name_by_name($ip);
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = trim(explode(',', (string) $_SERVER['HTTP_X_FORWARDED_FOR'])[0]);
+    } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+        $ip = (string) $_SERVER['REMOTE_ADDR'];
     }
 
-    if (empty($country)) {
-        return $default;
+    if ($ip !== null && $ip !== '' && function_exists('geoip_country_name_by_name')) {
+        $resolved = geoip_country_name_by_name($ip);
+        if (!empty($resolved)) {
+            return (string) $resolved;
+        }
     }
 
-    return $country;
+    return $default;
+}
+
+/**
+ * GeoIP-estimated country when that country has upcoming events and a supported flag emoji.
+ */
+function getGeoIpCountryWithUpcomingEvents(): ?string
+{
+    $geoCountry = getGeoIpCountry();
+
+    if (getCountryFlagHtml($geoCountry) === '') {
+        return null;
+    }
+
+    foreach (getCountriesWithUpcomingEventCounts() as $row) {
+        if ((string) ($row['country'] ?? '') === $geoCountry && (int) ($row['eventCount'] ?? 0) > 0) {
+            return $geoCountry;
+        }
+    }
+
+    return null;
 }
 
 function canEditEvent($eventOrganizerId) {

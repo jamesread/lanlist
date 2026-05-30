@@ -1,8 +1,10 @@
 <h2>Organizer: {$organizer.title}</h2>
+{if !empty($organizer.logoUrl)}
 <img class = "banner bannerFit" alt = "Organizer logo" title = "Organizer logo for {$organizer.title}" src = "{$organizer.logoUrl}" /><br />
+{/if}
 
 <div class = "paralellContainer">
-	<strong>Website: </strong> {$organizer.websiteUrl|externUrl}<br />
+	<strong>Website: </strong> {$organizer.websiteUrl|externUrlOr:"None"}<br />
 	<br />
 	{include file = 'organizerSteamDiscordRow.tpl' orgTitle = $organizer.title steamGroupUrl = $organizer.steamGroupUrl steamGroupHref = $organizer.steamGroupHref discordInviteUrl = $organizer.discordInviteUrl discordInviteHref = $organizer.discordInviteHref showOrganizerSteamNone = 1}
 
@@ -33,7 +35,7 @@
 
 {if $events|@count == 0} 
 	<p>We don't know of any events from this organizer. </p>
-	<p>Events can be added from the <a href = "account.php">account</a> page.</p>
+	<p>Events can be added from the <a href = "account.php">account</a> page, or optionally synced via <a href = "lpps.php">LPPS</a>.</p>
 {else}
 	<ul>
 	{foreach from = $events item = event}
@@ -62,6 +64,7 @@
 	{if !empty($organizer.genericEmail)}
 		<a href = "formHandler.php?formClazz=FormSendEmailToUser&amp;formSendEmailToUser-email={$organizer.genericEmail|escape:'url'}">{$organizer.genericEmail|escape:'html'}</a>
 	{/if}
+	<p><a href="lpps.php">Lan Party Publishing Standard (LPPS)</a> — optional JSON feed to sync from your website; you can always add events manually on lanlist.</p>
 </div>
 {/if}
 

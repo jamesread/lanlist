@@ -2,17 +2,25 @@
 
 require_once 'includes/common.php';
 require_once 'includes/functionality/site_checks.php';
+require_once 'includes/functionality/moderator_metrics.php';
+
+use libAllure\Session;
 
 requirePriv('MODERATOR');
 
-define('MAIN_NOPADDING', true);
 define('TITLE', 'Moderator control panel');
 $tpl->assign('includeInlineEdit', true);
 require_once 'includes/widgets/header.php';
 
-$tpl->display('moderatorControlPanel.tpl');
-
 $panel = lanlistFetchModeratorPanelData();
+$moderatorImpact = lanlistFetchModeratorImpactMetrics(
+    (int) Session::getUser()->getId(),
+    Session::getUser()->getUsername(),
+    $panel
+);
+$tpl->assign('moderatorImpact', $moderatorImpact);
+$tpl->display('moderatorControlPanel.tpl');
+$tpl->display('moderatorImpactPanel.tpl');
 
 $tpl->assign('listEventsWithIssues', $panel['eventsWithIssues']);
 $tpl->display('eventsWithIssues.tpl');

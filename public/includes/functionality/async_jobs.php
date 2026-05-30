@@ -10,6 +10,14 @@ if (!defined('LANLIST_JOB_TYPE_ADMIN_NEWSLETTER')) {
     define('LANLIST_JOB_TYPE_ADMIN_NEWSLETTER', 'admin_newsletter');
 }
 
+if (!defined('LANLIST_JOB_TYPE_POST_EVENT_REMINDERS')) {
+    define('LANLIST_JOB_TYPE_POST_EVENT_REMINDERS', 'post_event_reminders');
+}
+
+if (!defined('LANLIST_JOB_TYPE_ORGANIZER_LPPS_CRAWL')) {
+    define('LANLIST_JOB_TYPE_ORGANIZER_LPPS_CRAWL', 'organizer_lpps_crawl');
+}
+
 const LANLIST_NEWSLETTER_SCHEDULER_CLASS = 'ScheduledTaskNewsletter';
 
 /**
@@ -22,6 +30,8 @@ function lanlistAsyncJobTypeLabels(): array
     return [
         LANLIST_JOB_TYPE_ORGANIZER_FAVICON_FETCH => 'Organizer favicon fetch',
         LANLIST_JOB_TYPE_ADMIN_NEWSLETTER => 'Moderator newsletter',
+        LANLIST_JOB_TYPE_POST_EVENT_REMINDERS => 'Post-event reminders',
+        LANLIST_JOB_TYPE_ORGANIZER_LPPS_CRAWL => 'Organizer LPPS crawl',
     ];
 }
 
@@ -202,6 +212,109 @@ function lanlistFailNewsletterAsyncJob(int $jobId, string $message): void
     $up->bindValue(':id', $jobId, \PDO::PARAM_INT);
     $up->bindValue(':jt', LANLIST_JOB_TYPE_ADMIN_NEWSLETTER);
     $up->execute();
+}
+
+/**
+ * @param array<string, mixed> $metadata
+ */
+function lanlistInsertPostEventRemindersAsyncJob(array $metadata): int
+{
+    global $db;
+
+    $metadataJson = json_encode($metadata, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
+    $ins = $db->prepare(
+        'INSERT INTO async_jobs (job_type, organizer_id, status, metadata, started_at)
+         VALUES (:jt, NULL, :st, :meta, NOW())'
+    );
+    $ins->bindValue(':jt', LANLIST_JOB_TYPE_POST_EVENT_REMINDERS);
+    $ins->bindValue(':st', 'processing');
+    $ins->bindValue(':meta', $metadataJson);
+    $ins->execute();
+
+    return (int) $db->lastInsertId();
+}
+
+/**
+ * @param array<string, mixed> $metadata
+ */
+function lanlistBeginPostEventRemindersAsyncJob(int $jobId, array $metadata): int
+{
+    global $db;
+
+    $sel = $db->prepare(
+        'SELECT id, job_type, status FROM async_jobs WHERE id = :id LIMIT 1'
+    );
+    $sel->bindValue(':id', $jobId, \PDO::PARAM_INT);
+    $sel->execute();
+    $row = $sel->fetchRow();
+    if ($row === false) {
+        throw new InvalidArgumentException('async_jobs row not found id=' . $jobId);
+    }
+    if ((string) $row['job_type'] !== LANLIST_JOB_TYPE_POST_EVENT_REMINDERS) {
+        throw new InvalidArgumentException('job #' . $jobId . ' is not a post-event reminders job');
+    }
+
+    $metadataJson = json_encode($metadata, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
+    $up = $db->prepare(
+        'UPDATE async_jobs SET status = \'processing\', started_at = NOW(), metadata = :meta, error_message = NULL
+         WHERE id = :id AND job_type = :jt LIMIT 1'
+    );
+    $up->bindValue(':meta', $metadataJson);
+    $up->bindValue(':id', $jobId, \PDO::PARAM_INT);
+    $up->bindValue(':jt', LANLIST_JOB_TYPE_POST_EVENT_REMINDERS);
+    $up->execute();
+
+    return $jobId;
+}
+
+/**
+ * @param array{eventsConsidered: int, organizersEmailed: int, emailsSent: int, skippedHasUpcoming: int, skippedNoRecipients: int, skippedUserCap: int} $summary
+ * @param array<string, mixed> $extraMetadata
+ */
+function lanlistCompletePostEventRemindersAsyncJob(int $jobId, array $summary, array $extraMetadata = []): void
+{
+    global $db;
+
+    $meta = json_encode(
+        array_merge(
+            $extraMetadata,
+            $summary
+        ),
+        JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES
+    );
+    $up = $db->prepare(
+        'UPDATE async_jobs SET status = \'completed\', finished_at = NOW(), error_message = NULL, metadata = :meta
+         WHERE id = :id AND job_type = :jt LIMIT 1'
+    );
+    $up->bindValue(':meta', $meta);
+    $up->bindValue(':id', $jobId, \PDO::PARAM_INT);
+    $up->bindValue(':jt', LANLIST_JOB_TYPE_POST_EVENT_REMINDERS);
+    $up->execute();
+}
+
+function lanlistFailPostEventRemindersAsyncJob(int $jobId, string $message): void
+{
+    global $db;
+
+    $msg = substr(trim($message), 0, 62000);
+    $up = $db->prepare(
+        'UPDATE async_jobs SET status = \'failed\', finished_at = NOW(), error_message = :em
+         WHERE id = :id AND job_type = :jt LIMIT 1'
+    );
+    $up->bindValue(':em', $msg);
+    $up->bindValue(':id', $jobId, \PDO::PARAM_INT);
+    $up->bindValue(':jt', LANLIST_JOB_TYPE_POST_EVENT_REMINDERS);
+    $up->execute();
+}
+
+/**
+ * @return array{eventsConsidered: int, organizersEmailed: int, emailsSent: int, skippedHasUpcoming: int, skippedNoRecipients: int, skippedUserCap: int}
+ */
+function lanlistRunPostEventRemindersTask(ScheduledTaskPostEventReminders $task): array
+{
+    $task->execute();
+
+    return $task->getLastRunSummary();
 }
 
 /**

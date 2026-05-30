@@ -22,6 +22,10 @@ ul {
 
 <p>This is a {$siteTitle} <strong>moderator newsletter</strong> — the same site-check snapshot as the <a href="{$siteBaseUrl}/siteChecks.php">moderator control panel</a>, as of {$newsletterFinishDate}.</p>
 
+{if $moderatorImpact}
+{include file='moderatorImpactSummary.tpl'}
+{/if}
+
 {if $listEventsWithIssues|@count gt 0}
 <h1>Events with issues ({$listEventsWithIssues|@count})</h1>
 <ul>

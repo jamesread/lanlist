@@ -1,0 +1,303 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://raw.githubusercontent.com/jamesread/lan-party-publishing-standard/main/lan-party-publishing-standard-v2.schema",
+	"title": "LAN Party Publishing Schema version 2",
+	"type": "object",
+	"required": ["organisation"],
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "URI of the JSON Schema used to validate this document."
+		},
+		"generator": {
+			"type": "string",
+			"description": "Optional identifier for the software that generated this document."
+		},
+		"organisation": {
+			"$ref": "#/definitions/organisation"
+		}
+	},
+	"definitions": {
+		"iso8601LocalDateTime": {
+			"type": ["string", "null"],
+			"description": "Date and time in ISO 8601 format without a timezone offset (YYYY-MM-DDTHH:MM:SS), as used by schema.org DateTime.",
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$"
+		},
+		"base": {
+			"type": "object",
+			"required": ["publisherUniqueId", "apiVersion"],
+			"properties": {
+				"apiVersion": {
+					"type": "integer",
+					"const": 2,
+					"description": "An API version to aid in future compatibility. Must be 2 for this standard."
+				},
+				"apiType": {
+					"type": "string",
+					"description": "One of the standard type names."
+				},
+				"name": {
+					"type": ["string", "null"],
+					"description": "A friendly name, like a title, or username."
+				},
+				"publisherUniqueId": {
+					"description": "An ID that is unique in the publisher's system.",
+					"oneOf": [
+						{ "type": "string" },
+						{ "type": "integer" }
+					]
+				}
+			}
+		},
+		"organisation": {
+			"allOf": [
+				{ "$ref": "#/definitions/base" },
+				{
+					"type": "object",
+					"properties": {
+						"apiType": {
+							"const": "Organisation"
+						},
+						"name": {
+							"type": ["string", "null"],
+							"description": "The name of your organisation."
+						},
+						"websiteUrl": {
+							"type": ["string", "null"],
+							"description": "The organisation website URL."
+						},
+						"steamGroupUrl": {
+							"type": ["string", "null"],
+							"description": "The organisation Steam community group URL."
+						},
+						"discordInviteUrl": {
+							"type": ["string", "null"],
+							"description": "The organisation Discord server invite URL."
+						},
+						"image": {
+							"type": ["string", "null"],
+							"description": "URL to a banner or logo image for the organisation. schema.org image."
+						},
+						"description": {
+							"type": ["string", "null"],
+							"description": "A free-text description of the organisation."
+						},
+						"venues": {
+							"type": "array",
+							"description": "The venues this organisation uses.",
+							"items": {
+								"$ref": "#/definitions/venue"
+							}
+						}
+					},
+					"required": ["apiType", "venues"]
+				}
+			]
+		},
+		"venue": {
+			"allOf": [
+				{ "$ref": "#/definitions/base" },
+				{
+					"type": "object",
+					"properties": {
+						"apiType": {
+							"const": "Venue"
+						},
+						"name": {
+							"type": ["string", "null"],
+							"description": "The name of your venue, normally a hall."
+						},
+						"gpsLatitude": {
+							"type": ["number", "null"],
+							"description": "Latitude for map placement."
+						},
+						"gpsLongitude": {
+							"type": ["number", "null"],
+							"description": "Longitude for map placement."
+						},
+						"countryCode": {
+							"type": ["string", "null"],
+							"description": "ISO 3166-1 alpha-2 country code for the venue location.",
+							"pattern": "^[A-Z]{2}$"
+						},
+						"events": {
+							"type": "array",
+							"description": "The events at this venue.",
+							"items": {
+								"$ref": "#/definitions/event"
+							}
+						}
+					},
+					"required": ["apiType", "events"]
+				}
+			]
+		},
+		"event": {
+			"allOf": [
+				{ "$ref": "#/definitions/base" },
+				{
+					"type": "object",
+					"properties": {
+						"apiType": {
+							"const": "Event"
+						},
+						"name": {
+							"type": ["string", "null"],
+							"description": "The name of your event."
+						},
+						"url": {
+							"type": ["string", "null"],
+							"description": "URL for the event page or ticket booking page. schema.org Event.url."
+						},
+						"eventStatus": {
+							"type": ["string", "null"],
+							"description": "Lifecycle status of the event, using a schema.org EventStatusType URL.",
+							"enum": [
+								"https://schema.org/EventScheduled",
+								"https://schema.org/EventCancelled",
+								"https://schema.org/EventPostponed",
+								"https://schema.org/EventMovedOnline",
+								"https://schema.org/EventRescheduled",
+								null
+							]
+						},
+						"eventAttendanceMode": {
+							"type": "integer",
+							"description": "How the event is attended, encoded as a bitset. Combine flags by summing their values.",
+							"minimum": 0,
+							"maximum": 15
+						},
+						"startDate": {
+							"$ref": "#/definitions/iso8601LocalDateTime"
+						},
+						"endDate": {
+							"$ref": "#/definitions/iso8601LocalDateTime"
+						},
+						"previousStartDate": {
+							"$ref": "#/definitions/iso8601LocalDateTime"
+						},
+						"maximumAttendeeCapacity": {
+							"type": ["integer", "null"],
+							"description": "Total number of seats at the event. schema.org Event.maximumAttendeeCapacity."
+						},
+						"remainingAttendeeCapacity": {
+							"type": ["integer", "null"],
+							"description": "Number of seats still available at the event. schema.org Event.remainingAttendeeCapacity."
+						},
+						"tickets": {
+							"type": "array",
+							"description": "Ticket types available for the event.",
+							"items": {
+								"$ref": "#/definitions/ticket"
+							}
+						},
+						"sleeping": {
+							"type": "integer",
+							"description": "Sleeping arrangements at the event, encoded as a bitset. Combine flags by summing their values.",
+							"minimum": 0,
+							"maximum": 15
+						},
+						"hasShowers": {
+							"type": "boolean",
+							"description": "Whether showers are available at the event."
+						},
+						"alcoholPolicy": {
+							"type": "integer",
+							"description": "Alcohol policy at the event, encoded as a bitset. Combine flags by summing their values.",
+							"minimum": 0,
+							"maximum": 15
+						},
+						"smokingPolicy": {
+							"type": "integer",
+							"description": "Smoking policy at the event, encoded as a bitset. Combine flags by summing their values.",
+							"minimum": 0,
+							"maximum": 15
+						},
+						"agePolicy": {
+							"type": "integer",
+							"description": "Age policy at the event, encoded as a bitset. Combine flags by summing their values.",
+							"minimum": 0,
+							"maximum": 15
+						},
+						"foodPolicy": {
+							"type": "integer",
+							"description": "Food policy at the event, encoded as a bitset. Combine flags by summing their values.",
+							"minimum": 0,
+							"maximum": 15
+						},
+						"networkConnectionMbps": {
+							"type": "integer",
+							"description": "Local network connection speed in Mbps."
+						},
+						"internetConnectionMbps": {
+							"type": "integer",
+							"description": "Internet connection speed in Mbps."
+						},
+						"wifiConnectionMbps": {
+							"type": "integer",
+							"description": "Wi-Fi connection speed in Mbps."
+						},
+						"description": {
+							"type": "string",
+							"description": "A free-text description of the event."
+						}
+					},
+					"required": ["apiType"]
+				}
+			]
+		},
+		"ticket": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "The ticket type name."
+				},
+				"description": {
+					"type": ["string", "null"],
+					"description": "Optional free-text details about this ticket."
+				},
+				"priceCurrency": {
+					"type": "string",
+					"description": "ISO 4217 currency code for this ticket price. schema.org Offer.priceCurrency."
+				},
+				"price": {
+					"type": ["number", "null"],
+					"description": "Ticket price in the given currency. schema.org Offer.price."
+				},
+				"availability": {
+					"type": "string",
+					"description": "Ticket availability using a schema.org ItemAvailability URL. schema.org Offer.availability.",
+					"enum": [
+						"https://schema.org/Discontinued",
+						"https://schema.org/InStock",
+						"https://schema.org/InStoreOnly",
+						"https://schema.org/LimitedAvailability",
+						"https://schema.org/OnlineOnly",
+						"https://schema.org/OutOfStock",
+						"https://schema.org/PreOrder",
+						"https://schema.org/PreSale",
+						"https://schema.org/SoldOut"
+					]
+				},
+				"validFrom": {
+					"$ref": "#/definitions/iso8601LocalDateTime",
+					"description": "When admission covered by this ticket begins. schema.org Offer.validFrom."
+				},
+				"validThrough": {
+					"$ref": "#/definitions/iso8601LocalDateTime",
+					"description": "When admission covered by this ticket ends. schema.org Offer.validThrough."
+				},
+				"availabilityStarts": {
+					"$ref": "#/definitions/iso8601LocalDateTime",
+					"description": "When this ticket type becomes available to purchase. schema.org Offer.availabilityStarts."
+				},
+				"availabilityEnds": {
+					"$ref": "#/definitions/iso8601LocalDateTime",
+					"description": "When this ticket type is no longer available to purchase. schema.org Offer.availabilityEnds."
+				}
+			},
+			"required": ["name", "availability"]
+		}
+	}
+}

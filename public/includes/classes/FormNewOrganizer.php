@@ -57,7 +57,7 @@ class FormNewOrganizer extends Form
     {
         global $db;
 
-        $sql = 'INSERT INTO organizers (title, websiteUrl, published, blurb, created) VALUES (:title, :websiteUrl, :published, :blurb, now()) ';
+        $sql = 'INSERT INTO organizers (title, websiteUrl, published, blurb, useFavicon, faviconRefetch, created) VALUES (:title, :websiteUrl, :published, :blurb, 1, 1, now()) ';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':title', $this->getElementValue('title'));
         $stmt->bindValue(':websiteUrl', $this->getElementValue('websiteUrl'));

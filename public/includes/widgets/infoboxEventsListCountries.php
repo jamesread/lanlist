@@ -1,5 +1,5 @@
 <div class = "infobox">
-    <h2>Upcoming by country</h2>
+    <h2>Future LAN parties per country</h2>
 <?php
 
 $countries = getCountriesWithUpcomingEventCounts();

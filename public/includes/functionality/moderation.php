@@ -57,10 +57,9 @@ function lanlistEnrichOrganizerForModeratorView(array $organizer): array
     $organizer['lastChecked'] = ($row !== false && !empty($row['lastChecked'])) ? $row['lastChecked'] : null;
 
     $publicDir = dirname(__DIR__, 2);
-    $logoFs = $publicDir . '/resources/images/organizer-logos/' . $oid . '.jpg';
     $faviconFs = $publicDir . '/resources/images/organizer-favicons/' . $oid . '.png';
 
-    $organizer['logoFileExists'] = is_file($logoFs);
+    $organizer['logoFileExists'] = !empty((int) ($organizer['validBanner'] ?? 0));
     $organizer['faviconFileExists'] = is_file($faviconFs);
     $organizer['useFaviconEnabled'] = !empty((int) ($organizer['useFavicon'] ?? 0));
     $organizer['discordInviteRowClass'] = moderationDiscordRowClass($organizer['discordInviteUrl'] ?? null);

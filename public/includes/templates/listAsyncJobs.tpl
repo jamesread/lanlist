@@ -1,6 +1,6 @@
 <h2>Background jobs</h2>
 
-<p class="subtle">Jobs are executed by <a href="https://github.com/OliveTin/OliveTin">OliveTin</a> (scheduled moderator newsletter, moderation favicon queue). The legacy PHP cron scheduler is no longer used.</p>
+<p class="subtle">Jobs are executed by <a href="https://github.com/OliveTin/OliveTin">OliveTin</a> (scheduled moderator newsletter, LPPS crawl, moderation favicon queue). The legacy PHP cron scheduler is no longer used.</p>
 
 <h3>OliveTin connection</h3>
 {if !$oliveTinConnection.configured}

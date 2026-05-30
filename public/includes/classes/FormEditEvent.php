@@ -93,6 +93,7 @@ EOF;
         $el = $this->addElement(new ElementSelect('ageRestrictions', 'Age Restrictions'));
         $el->addOption('Not known', '');
         $el->addOption('Over 18s Only');
+        $el->addOption('Under 18s must be accompanied');
         $el->addOption('Under 18s require parents consent');
         $el->setValue($value);
     }
@@ -136,6 +137,12 @@ EOF;
 			$internetMbps = null;
 		}
 
+		$numberOfSeats = $this->getElementValue('numberOfSeats');
+
+		if ($numberOfSeats === '' || $numberOfSeats === null) {
+			$numberOfSeats = null;
+		}
+
         $sql = 'UPDATE events SET title = :title, venue = :venue, dateStart = :dateStart, dateFinish = :dateFinish, website = :website, showers = :showers, sleeping = :sleeping, ageRestrictions = :ageRestrictions, smoking = :smoking, alcohol = :alcohol, numberOfSeats = :numberOfSeats, networkMbps = :networkMbps, internetMbps = :internetMbps, blurb = :blurb, organizer = :organizer WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
@@ -150,7 +157,7 @@ EOF;
         $stmt->bindValue(':smoking', $this->getElementValue('smoking'));
         $stmt->bindValue(':networkMbps', $networkMbps);
         $stmt->bindValue(':internetMbps', $internetMbps);
-        $stmt->bindValue(':numberOfSeats', $this->getElementValue('numberOfSeats'));
+        $stmt->bindValue(':numberOfSeats', $numberOfSeats);
         $stmt->bindValue(':blurb', $this->getElementValue('blurb'));
         $stmt->bindValue(':venue', $this->getElementValue('venue'));
 

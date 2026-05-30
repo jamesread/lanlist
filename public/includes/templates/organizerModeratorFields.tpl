@@ -66,6 +66,37 @@
 	{/if}
 	</dd>
 
+	<dt>LPPS feed</dt>
+	<dd>
+	<p class="subtle"><a href="lpps.php">About LPPS</a> (optional; manual event entry is always supported.)</p>
+	{if not empty($organizer.lppsUrl)}
+		<a target="_blank" rel="noopener noreferrer" href="{$organizer.lppsUrl|escape:'html'}">{$organizer.lppsUrl|escape:'html'}</a>
+	{else}
+		<em>Not set</em>
+	{/if}
+	{if !empty($organizer.lppsAdminDisabled)}
+		<p class="warn"><strong>LPPS crawl disabled by admin.</strong></p>
+	{elseif !empty($organizer.lppsUrl)}
+		<p><em>Eligible for LPPS crawl when the job is enabled.</em></p>
+	{/if}
+	{if $organizer.lppsLastCrawl}
+		<p style="margin-top:.75em;"><strong>Last LPPS crawl:</strong> {$organizer.lppsLastCrawl|escape:'html'}
+		{if $organizer.lppsCrawlSuccess === null}
+			&mdash; <em>success unknown</em>
+		{elseif $organizer.lppsCrawlSuccess}
+			&mdash; <span>success</span>
+		{else}
+			&mdash; <span class="bad">failed</span>
+		{/if}
+		</p>
+		{if !empty($organizer.lppsCrawlResult)}
+		<p><strong>Result:</strong> {$organizer.lppsCrawlResult|escape:'html'}</p>
+		{/if}
+	{else}
+		<p style="margin-top:.75em;"><em>Never crawled.</em></p>
+	{/if}
+	</dd>
+
 	<dt>Favicon</dt>
 	<dd class="{$organizer.faviconRowClass}">
 	<p><strong>Collect favicon from website:</strong> {if $organizer.useFaviconEnabled}yes{else}no{/if}</p>

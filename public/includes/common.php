@@ -25,6 +25,7 @@ require_once 'includes/functionality/misc.php';
 require_once 'includes/functionality/organizer_visibility.php';
 require_once 'includes/functionality/seo.php';
 require_once 'includes/functionality/dbal.php';
+require_once 'includes/functionality/useful_related_sites.php';
 
 use libAllure\Database;
 use libAllure\DatabaseFactory;

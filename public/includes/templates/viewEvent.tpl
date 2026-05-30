@@ -71,6 +71,9 @@
 <div class = "paralellContainer">
 	<h3>Venue</h3>
 	<a href = "viewVenue.php?id={$event.venueId}">{$event.venueTitle|default:"???"}</a> <br />
+	{if $event.country != ''}
+	<strong>Country: </strong><a href = "eventsList.php?mode=country&amp;country={$event.country|escape:'url'}" title = "LAN Parties in {$event.country|escape}">{if $event.countryFlagHtml != ''}{$event.countryFlagHtml nofilter} {/if}{$event.country|escape}</a><br />
+	{/if}
 
 	<br />
 

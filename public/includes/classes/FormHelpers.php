@@ -61,11 +61,9 @@ abstract class FormHelpers
     }
 
 
-    public static function getElementCountry($currentValue = null)
+    public static function getCountryList(): array
     {
-        $el = new ElementSelect('country', 'Country');
-
-        $country_list = array(
+        return [
         "Afghanistan",
         "Albania",
         "Algeria",
@@ -259,9 +257,14 @@ abstract class FormHelpers
         "Yemen",
         "Zambia",
         "Zimbabwe"
-        );
+        ];
+    }
 
-        foreach ($country_list as $country) {
+    public static function getElementCountry($currentValue = null)
+    {
+        $el = new ElementSelect('country', 'Country');
+
+        foreach (self::getCountryList() as $country) {
             $el->addOption($country);
         }
 

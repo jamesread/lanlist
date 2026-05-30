@@ -16,46 +16,7 @@ if ($eventsListMode === 'country' && $eventsListCountry !== '') {
     }
 }
 
-define('TITLE', $eventsListMode === 'country' && $eventsListCountry !== ''
-    ? 'Upcoming events in ' . $eventsListCountry
-    : 'Events in a list');
 define('MAIN_NOPADDING', true);
-
-switch ($eventsListMode) {
-    case 'perOrganizer':
-        define(
-            'META_DESCRIPTION',
-            'Upcoming LAN parties grouped by organizer, with venues, countries, start dates, and seat counts.'
-        );
-        break;
-    case 'everything':
-        define(
-            'META_DESCRIPTION',
-            'All published LAN parties on lanlist, including past events, with organizers, venues, dates, and seating.'
-        );
-        break;
-    case 'country':
-        if ($eventsListCountry !== '') {
-            define(
-                'META_DESCRIPTION',
-                'Upcoming LAN parties in ' . $eventsListCountry . ' with organizers, venues, and start dates.'
-            );
-        } else {
-            define(
-                'META_DESCRIPTION',
-                'Upcoming LAN parties grouped by country, with organizers, venues, and start dates.'
-            );
-        }
-        break;
-    default:
-        define(
-            'META_DESCRIPTION',
-            'Chronological list of upcoming LAN parties with organizers, venues, countries, and start dates.'
-        );
-        break;
-}
-
-require_once 'includes/widgets/header.php';
 
 $_REQUEST['mode'] = &$_REQUEST['mode'];
 
@@ -84,6 +45,7 @@ if ($_REQUEST['mode'] === 'country' && $eventsListCountry !== '') {
 }
 $stmt->execute();
 $events = $stmt->fetchAll();
+$pastEvents = [];
 
 foreach ($events as $k => $event) {
     $events[$k]['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS M Y g:ia');
@@ -91,9 +53,83 @@ foreach ($events as $k => $event) {
     $events[$k]['countryFlagHtml'] = getCountryFlagHtml((string)$event['country']);
 }
 
+if ($eventsListMode === 'country' && $eventsListCountry !== '') {
+    $sqlPast = 'SELECT e.id, e.numberOfSeats, e.title, v.title AS venueTitle, o.id AS organizerId, o.title AS organizerTitle, e.dateStart, e.dateFinish, v.country FROM events e LEFT JOIN (organizers o) ON e.organizer = o.id LEFT JOIN (venues v) ON e.venue = v.id WHERE e.published = 1 AND e.dateStart <= now() AND v.country = :country' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY e.dateStart DESC';
+    $stmtPast = $db->prepare($sqlPast);
+    $stmtPast->bindValue(':country', $eventsListCountry);
+    $stmtPast->execute();
+    $pastEvents = $stmtPast->fetchAll();
+
+    foreach ($pastEvents as $k => $event) {
+        $pastEvents[$k]['dateStartHuman'] = date_format(date_create($event['dateStart']), 'D jS M Y g:ia');
+        $pastEvents[$k]['dateFinishHuman'] = date_format(date_create($event['dateFinish']), 'D jS M Y g:ia');
+        $pastEvents[$k]['countryFlagHtml'] = getCountryFlagHtml((string)$event['country']);
+    }
+}
+
+$eventsListCountryStats = null;
+$eventsListCountryRelatedSites = [];
+if ($eventsListMode === 'country' && $eventsListCountry !== '') {
+    $eventsListCountryStats = fetchCountryEventStats($eventsListCountry);
+    $eventsListCountryRelatedSites = lanlistFetchUsefulRelatedSitesForCountry($eventsListCountry);
+}
+
+switch ($eventsListMode) {
+    case 'perOrganizer':
+        define('TITLE', 'Events in a list');
+        define(
+            'META_DESCRIPTION',
+            'Upcoming LAN parties grouped by organizer, with venues, countries, start dates, and seat counts.'
+        );
+        break;
+    case 'everything':
+        define('TITLE', 'Events in a list');
+        define(
+            'META_DESCRIPTION',
+            'All published LAN parties on lanlist, including past events, with organizers, venues, dates, and seating.'
+        );
+        break;
+    case 'country':
+        if ($eventsListCountry !== '') {
+            define('TITLE', seoCountryEventsPageTitle($eventsListCountry));
+            define('META_DESCRIPTION', seoCountryEventsMetaDescription($eventsListCountry, $eventsListCountryStats));
+
+            $jsonLdPayload = buildCountryEventsListJsonLd($eventsListCountry, $events, $eventsListCountryStats);
+            $jsonEncodeFlags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+
+            if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+                $jsonEncodeFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
+            }
+
+            $tpl->assign('structuredDataJson', json_encode($jsonLdPayload, $jsonEncodeFlags));
+        } else {
+            define('TITLE', 'LAN parties by country');
+            define('META_DESCRIPTION', seoCountryEventsIndexMetaDescription());
+        }
+        break;
+    default:
+        define('TITLE', 'Events in a list');
+        define(
+            'META_DESCRIPTION',
+            'Chronological list of upcoming LAN parties with organizers, venues, countries, and start dates.'
+        );
+        break;
+}
+
+require_once 'includes/widgets/header.php';
+
 $tpl->assign('eventsListMode', $eventsListMode);
 $tpl->assign('eventsListCountry', $eventsListCountry);
+$tpl->assign(
+    'eventsListCountryFlagHtml',
+    ($eventsListMode === 'country' && $eventsListCountry !== '')
+        ? getCountryFlagHtml($eventsListCountry)
+        : ''
+);
+$tpl->assign('eventsListCountryStats', $eventsListCountryStats);
+$tpl->assign('eventsListCountryRelatedSites', $eventsListCountryRelatedSites);
 $tpl->assign('listEvents', $events);
+$tpl->assign('listPastEvents', $pastEvents);
 $tpl->display('eventsList.tpl');
 
 startSidebar();

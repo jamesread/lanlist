@@ -8,10 +8,24 @@ $stmt->execute();
 
 echo '<div class = "infobox">';
 echo '<h2>By Country</h2>';
-echo '<p>The following countries have events coming up soon...</p>';
+echo '<p>The following countries have events coming up soon. Country names link to upcoming LAN parties; venue counts filter this list.</p>';
 echo '<ul>';
 foreach ($stmt->fetchAll() as $venueCountry) {
-    echo '<li><a href = "listVenues.php?country=' . $venueCountry['country'] . '">' . $venueCountry['country'] . '</a> - ' . $venueCountry['venueCount'] . ' ' . Inflector::quantify('venue', $venueCountry['venueCount']) . ', ' . $venueCountry['eventCount'] . ' ' . Inflector::quantify('event', $venueCountry['eventCount']) . '</li>';
+    $country = (string) $venueCountry['country'];
+    $flag = getCountryFlagHtml($country);
+    $venueCount = (int) $venueCountry['venueCount'];
+    $eventCount = (int) $venueCountry['eventCount'];
+
+    echo '<li>';
+    echo '<a href = "eventsList.php?mode=country&amp;country=' . urlencode($country) . '" title = "LAN Parties in ' . htmlspecialchars($country, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '">';
+    if ($flag !== '') {
+        echo $flag . ' ';
+    }
+    echo htmlspecialchars($country, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    echo '</a> - ';
+    echo '<a href = "listVenues.php?country=' . urlencode($country) . '">' . $venueCount . ' ' . Inflector::quantify('venue', $venueCount) . '</a>, ';
+    echo $eventCount . ' ' . Inflector::quantify('event', $eventCount);
+    echo '</li>';
 }
 
 echo '</ul></div>';

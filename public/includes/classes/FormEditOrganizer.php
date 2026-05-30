@@ -32,6 +32,25 @@ class FormEditOrganizer extends Form
         $this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
         $this->addElement(new ElementInput('discordInviteUrl', 'Discord invite URL', htmlify($organizer['discordInviteUrl'])));
         $this->getElement('discordInviteUrl')->setMinMaxLengths(0, 255);
+        require_once __DIR__ . '/../functionality/lpps.php';
+
+        $this->addElement(new ElementInput(
+            'lppsUrl',
+            'LPPS feed URL',
+            htmlify($organizer['lppsUrl'] ?? ''),
+            'Optional. URL of your <a href="' . LANLIST_LPPS_STANDARD_URL . '" target="_blank" rel="noopener noreferrer">LPPS v2</a> JSON feed — see <a href="' . lanlistLppsInfoPagePath() . '">what LPPS is</a>. Leave blank to manage events only on lanlist. When set, lanlist can crawl this periodically (when the crawl job is enabled).'
+        ));
+        $this->getElement('lppsUrl')->setMinMaxLengths(0, 512);
+
+        if (lanlistUserCanAdministerOrganizerLpps()) {
+            $this->addElement(new ElementCheckbox(
+                'lppsAdminDisabled',
+                'Disable LPPS crawl (admin)',
+                !empty($organizer['lppsAdminDisabled'] ?? 0),
+                'When checked, automated LPPS crawls skip this organizer even if a feed URL is set.'
+            ));
+        }
+
         $this->addElement(new ElementTextbox('blurb', 'Blurb', $organizer['blurb']));
                 $this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG. Maximum size after upload is 810×306 (larger images are scaled). You can pick a file above or paste from the clipboard using the box below.'));
                 $this->getElement('banner')->tempDir = UPLOAD_TEMP_DIR;
@@ -207,7 +226,13 @@ JS);
         $before = fetchOrganizer($organizerId);
         $bannerUploaded = $this->getElement('banner')->wasAnythingUploaded();
 
-        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, discordInviteUrl = :discordInviteUrl, blurb = :blurb, useFavicon = :useFavicon, faviconRefetch = :faviconRefetch WHERE id = :id LIMIT 1';
+        require_once __DIR__ . '/../functionality/lpps.php';
+
+        $sql = 'UPDATE organizers SET published = :published, title = :title, websiteUrl = :websiteUrl, assumedStale = :assumedStale, genericEmail = :genericEmail, steamGroupUrl = :steamGroupUrl, discordInviteUrl = :discordInviteUrl, lppsUrl = :lppsUrl, blurb = :blurb, useFavicon = :useFavicon, faviconRefetch = :faviconRefetch';
+        if (lanlistUserCanAdministerOrganizerLpps()) {
+            $sql .= ', lppsAdminDisabled = :lppsAdminDisabled';
+        }
+        $sql .= ' WHERE id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $this->getElementValue('id'));
         $stmt->bindValue(':title', $this->getElementValue('title'));
@@ -216,6 +241,7 @@ JS);
         $stmt->bindValue(':genericEmail', $this->getElementValue('genericEmail'));
         $stmt->bindValue(':steamGroupUrl', $this->getElementValue('steamGroupUrl'));
         $stmt->bindValue(':discordInviteUrl', $this->getElementValue('discordInviteUrl'));
+        $stmt->bindValue(':lppsUrl', trim((string) $this->getElementValue('lppsUrl')) ?: null);
         $stmt->bindValue(':blurb', $this->getElementValue('blurb'));
         $stmt->bindValue(':useFavicon', $this->getElementValue('useFavicon'));
         $stmt->bindValue(':faviconRefetch', $this->getElementValue('faviconRefetch'));
@@ -224,6 +250,10 @@ JS);
             $stmt->bindValue(':published', $this->getElementValue('published'));
         } else {
             $stmt->bindValue(':published', 0);
+        }
+
+        if (lanlistUserCanAdministerOrganizerLpps()) {
+            $stmt->bindValue(':lppsAdminDisabled', $this->getElementValue('lppsAdminDisabled') ? 1 : 0);
         }
 
         $stmt->execute();
@@ -312,5 +342,10 @@ JS);
             'ORGANIZER_BANNER_SAVE',
             $logMeta
         );
+
+        global $db;
+        $stmt = $db->prepare('UPDATE organizers SET validBanner = 1 WHERE id = :id LIMIT 1');
+        $stmt->bindValue(':id', $organizerId, \libAllure\Database::PARAM_INT);
+        $stmt->execute();
     }
 }

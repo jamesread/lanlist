@@ -9,7 +9,7 @@ function lanlistFetchOrganizerAssociatedUsers(int $organizerId): array
 {
     global $db;
 
-    $sql = 'SELECT u.id, u.username, u.email, u.organizerUpdateEmails, u.eventUpdateEmails, u.lastLowPriorityEmailDate FROM users u WHERE u.organization = :organization';
+    $sql = 'SELECT u.id, u.username, u.email, u.organizerUpdateEmails, u.eventUpdateEmails, u.lastLowPriorityEmailDate, u.lastPostEventReminderEmailDate FROM users u WHERE u.organization = :organization';
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':organization', $organizerId, \PDO::PARAM_INT);
     $stmt->execute();
@@ -145,6 +145,8 @@ function lanlistOrganizerEditFieldMap(): array
         ['label' => 'Generic email', 'key' => 'genericEmail'],
         ['label' => 'Steam group URL', 'key' => 'steamGroupUrl'],
         ['label' => 'Discord invite URL', 'key' => 'discordInviteUrl'],
+        ['label' => 'LPPS feed URL', 'key' => 'lppsUrl'],
+        ['label' => 'LPPS crawl disabled (admin)', 'key' => 'lppsAdminDisabled', 'format' => static fn (mixed $value): string => lanlistEditFormatYesNo($value)],
         ['label' => 'Blurb', 'key' => 'blurb'],
         ['label' => 'Use site favicon', 'key' => 'useFavicon', 'format' => static fn (mixed $value): string => lanlistEditFormatYesNo($value)],
         ['label' => 'Refetch favicon', 'key' => 'faviconRefetch', 'format' => static fn (mixed $value): string => lanlistEditFormatYesNo($value)],

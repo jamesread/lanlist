@@ -39,4 +39,7 @@
 
 	<dt><a href = "account.php">Account (Control Panel)</a></dt>
 	<dd>Manage your organization, create events, etc</dd>
+
+	<dt><a href = "lpps.php">Lan Party Publishing Standard (LPPS)</a></dt>
+	<dd>Optional JSON feed for organizers who want automated sync; events can always be added manually.</dd>
 </dl>

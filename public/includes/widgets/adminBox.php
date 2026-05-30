@@ -20,6 +20,12 @@ if (isset($_SESSION['history']) && is_array($_SESSION['history'])) {
     }
 }
 
+$ll->addIfPriv('MODERATE_VENUES', 'listVenues.php', 'Venues', 'go-home.png');
+$menuVenues = new HtmlLinksCollection();
+$menuVenues = $ll->addChildCollection('Venues', $menuVenues);
+$menuVenues->add('formHandler.php?formClazz=FormNewVenue', 'Create venue', 'create.png');
+$menuVenues->add('listVenues.php', 'List venues', 'edit-find.png');
+
 $ll->addIfPriv('MODERATE_ORGANIZERS', 'listOrganizers.php', 'Organizers', 'system-users.png');
 $menuOrganizer = new HtmlLinksCollection();
 $menuOrganizer = $ll->addChildCollection('Organizers', $menuOrganizer);
@@ -29,12 +35,6 @@ $menuOrganizer->addIfPriv('CREATE_ORGANIZER', 'formHandler.php?formClazz=FormNew
 $countJoinRequests = getCountJoinRequests();
 $joinRequestsNotification = ($countJoinRequests == 0) ? null : '<strong>(' . $countJoinRequests . ')</strong>';
 $menuOrganizer->addIfPriv('JOIN_REQUESTS', 'joinRequests.php', 'Join requests ' . $joinRequestsNotification, 'system-users.png');
-
-$ll->addIfPriv('MODERATE_VENUES', 'listVenues.php', 'Venues', 'go-home.png');
-$menuVenues = new HtmlLinksCollection();
-$menuVenues = $ll->addChildCollection('Venues', $menuVenues);
-$menuVenues->add('listVenues.php', 'List venues', 'edit-find.png');
-$menuVenues->add('formHandler.php?formClazz=FormNewVenue', 'Create venue', 'create.png');
 
 $ll->addIfPriv('MODERATE_EVENTS', 'eventsList.php', 'Events', 'office-calendar.png');
 $menuEvents = new HtmlLinksCollection();
@@ -57,6 +57,7 @@ $menuSystem->addIfPriv('USERLIST', 'listUsers.php', 'Users', 'system-users.png')
 $menuSystem->addIfPriv('GROUPLIST', 'listGroups.php', 'Groups', 'system-users.png');
 $menuSystem->addIfPriv('SUPERUSER', 'formHandler.php?formClazz=FormCreatePermission', 'Create Permission', 'create.png');
 $menuSystem->addIfPriv('NEWSLIST', 'listNews.php', 'News', 'news.png');
+$menuSystem->addIfPriv('MANAGE_LINKS', 'listUsefulRelatedSites.php', 'Related links', 'edit-find.png');
 
 $newLogNotification = getCountUnreadLogs();
 $newLogNotification = empty($newLogNotification) ? null : '<strong>(' . $newLogNotification . ')</strong>';

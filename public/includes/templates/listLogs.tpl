@@ -24,7 +24,7 @@
 		</td>
 		<td>
 			{if not empty($itemLog.relatedOrganizer)}
-				<a href = "viewOrganizer.php?id={$itemLog.relatedOrganizer}">#{$itemLog.relatedOrganizer}</a>
+				<a href = "viewOrganizer.php?id={$itemLog.relatedOrganizer}">{if $itemLog.relatedOrganizerTitle}{$itemLog.relatedOrganizerTitle|escape:'html'}{else}#{$itemLog.relatedOrganizer}{/if}</a>
 			{else}
 				<span class = "subtle">&mdash;</span>
 			{/if}

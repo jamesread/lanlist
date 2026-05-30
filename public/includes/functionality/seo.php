@@ -108,6 +108,112 @@ function buildWebSiteJsonLd(): array
     ]);
 }
 
+function seoCountryEventsListUrl(string $country): string
+{
+    return rtrim(SITE_BASE_URL, '/') . '/eventsList.php?mode=country&country=' . rawurlencode(trim($country));
+}
+
+function seoCountryEventsPageTitle(string $country): string
+{
+    $country = trim($country);
+
+    return 'LAN parties ' . $country . ' — upcoming events';
+}
+
+/**
+ * @param array{organizerCount?: int, pastEventCount?: int, upcomingEventCount?: int}|null $stats
+ */
+function seoCountryEventsMetaDescription(string $country, ?array $stats = null): string
+{
+    $country = trim($country);
+    $text = 'Find LAN parties in ' . $country . '. Browse upcoming gaming LAN events';
+
+    if (is_array($stats)) {
+        $upcoming = (int) ($stats['upcomingEventCount'] ?? 0);
+        $organizers = (int) ($stats['organizerCount'] ?? 0);
+
+        if ($upcoming > 0) {
+            $text = 'LAN parties in ' . $country . ': ' . $upcoming . ' upcoming gaming LAN event'
+                . ($upcoming === 1 ? '' : 's');
+
+            if ($organizers > 0) {
+                $text .= ' from ' . $organizers . ' organizer' . ($organizers === 1 ? '' : 's');
+            }
+        }
+    }
+
+    return seoTruncateMeta($text . ' with venues, dates and seating on lanlist.', 160);
+}
+
+function seoCountryEventsIndexMetaDescription(): string
+{
+    return seoTruncateMeta(
+        'Find LAN parties by country. Browse upcoming gaming LAN events worldwide with organizers, venues, dates and seating.',
+        160
+    );
+}
+
+/**
+ * @param array<int, array<string, mixed>> $events
+ * @param array{organizerCount?: int, pastEventCount?: int, upcomingEventCount?: int}|null $stats
+ *
+ * @return array<string, mixed>
+ */
+function buildCountryEventsListJsonLd(string $country, array $events, ?array $stats = null): array
+{
+    $country = trim($country);
+    $pageUrl = seoCountryEventsListUrl($country);
+    $description = seoCountryEventsMetaDescription($country, $stats);
+    $upcoming = is_array($stats) ? (int) ($stats['upcomingEventCount'] ?? count($events)) : count($events);
+    $base = rtrim(SITE_BASE_URL, '/');
+    $items = [];
+    $position = 1;
+
+    foreach ($events as $event) {
+        if ($position > 25) {
+            break;
+        }
+
+        $nameParts = array_filter([
+            (string) ($event['organizerTitle'] ?? ''),
+            (string) ($event['title'] ?? ''),
+        ]);
+        $name = implode(' — ', $nameParts) ?: ((string) ($event['title'] ?? 'LAN party'));
+
+        $items[] = seoJsonLdStripNulls([
+            '@type' => 'ListItem',
+            'position' => $position,
+            'url' => $base . '/viewEvent.php?id=' . (int) ($event['id'] ?? 0),
+            'name' => $name,
+        ]);
+        $position++;
+    }
+
+    return seoJsonLdStripNulls([
+        '@context' => 'https://schema.org',
+        '@type' => 'CollectionPage',
+        'name' => seoCountryEventsPageTitle($country),
+        'description' => $description,
+        'url' => $pageUrl,
+        'inLanguage' => 'en',
+        'isPartOf' => [
+            '@type' => 'WebSite',
+            'name' => SITE_TITLE,
+            'url' => rtrim(SITE_BASE_URL, '/') . '/',
+        ],
+        'about' => [
+            '@type' => 'Country',
+            'name' => $country,
+        ],
+        'mainEntity' => seoJsonLdStripNulls([
+            '@type' => 'ItemList',
+            'name' => 'Upcoming LAN parties in ' . $country,
+            'numberOfItems' => $upcoming > 0 ? $upcoming : count($items),
+            'itemListElement' => $items,
+        ]),
+    ]);
+}
+
 function seoOrganizerMetaDescription(array $organizer): string
 {
     $fromBlurb = strip_tags(stripslashes($organizer['blurb'] ?? ''));
@@ -154,10 +260,13 @@ function seoOrganizerOpenGraphAbsoluteImageUrl(?int $organizerId): ?string
         return null;
     }
 
-    $publicRoot = dirname(__DIR__, 2);
-    $path = $publicRoot . '/resources/images/organizer-logos/' . $organizerId . '.jpg';
+    try {
+        $organizer = fetchOrganizer($organizerId);
+    } catch (Throwable) {
+        return null;
+    }
 
-    if (!is_readable($path)) {
+    if (empty((int) ($organizer['validBanner'] ?? 0))) {
         return null;
     }
 

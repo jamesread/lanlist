@@ -4,6 +4,7 @@ use libAllure\Inflector;
 use libAllure\SchedulerTask;
 
 require_once __DIR__ . '/../functionality/site_checks.php';
+require_once __DIR__ . '/../functionality/moderator_metrics.php';
 
 class ScheduledTaskNewsletter extends SchedulerTask
 {
@@ -57,6 +58,7 @@ class ScheduledTaskNewsletter extends SchedulerTask
         $tpl->assign('listEventsWithSilencedTicketWarning', $panel['eventsWithSilencedTicketWarning']);
         $tpl->assign('listUnpublishedOrganizers', $panel['unpublishedOrganizers']);
         $tpl->assign('listOrganizers', $panel['organizersWithNoEvents']);
+        $tpl->assign('moderatorImpact', lanlistFetchModeratorImpactMetrics(null, null, $panel));
         $tpl->assign('siteBaseUrl', SITE_BASE_URL);
         $tpl->assign('siteTitle', SITE_TITLE);
 

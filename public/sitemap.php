@@ -6,10 +6,7 @@ require_once 'includes/widgets/header.php';
 
 $eventsListCountries = [];
 foreach (getCountriesWithUpcomingEventCounts() as $row) {
-    $country = (string)$row['country'];
-    if (getCountryFlagHtml($country) !== '') {
-        $eventsListCountries[] = $country;
-    }
+    $eventsListCountries[] = (string) $row['country'];
 }
 $tpl->assign('eventsListCountries', $eventsListCountries);
 

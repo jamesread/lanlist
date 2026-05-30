@@ -20,10 +20,13 @@
 	</li>
 	<li><a href = "formHandler.php?formClazz=FormNewEvent">Add a new event</a> <em> - won't be public until organizer is published</em></li>
 	<li><a href = "formHandler.php?formClazz=FormNewVenue">Add a new venue</a></li>
+	<li><a href = "lpps.php">Lan Party Publishing Standard (LPPS)</a> <em>— optional JSON feed to sync events from your site; manual entry always works</em></li>
+	<li><a href = "exportLanpartydb.php">Export to OrgaTalk LAN Party Database</a> <em>— generate TOML for a GitHub PR to archive your past public LANs</em></li>
 {else}
 	<li><a href = "formHandler.php?formClazz=FormJoinOrganizer">Join onto an existing organizer</strong></a> <em>- if your organization is already registered the site, you can just join up with them.</em></li>
 	<li><a href = "formHandler.php?formClazz=FormNewOrganizer">Register as a new organizer</strong></a> <em>- register a new organizer if you cannot find your organizer in the <a href = "listOrganizers.php">organizers list</a>.</em></li>
 	<li><a href = "formHandler.php?formClazz=FormNewEvent">Add a new event</a></li>
+	<li><a href = "lpps.php">Lan Party Publishing Standard (LPPS)</a> <em>— optional; most organizers add events manually</em></li>
 {/if}
 
 	<li><a href = "formHandler.php?formClazz=FormChangePassword">Change password</a></li>

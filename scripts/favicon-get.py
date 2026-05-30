@@ -9,7 +9,7 @@ Requires MYSQL_USER / MYSQL_PASS; optional MYSQL_HOST (default localhost), MYSQL
 import mysql.connector
 import os
 import requests
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
 import configargparse
 
@@ -36,11 +36,16 @@ def _request_get(url):
         return None, str(ex)
 
 
-def downloadFavicon(rel_path_or_url, site_base, org_id):
-    if site_base and site_base != '':
-        fetch_url = site_base + '' + rel_path_or_url
-    else:
-        fetch_url = rel_path_or_url
+def resolve_fetch_url(base_url, href):
+    if isAbsolute(href):
+        return href
+    if base_url and str(base_url).strip():
+        return urljoin(str(base_url).strip(), href)
+    return href
+
+
+def downloadFavicon(href, base_url, org_id):
+    fetch_url = resolve_fetch_url(base_url, href)
 
     print(f'\tdl {fetch_url}')
     res, err = _request_get(fetch_url)
@@ -98,10 +103,7 @@ def findFavicon(site, org_id):
         if not href:
             continue
         print(f'\tFound a favicon link: {href!r}')
-        site_prefix = ''
-        if not isAbsolute(href):
-            site_prefix = site
-        ok, detail = downloadFavicon(href, site_prefix, org_id)
+        ok, detail = downloadFavicon(href, site, org_id)
         if ok:
             return True, f'via HTML link ({detail})'
         print(f'\tSkipping link after failed fetch: {detail}')

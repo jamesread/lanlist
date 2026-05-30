@@ -1,6 +1,6 @@
-<div class="box">
+<div class="box" id="events-with-issues">
 	<h2>Events with issues</h2>
-	<p>Even if there are lots of issues with the event, only one is shown. Checks for (in order): event not published, blank event website, missing organizer, organizer not published, missing ticket prices, duration (finish − start) is 0. For &ldquo;No tickets defined for event&rdquo;, moderators can mark tickets as not yet released; silenced events appear in the section below.</p>
+	<p>Even if there are lots of issues with the event, only one is shown. Checks for (in order): event not published, blank event website, missing organizer, organizer not published, number of seats is 0 or not set, missing ticket prices, duration (finish − start) is 0. For &ldquo;No tickets defined for event&rdquo;, moderators can mark tickets as not yet released; silenced events appear in the section below.</p>
 
 	{if $listEventsWithIssues|@count == 0}
 	<p><em>No events with issues.</em></p>

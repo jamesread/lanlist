@@ -5,6 +5,7 @@ require_once 'includes/common.php';
 use libAllure\Session;
 
 $event = fetchEvent(fromRequestRequireInt('id'));
+$event['countryFlagHtml'] = empty($event['country']) ? '' : getCountryFlagHtml((string) $event['country']);
 
 if (!lanlistEventIsPubliclyVisible($event) && !canEditEvent($event['organizerId'])) {
     throw new Exception('Event not found.');

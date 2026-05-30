@@ -6,6 +6,7 @@
 			<a href = "contact.php">Contact</a>,
 			<a href = "cookies.php">Cookies</a>,
 			<a href = "usefulRelatedSites.php">Useful related sites</a>,
+			<a href = "lpps.php">LPPS</a>,
 			<a href = "sitemap.php">Sitemap</a>
 		</p>
 		<p>lanlist &copy; <a href = "licensing.php">The Lan Party Community</a></p>

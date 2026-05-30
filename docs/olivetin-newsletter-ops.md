@@ -32,4 +32,4 @@ Optional argument **`--job-id N`** if you pre-insert a job row and pass the id f
 
 ## Admin UI
 
-**System → Jobs** (`listSchedulerTasks.php`) lists `async_jobs` (newsletter and favicon runs). Favicon jobs are still enqueued from moderation via OliveTin; see [`olivetin-favicon-ops.md`](olivetin-favicon-ops.md).
+**System → Jobs** (`listSchedulerTasks.php`) lists `async_jobs` (newsletter, favicon, LPPS crawl, and post-event reminder runs). Favicon jobs are still enqueued from moderation via OliveTin; see [`olivetin-favicon-ops.md`](olivetin-favicon-ops.md). LPPS crawl: [`olivetin-lpps-ops.md`](olivetin-lpps-ops.md). Post-event reminders: [`olivetin-post-event-reminders-ops.md`](olivetin-post-event-reminders-ops.md).

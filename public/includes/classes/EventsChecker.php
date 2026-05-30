@@ -40,6 +40,7 @@ class EventsChecker
                 $this->checkEventWebsite($event);
                 $this->checkHasOrganizer($event);
                 $this->checkOrganizerPublished($event);
+                $this->checkNumberOfSeats($event);
                 $this->checkTicketPrices($event);
                 $this->checkDurationIsntShort($event);
             } catch (Exception $e) {
@@ -80,6 +81,14 @@ class EventsChecker
 
         if (empty($event['organizerPublished'])) {
             throw new Exception('Organizer not published');
+        }
+    }
+
+    private function checkNumberOfSeats(&$event)
+    {
+        $seats = $event['numberOfSeats'] ?? null;
+        if ($seats === null || $seats === '' || (int) $seats === 0) {
+            throw new Exception('Number of seats is 0 or not set');
         }
     }
 

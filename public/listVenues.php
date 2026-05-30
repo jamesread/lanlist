@@ -14,7 +14,15 @@ if (isset($_REQUEST['country'])) {
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':country', $_REQUEST['country']);
 
-    echo '<p>Showing all venues known to host events in: <strong>' . htmlentities($_REQUEST['country']) . '</strong></p>';
+    $country = (string) $_REQUEST['country'];
+    $countryFlagHtml = getCountryFlagHtml($country);
+
+    echo '<p>Showing all venues known to host events in: <strong>';
+    if ($countryFlagHtml !== '') {
+        echo '<span class="eventsList-countryFlag" aria-hidden="true">' . $countryFlagHtml . '</span> ';
+    }
+    echo htmlentities($country, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</strong>. ';
+    echo '<a href = "eventsList.php?mode=country&amp;country=' . urlencode($country) . '">View upcoming events in this country</a>.</p>';
 } else {
     $sql = 'SELECT v.id, v.title, v.country, count(e.id) AS upcommingEvents FROM venues v LEFT JOIN events e ON ' . $eventJoinOn . ' GROUP BY v.id ORDER BY v.title';
     $stmt = $db->prepare($sql);
@@ -22,7 +30,12 @@ if (isset($_REQUEST['country'])) {
 
 $stmt->execute();
 
-$tpl->assign('listVenues', $stmt->fetchAll());
+$venues = $stmt->fetchAll();
+foreach ($venues as $k => $venue) {
+    $venues[$k]['countryFlagHtml'] = getCountryFlagHtml((string) $venue['country']);
+}
+
+$tpl->assign('listVenues', $venues);
 $tpl->display('listVenues.tpl');
 
 startSidebar();
