@@ -227,10 +227,35 @@ class FormEditUser extends Form
 
             redirect('viewUser.php?id=' . $uid, 'User edited.');
         } else {
-            $user = $this->getUser();
-            $stmt->bindValue(':organizer', $user['organization']);
-            $stmt->bindValue(':group', $user['group']);
+            $userBefore = $this->getUser();
+            $uid = (int) $userBefore['id'];
+            $stmt->bindValue(':organizer', $userBefore['organization']);
+            $stmt->bindValue(':group', $userBefore['group']);
             $stmt->execute();
+
+            $userAfter = [
+                'email' => (string) $this->getElementValue('email'),
+                'usernameSteam' => (string) $this->getElementValue('usernameSteam'),
+                'discordUser' => (string) $this->getElementValue('discordUser'),
+            ];
+
+            if ($this->showModeratorNewsletterFrequency && $targetGroup === MODERATOR_GID) {
+                $userAfter['moderatorNewsletterFrequency'] = $frequency;
+            }
+
+            if ($this->showOrganizerEmailPreferences) {
+                $userAfter['organizerUpdateEmails'] = $organizerUpdateEmails;
+                $userAfter['eventUpdateEmails'] = $eventUpdateEmails;
+            }
+
+            $changeSummary = lanlistFormatUserProfileChangeSummary($userBefore, $userAfter);
+            if ($changeSummary !== '') {
+                Logger::messageAudit(
+                    'User ' . $userBefore['username'] . ' (' . $uid . ') updated profile: ' . $changeSummary,
+                    'EDIT_USER_PROFILE',
+                    ['relatedUser' => $uid]
+                );
+            }
 
             Session::getUser()->getData('username', false);
 

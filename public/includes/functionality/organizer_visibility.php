@@ -35,6 +35,34 @@ function lanlistOrganizerIsModerationExcluded(int $organizerId): bool
 }
 
 /**
+ * SQL fragment excluding test/sandbox organizers from moderation site checks.
+ */
+function lanlistSqlExcludeModerationOrganizers(string $organizerIdColumn = 'o.id'): string
+{
+    $excluded = lanlistModerationExcludedOrganizerIds();
+    if ($excluded === []) {
+        return '';
+    }
+
+    return ' AND ' . $organizerIdColumn . ' NOT IN (' . implode(',', $excluded) . ')';
+}
+
+/**
+ * SQL fragment excluding events tied to test/sandbox organizers (NULL organizer kept).
+ */
+function lanlistSqlExcludeModerationOrganizerEvents(string $eventOrganizerColumn = 'e.organizer'): string
+{
+    $excluded = lanlistModerationExcludedOrganizerIds();
+    if ($excluded === []) {
+        return '';
+    }
+
+    $list = implode(',', $excluded);
+
+    return ' AND (' . $eventOrganizerColumn . ' IS NULL OR ' . $eventOrganizerColumn . ' NOT IN (' . $list . '))';
+}
+
+/**
  * SQL fragment requiring a joined organizer alias to be publicly visible.
  */
 function lanlistSqlPublicOrganizerVisible(string $organizerAlias = 'o'): string

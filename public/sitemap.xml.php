@@ -41,7 +41,7 @@ foreach (
 
 echo '  <url><loc>' . $h($base . '/eventsList.php?mode=country') . "</loc></url>\n";
 
-foreach (getCountriesWithUpcomingEventCounts() as $row) {
+foreach (getCountriesWithPublishedEventCounts() as $row) {
     $country = (string)$row['country'];
     $loc = $base . '/eventsList.php?mode=country&country=' . rawurlencode($country);
     echo '  <url><loc>' . $h($loc) . "</loc></url>\n";

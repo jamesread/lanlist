@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../functionality/site_checks.php';
+require_once __DIR__ . '/../functionality/organizer_visibility.php';
 
 use libAllure\DatabaseFactory;
 
@@ -20,7 +21,7 @@ class EventsChecker
 
     public function getInitialEventsList()
     {
-        $sql = 'SELECT e.*, o.id AS organizerId, o.title AS organizerTitle, o.published AS organizerPublished, count(t.id) AS ticketCount FROM events e LEFT JOIN tickets t on e.id = t.event LEFT JOIN organizers o ON e.organizer = o.id WHERE e.dateStart > now() GROUP BY e.id';
+        $sql = 'SELECT e.*, o.id AS organizerId, o.title AS organizerTitle, o.published AS organizerPublished, count(t.id) AS ticketCount FROM events e LEFT JOIN tickets t on e.id = t.event LEFT JOIN organizers o ON e.organizer = o.id WHERE e.dateStart > now()' . lanlistSqlExcludeModerationOrganizerEvents() . ' GROUP BY e.id';
         $stmt = DatabaseFactory::getInstance()->prepare($sql);
         $stmt->execute();
 
@@ -35,6 +36,10 @@ class EventsChecker
     public function checkAllEvents()
     {
         foreach ($this->eventsList as &$event) {
+            if (!empty($event['organizer']) && lanlistOrganizerIsModerationExcluded((int) $event['organizer'])) {
+                continue;
+            }
+
             try {
                 $this->checkPublished($event);
                 $this->checkEventWebsite($event);

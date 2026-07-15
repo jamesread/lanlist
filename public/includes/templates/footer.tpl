@@ -14,6 +14,9 @@
 {if ($includeInlineEdit|default:false) || ($isModerator|default:false)}
 	<script type="text/javascript" src="resources/javascript/inline-edit.js?v=2"></script>
 {/if}
+{if $includeLogListFilters|default:false}
+	<script type="text/javascript" src="resources/javascript/list-logs.js?v=1"></script>
+{/if}
 </body>
 
 </html>

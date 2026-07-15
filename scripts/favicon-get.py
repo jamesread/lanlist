@@ -3,11 +3,15 @@
 """
 Fetch organizer favicons; writes at most one logs row per organizer when a fetch runs
 (skip when ICO already on disk logs nothing, unless organisers.faviconRefetch requests a refetch).
+Bulk runs only process organizers with faviconRefetch=1; that flag is cleared after a successful
+fetch or when the site is unreachable (timeout, SSL error, HTTP 403/404/500) or HTML has no usable
+rel=icon (so the next crawl skips them until refetch is requested).
 Requires MYSQL_USER / MYSQL_PASS; optional MYSQL_HOST (default localhost), MYSQL_DATABASE (default lanlist).
 """
 
 import mysql.connector
 import os
+import re
 import requests
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
@@ -18,6 +22,34 @@ parser.add_argument('--org-id', help='The id of the organizer to get the favicon
 args = parser.parse_args()
 
 LOG_EVENT_TYPE_FAVICON = 'FAVICON_FETCH'
+NO_USABLE_REL_ICON = 'no usable rel=icon link'
+CLEAR_REFETCH_HTTP_STATUSES = frozenset({403, 404, 500})
+
+
+def failure_clears_favicon_refetch(detail_direct, detail_html):
+    """True when fetch failure looks permanent (no point retrying on the next crawl)."""
+    if detail_html == NO_USABLE_REL_ICON:
+        return True
+
+    combined = f'{detail_direct or ""} {detail_html or ""}'.lower()
+    if 'timeout' in combined or 'timed out' in combined:
+        return True
+    if 'ssl' in combined or 'certificate' in combined:
+        return True
+
+    for detail in (detail_direct, detail_html):
+        if not detail:
+            continue
+        text = str(detail)
+        for status in CLEAR_REFETCH_HTTP_STATUSES:
+            if re.search(rf'\bHTTP {status}\b', text, re.IGNORECASE):
+                return True
+            if re.search(rf'\b{status} client error\b', text, re.IGNORECASE):
+                return True
+            if re.search(rf'\b{status} server error\b', text, re.IGNORECASE):
+                return True
+
+    return False
 
 
 def isUsableFaviconContentType(content_type):
@@ -109,7 +141,7 @@ def findFavicon(site, org_id):
         print(f'\tSkipping link after failed fetch: {detail}')
 
     print('\tCould not find a usable favicon in HTML')
-    return False, 'no usable rel=icon link'
+    return False, NO_USABLE_REL_ICON
 
 
 def write_favicon_log(cursor, conn, priority, organizer_id, website_url, summary):
@@ -174,14 +206,11 @@ def process_organizer_row(cursor, conn, row):
             write_favicon_log(cursor, conn, 'INFO', org_id, website_url, f'{forced_prefix}ok {detail_html}')
             return
 
-        write_favicon_log(
-            cursor,
-            conn,
-            'WARN',
-            org_id,
-            website_url,
-            f'{forced_prefix}failed: /favicon.ico ({detail_direct}); HTML ({detail_html})',
-        )
+        summary = f'{forced_prefix}failed: /favicon.ico ({detail_direct}); HTML ({detail_html})'
+        if failure_clears_favicon_refetch(detail_direct, detail_html):
+            clear_favicon_refetch_flag(cursor, conn, org_id)
+            summary += '; cleared faviconRefetch (no retry on next crawl)'
+        write_favicon_log(cursor, conn, 'WARN', org_id, website_url, summary)
 
     except Exception as ex:
         print('\tExcept', ex, website_url)
@@ -204,7 +233,7 @@ if args.org_id:
     )
 else:
     cur_select.execute(
-        'SELECT o.websiteUrl, o.id, COALESCE(o.faviconRefetch, 0) FROM organizers o',
+        'SELECT o.websiteUrl, o.id, COALESCE(o.faviconRefetch, 0) FROM organizers o WHERE COALESCE(o.faviconRefetch, 0) = 1',
     )
 
 rows = cur_select.fetchall()

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/organizer_visibility.php';
+
 /**
  * @return array<int, int>
  */
@@ -85,7 +87,7 @@ function lanlistFetchEventsWithSilencedTicketWarning(): array
             AND COALESCE(e.published, 0) = 1
             AND (e.priceInAdv IS NULL OR e.priceInAdv = 0)
             AND e.ticketsNotReleasedUntil IS NOT NULL
-            AND e.ticketsNotReleasedUntil > NOW()
+            AND e.ticketsNotReleasedUntil > NOW()' . lanlistSqlExcludeModerationOrganizerEvents() . '
             GROUP BY e.id
             HAVING ticketCount = 0
             ORDER BY e.ticketsNotReleasedUntil ASC';
@@ -112,12 +114,7 @@ function lanlistFetchUnpublishedOrganizers(): array
     $sql = 'SELECT o.id, o.title, o.websiteUrl, o.lastChecked, o.published, COUNT(u.id) AS assUserCount, o.assumedStale
             FROM organizers o
             LEFT JOIN users u ON u.organization = o.id AND u.email IS NOT NULL
-            WHERE COALESCE(o.published, 0) = 0';
-    $excluded = lanlistModerationExcludedOrganizerIds();
-    if ($excluded !== []) {
-        $sql .= ' AND o.id NOT IN (' . implode(',', $excluded) . ')';
-    }
-    $sql .= '
+            WHERE COALESCE(o.published, 0) = 0' . lanlistSqlExcludeModerationOrganizers() . '
             GROUP BY o.id
             ORDER BY o.title';
     $result = $db->query($sql);
@@ -139,7 +136,7 @@ function lanlistFetchOrganizersWithNoUpcomingEvents(): array
             WHERE e.id IS NULL
             AND COALESCE(o.published, 0) = 1
             AND o.assumedStale IS NULL
-            AND (o.lastChecked IS NULL OR o.lastChecked < NOW() - INTERVAL 60 DAY)
+            AND (o.lastChecked IS NULL OR o.lastChecked < NOW() - INTERVAL 60 DAY)' . lanlistSqlExcludeModerationOrganizers() . '
             GROUP BY o.id
             ORDER BY o.lastChecked ASC';
     $result = $db->query($sql);

@@ -580,6 +580,64 @@ tr.stale {
   color: gray;
 }
 
+.log-filter-hint {
+  margin: 0 0 1em;
+}
+
+.log-active-filters {
+  margin: 0 0 1em;
+}
+
+.log-filter-tag {
+  display: inline-block;
+  margin: 0 0.35em 0.35em 0;
+  padding: 0.15em 0.45em;
+  border: 1px solid LightGray;
+  border-radius: 0.35em;
+  background: #f8f8f8;
+}
+
+.log-filter-tag a {
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 0.15em;
+}
+
+.log-filter-clear {
+  margin-left: 0.35em;
+}
+
+.log-event-type {
+  cursor: context-menu;
+}
+
+.log-event-type-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 10rem;
+  padding: 0.25rem 0;
+  border: 1px solid LightGray;
+  border-radius: 0.35em;
+  background: #fff;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
+}
+
+.log-event-type-menu__item {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.log-event-type-menu__item:hover,
+.log-event-type-menu__item:focus {
+  background: #f0f0f0;
+}
+
 .eventsList-countryIntro {
   font-size: 1.125rem;
   margin: 0 0 1rem;
@@ -589,6 +647,33 @@ tr.stale {
   font-size: 1.75rem;
   line-height: 1;
   vertical-align: middle;
+}
+
+.eventsList-countryEmptyCallout {
+  margin: 0 0 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1em;
+  background: linear-gradient(135deg, #f7f9fc 0%, #eef4fa 100%);
+  border: 1px solid #d8e3ef;
+  box-shadow: none;
+}
+
+.eventsList-countryEmptyCallout p {
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.eventsList-countryEmptyCallout p:last-child {
+  margin-bottom: 0;
+}
+
+.eventsList-countryEmptyCallout-lead {
+  font-size: 1.125rem;
+}
+
+.eventsList-countryEmptyCallout-footnote {
+  font-size: 0.9375rem;
+  color: #555;
 }
 
 .usefulRelatedSites-group + .usefulRelatedSites-group {

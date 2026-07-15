@@ -4,15 +4,13 @@ require_once 'includes/common.php';
 
 $eventsListMode = isset($_REQUEST['mode']) ? (string)$_REQUEST['mode'] : '';
 $eventsListCountry = isset($_REQUEST['country']) ? trim((string)$_REQUEST['country']) : '';
-$allowedCountries = [];
+$eventsListCountryStats = null;
 
 if ($eventsListMode === 'country' && $eventsListCountry !== '') {
-    foreach (getCountriesWithUpcomingEventCounts() as $row) {
-        $allowedCountries[(string)$row['country']] = true;
-    }
-
-    if (empty($allowedCountries[$eventsListCountry])) {
+    $eventsListCountryStats = fetchCountryEventStats($eventsListCountry);
+    if (($eventsListCountryStats['pastEventCount'] + $eventsListCountryStats['upcomingEventCount']) === 0) {
         $eventsListCountry = '';
+        $eventsListCountryStats = null;
     }
 }
 
@@ -67,10 +65,8 @@ if ($eventsListMode === 'country' && $eventsListCountry !== '') {
     }
 }
 
-$eventsListCountryStats = null;
 $eventsListCountryRelatedSites = [];
 if ($eventsListMode === 'country' && $eventsListCountry !== '') {
-    $eventsListCountryStats = fetchCountryEventStats($eventsListCountry);
     $eventsListCountryRelatedSites = lanlistFetchUsefulRelatedSitesForCountry($eventsListCountry);
 }
 

@@ -2,7 +2,7 @@
     <h2>Future LAN parties per country</h2>
 <?php
 
-$countries = getCountriesWithUpcomingEventCounts();
+$countries = getCountriesWithPublishedEventCounts();
 $selectedCountry = isset($_REQUEST['mode']) && $_REQUEST['mode'] === 'country' && !empty($_REQUEST['country'])
     ? (string)$_REQUEST['country']
     : '';

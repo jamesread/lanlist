@@ -18,6 +18,20 @@
 	{/if}
 	{/if}
 
+	{if $eventsListMode == 'country' && $eventsListCountry != '' && $listEvents|@count == 0}
+	<div class="eventsList-countryEmptyCallout">
+		<p class="eventsList-countryEmptyCallout-lead">
+			{if $eventsListCountryFlagHtml != ''}<span class="eventsList-countryFlag" aria-hidden="true">{$eventsListCountryFlagHtml nofilter}</span> {/if}No upcoming LAN parties in {$eventsListCountry|escape} right now.
+		</p>
+		<p>Know of one coming up? It only takes a minute to help the community — add the event to lanlist so others can find it.</p>
+		{if not $isLoggedIn}
+		<p><a href="register.php">Create an account</a> or <a href="login.php">log in</a>, then use the add-event form on your profile.</p>
+		{else}
+		<p><a href="formHandler.php?formClazz=FormNewEvent">Add an event in {$eventsListCountry|escape}</a> — pick a venue in that country, or add a new venue if needed.</p>
+		{/if}
+		<p class="eventsList-countryEmptyCallout-footnote">Not sure how, or organising something yourself? <a href="contact.php">Get in touch</a> and we&rsquo;ll help.</p>
+	</div>
+	{else}
 	<table class = "sortable">
 		<thead>
 			<tr>
@@ -47,6 +61,7 @@
 		{/foreach}
 		</tbody>
 	</table>
+	{/if}
 
 	{if $eventsListMode == 'country' && $eventsListCountry != ''}
 	<h3>Past LAN Parties in {$eventsListCountry|escape}</h3>

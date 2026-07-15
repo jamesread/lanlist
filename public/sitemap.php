@@ -5,7 +5,7 @@ define('META_DESCRIPTION', 'Human-readable sitemap of lanlist pages with links t
 require_once 'includes/widgets/header.php';
 
 $eventsListCountries = [];
-foreach (getCountriesWithUpcomingEventCounts() as $row) {
+foreach (getCountriesWithPublishedEventCounts() as $row) {
     $eventsListCountries[] = (string) $row['country'];
 }
 $tpl->assign('eventsListCountries', $eventsListCountries);

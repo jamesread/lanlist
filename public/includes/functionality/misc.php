@@ -96,6 +96,74 @@ function lanlistEventUpdateEmailOptions(): array
     ];
 }
 
+/**
+ * @param array<string, mixed> $before
+ * @param array<string, mixed> $after
+ */
+function lanlistFormatUserProfileChangeSummary(array $before, array $after): string
+{
+    $changes = [];
+
+    $stringFields = [
+        'email' => 'email',
+        'usernameSteam' => 'Steam username',
+        'discordUser' => 'Discord user ID',
+    ];
+
+    foreach ($stringFields as $field => $label) {
+        if (!array_key_exists($field, $after)) {
+            continue;
+        }
+
+        $old = trim((string) ($before[$field] ?? ''));
+        $new = trim((string) ($after[$field] ?? ''));
+        if ($old === $new) {
+            continue;
+        }
+
+        if ($new === '') {
+            $changes[] = $label . ' cleared';
+        } elseif ($old === '') {
+            $changes[] = $label . ' set';
+        } else {
+            $changes[] = $label . ' changed';
+        }
+    }
+
+    $optionFields = [
+        'moderatorNewsletterFrequency' => [
+            'label' => 'moderator newsletter',
+            'options' => lanlistModeratorNewsletterFrequencyOptions(),
+        ],
+        'organizerUpdateEmails' => [
+            'label' => 'organizer update emails',
+            'options' => lanlistOrganizerUpdateEmailOptions(),
+        ],
+        'eventUpdateEmails' => [
+            'label' => 'event update emails',
+            'options' => lanlistEventUpdateEmailOptions(),
+        ],
+    ];
+
+    foreach ($optionFields as $field => $config) {
+        if (!array_key_exists($field, $after)) {
+            continue;
+        }
+
+        $old = (string) ($before[$field] ?? '');
+        $new = (string) ($after[$field] ?? '');
+        if ($old === $new) {
+            continue;
+        }
+
+        $oldLabel = $config['options'][$old] ?? $old;
+        $newLabel = $config['options'][$new] ?? $new;
+        $changes[] = $config['label'] . ' ' . $oldLabel . ' ? ' . $newLabel;
+    }
+
+    return implode('; ', $changes);
+}
+
 function lanlistUserReceivesOrganizerUpdateEmails(array $user): bool
 {
     return ($user['organizerUpdateEmails'] ?? 'always') !== 'never';
@@ -226,7 +294,19 @@ function sendEmail($recipient, $content, $subject = 'Notification', $includeStan
     }
 
 //    ErrorHandler::getInstance()->beGreedy();
-    Logger::messageDebug('Sending email to ' . $recipient . ', subject: ' . $subject, 'SEND_EMAIL');
+    $logMeta = null;
+    $recipientUserStmt = DatabaseFactory::getInstance()->prepare('SELECT id FROM users WHERE email = :email LIMIT 1');
+    $recipientUserStmt->bindValue(':email', $recipient);
+    $recipientUserStmt->execute();
+    $recipientUserRow = $recipientUserStmt->fetchRow();
+    if ($recipientUserRow !== false) {
+        $recipientUserId = (int) $recipientUserRow['id'];
+        if ($recipientUserId > 0) {
+            $logMeta = ['relatedUser' => $recipientUserId];
+        }
+    }
+
+    Logger::messageDebug('Sending email to ' . $recipient . ', subject: ' . $subject, 'SEND_EMAIL', $logMeta);
 
     $sql = 'INSERT INTO email_log (subject, emailAddress, sent) VALUES (:subject, :emailAddress, now())';
     $stmt = DatabaseFactory::getInstance()->prepare($sql);
@@ -403,6 +483,8 @@ function getCountryFlagHtml(string $country): string
             return '&#127463;&#127466;';
         case 'Spain':
             return '&#127466;&#127480;';
+        case 'Turkey':
+            return '&#127481;&#127479;';
         default:
             return '';
     }
@@ -444,6 +526,31 @@ function getCountriesWithUpcomingEventCounts(): array
             AND v.country != \'\'' . lanlistSqlPublicOrganizerVisible('o') . '
         GROUP BY v.country
         HAVING eventCount > 0
+        ORDER BY v.country ASC';
+
+    return $db->query($sql)->fetchAll();
+}
+
+/**
+ * Countries with any published public events. eventCount is upcoming only.
+ *
+ * @return array<int, array{country: string, eventCount: int, totalEventCount: int}>
+ */
+function getCountriesWithPublishedEventCounts(): array
+{
+    global $db;
+
+    $sql = 'SELECT v.country,
+            SUM(CASE WHEN e.dateStart > NOW() THEN 1 ELSE 0 END) AS eventCount,
+            COUNT(e.id) AS totalEventCount
+        FROM events e
+        INNER JOIN venues v ON e.venue = v.id
+        INNER JOIN organizers o ON e.organizer = o.id
+        WHERE e.published = 1
+            AND v.country IS NOT NULL
+            AND v.country != \'\'' . lanlistSqlPublicOrganizerVisible('o') . '
+        GROUP BY v.country
+        HAVING totalEventCount > 0
         ORDER BY v.country ASC';
 
     return $db->query($sql)->fetchAll();
@@ -544,6 +651,29 @@ function getEventRating($eventId)
     return $average;
 }
 
+function lanlistUserIdByUsername(string $username): ?int
+{
+    global $db;
+
+    $username = trim($username);
+    if ($username === '') {
+        return null;
+    }
+
+    $stmt = $db->prepare('SELECT id FROM users WHERE username = :username LIMIT 1');
+    $stmt->bindValue(':username', $username);
+    $stmt->execute();
+    $row = $stmt->fetch();
+
+    if ($row === false) {
+        return null;
+    }
+
+    $id = (int) $row['id'];
+
+    return $id > 0 ? $id : null;
+}
+
 function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
 {
     global $db;
@@ -559,10 +689,25 @@ function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
         }
     }
 
-    if ($relatedUser === null && $priority === 'AUDIT' && Session::isLoggedIn()) {
+    if ($relatedUser === null && Session::isLoggedIn()) {
         $actorId = (int) Session::getUser()->getId();
         if ($actorId > 0) {
-            $relatedUser = $actorId;
+            $loginLogoutEventTypes = ['USER_LOGIN', 'USER_LOGOUT'];
+            if (
+                $priority === 'AUDIT'
+                || in_array((string) $eventType, $loginLogoutEventTypes, true)
+            ) {
+                $relatedUser = $actorId;
+            }
+        }
+    }
+
+    if ($relatedUser === null && (string) $eventType === 'LOGIN_FAILURE_PASSWORD') {
+        if (preg_match('/^Failed login for (.+), password wrong\.$/', (string) $content, $matches) === 1) {
+            $userId = lanlistUserIdByUsername($matches[1]);
+            if ($userId !== null) {
+                $relatedUser = $userId;
+            }
         }
     }
 
@@ -592,6 +737,134 @@ function logMessageToDatabase($priority, $content, $eventType, $metadata = null)
         $stmtLog->bindValue(':relatedOrganizer', $relatedOrganizer, \PDO::PARAM_INT);
     }
     $stmtLog->execute();
+}
+
+function lanlistIsValidLogEventType(string $eventType): bool
+{
+    return $eventType !== '' && preg_match('/^[A-Za-z0-9_]+$/', $eventType) === 1;
+}
+
+/**
+ * @return list<string>
+ */
+function lanlistParseExcludedLogEventTypesFromRequest(): array
+{
+    if (!isset($_REQUEST['excludeEventType'])) {
+        return [];
+    }
+
+    $raw = $_REQUEST['excludeEventType'];
+    if (!is_array($raw)) {
+        $raw = [$raw];
+    }
+
+    $excluded = [];
+    foreach ($raw as $type) {
+        $type = trim((string) $type);
+        if (lanlistIsValidLogEventType($type)) {
+            $excluded[$type] = true;
+        }
+    }
+
+    ksort($excluded);
+
+    return array_keys($excluded);
+}
+
+/**
+ * @param list<string> $excludedEventTypes
+ * @return array{sql: string, params: array<string, string>}
+ */
+function lanlistBuildLogListQuery(bool $fullView, array $excludedEventTypes): array
+{
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.priority, l.relatedUser, l.relatedOrganizer, u.username AS relatedUsername, o.title AS relatedOrganizerTitle FROM logs l LEFT JOIN users u ON u.id = l.relatedUser LEFT JOIN organizers o ON o.id = l.relatedOrganizer';
+    $params = [];
+    $conditions = [];
+
+    if (!$fullView) {
+        $conditions[] = 'l.isread = 0';
+    }
+
+    if ($excludedEventTypes !== []) {
+        $placeholders = [];
+        foreach ($excludedEventTypes as $i => $type) {
+            $key = ':excludeEventType' . $i;
+            $placeholders[] = $key;
+            $params[$key] = $type;
+        }
+        $conditions[] = 'l.eventType NOT IN (' . implode(', ', $placeholders) . ')';
+    }
+
+    if ($conditions !== []) {
+        $sql .= ' WHERE ' . implode(' AND ', $conditions);
+    }
+
+    $sql .= ' ORDER BY l.id DESC';
+    if ($fullView) {
+        $sql .= ' LIMIT 100';
+    }
+
+    return ['sql' => $sql, 'params' => $params];
+}
+
+/**
+ * @return list<array<string, mixed>>
+ */
+function lanlistFetchAuditLogsForUser(int $userId, int $limit = 50): array
+{
+    global $db;
+
+    if ($userId <= 0) {
+        return [];
+    }
+
+    $limit = max(1, min($limit, 200));
+
+    $sql = 'SELECT l.id, l.eventType, l.timestamp, l.content, l.relatedOrganizer, o.title AS relatedOrganizerTitle
+        FROM logs l
+        LEFT JOIN organizers o ON o.id = l.relatedOrganizer
+        WHERE l.relatedUser = :userId AND l.priority = \'AUDIT\'
+        ORDER BY l.id DESC
+        LIMIT ' . $limit;
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':userId', $userId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll();
+}
+
+/**
+ * @param list<string> $excludedEventTypes
+ */
+function lanlistLogListUrl(bool $fullView, array $excludedEventTypes): string
+{
+    $params = [];
+    if ($fullView) {
+        $params['full'] = '1';
+    }
+    foreach ($excludedEventTypes as $type) {
+        $params['excludeEventType'][] = $type;
+    }
+
+    $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+
+    return 'listLogs.php' . ($query !== '' ? '?' . $query : '');
+}
+
+/**
+ * @param list<string> $excludedEventTypes
+ */
+function lanlistLogListUrlWithoutExcludedEventType(bool $fullView, array $excludedEventTypes, string $removeType): string
+{
+    $filtered = [];
+    foreach ($excludedEventTypes as $type) {
+        if ($type !== $removeType) {
+            $filtered[] = $type;
+        }
+    }
+
+    return lanlistLogListUrl($fullView, $filtered);
 }
 
 function requirePriv($ident)

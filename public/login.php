@@ -17,7 +17,13 @@ if ($f->validate()) {
 
         redirect('index.php', 'You have logged in.');
     } catch (\libAllure\exceptions\IncorrectPasswordException $e) {
-        Logger::messageAudit('Failed login for ' . $username . ', password wrong.', 'LOGIN_FAILURE_PASSWORD');
+        $logMeta = null;
+        $failedUserId = lanlistUserIdByUsername($username);
+        if ($failedUserId !== null) {
+            $logMeta = ['relatedUser' => $failedUserId];
+        }
+
+        Logger::messageAudit('Failed login for ' . $username . ', password wrong.', 'LOGIN_FAILURE_PASSWORD', $logMeta);
 
         $f->setElementError('password', 'Incorrect password.');
     } catch (\libAllure\exceptions\UserNotFoundException $e) {
