@@ -1,3 +1,4 @@
+-- +migrate Up
 -- MySQL dump 10.13  Distrib 5.1.73, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lanlist
@@ -95,11 +96,7 @@ CREATE TABLE `events` (
   `createdDate` datetime NOT NULL,
   `createdBy` int(11) NOT NULL,
   `ageRestrictions` varchar(255) DEFAULT null,
-  `ticketsNotReleasedUntil` datetime DEFAULT NULL,
-  `postEventReminderSentAt` datetime DEFAULT NULL,
-  `lppsSiteUniqueId` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_events_organizer_lpps` (`organizer`,`lppsSiteUniqueId`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=573 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -147,7 +144,6 @@ CREATE TABLE `logs` (
   `priority` varchar(8) DEFAULT NULL,
   `eventType` varchar(64) DEFAULT '',
   `relatedUser` int(11) DEFAULT NULL,
-  `relatedOrganizer` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=64242 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -230,13 +226,6 @@ CREATE TABLE `organizers` (
   `created` datetime NOT NULL,
   `assumedStale` datetime DEFAULT NULL,
   `useFavicon` tinyint default 1,
-  `faviconRefetch` tinyint(1) NOT NULL DEFAULT '1',
-  `validBanner` tinyint(1) NOT NULL DEFAULT '0',
-  `lppsUrl` varchar(512) DEFAULT NULL,
-  `lppsLastCrawl` datetime DEFAULT NULL,
-  `lppsCrawlSuccess` tinyint(1) DEFAULT NULL,
-  `lppsCrawlResult` varchar(1024) DEFAULT NULL,
-  `lppsAdminDisabled` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=319 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -318,11 +307,6 @@ CREATE TABLE `users` (
   `location` varchar(24) DEFAULT NULL,
   `email` varchar(128) DEFAULT NULL,
   `discordUser` varchar(128) DEFAULT NULL,
-  `moderatorNewsletterFrequency` varchar(16) NOT NULL DEFAULT 'daily',
-  `organizerUpdateEmails` varchar(16) NOT NULL DEFAULT 'always',
-  `eventUpdateEmails` varchar(16) NOT NULL DEFAULT 'always',
-  `lastLowPriorityEmailDate` datetime DEFAULT NULL,
-  `lastPostEventReminderEmailDate` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=543 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -344,60 +328,6 @@ CREATE TABLE `venues` (
 ) ENGINE=MyISAM AUTO_INCREMENT=269 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `organizer_lpps_venues`
---
-
-DROP TABLE IF EXISTS `organizer_lpps_venues`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `organizer_lpps_venues` (
-  `organizer_id` int(11) NOT NULL,
-  `lppsVenueSiteUniqueId` varchar(64) NOT NULL,
-  `venue_id` int(11) NOT NULL,
-  PRIMARY KEY (`organizer_id`,`lppsVenueSiteUniqueId`),
-  KEY `idx_organizer_lpps_venues_venue` (`venue_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `useful_related_sites`
---
-
-DROP TABLE IF EXISTS `useful_related_sites`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `useful_related_sites` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `url` varchar(512) NOT NULL,
-  `title` varchar(128) NOT NULL,
-  `description` varchar(1024) NOT NULL DEFAULT '',
-  `sortOrder` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `useful_related_site_countries`
---
-
-DROP TABLE IF EXISTS `useful_related_site_countries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `useful_related_site_countries` (
-  `site_id` int(11) NOT NULL,
-  `country` varchar(24) NOT NULL,
-  PRIMARY KEY (`site_id`,`country`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2016-11-01 15:55:28
+-- +migrate Down

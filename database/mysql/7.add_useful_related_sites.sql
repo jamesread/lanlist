@@ -1,3 +1,4 @@
+-- +migrate Up
 -- Migration 7: useful related sites (DB-backed usefulRelatedSites.php).
 -- Apply numbered scripts in order on existing deployments. Next migration: 8_*.sql
 
@@ -35,3 +36,4 @@ SELECT id, 'Austria' FROM useful_related_sites WHERE title = 'dot-lan.at/map';
 
 INSERT INTO useful_related_site_countries (site_id, country)
 SELECT id, 'Norway' FROM useful_related_sites WHERE title = 'landb.no/kart';
+-- +migrate Down
