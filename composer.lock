@@ -58,16 +58,16 @@
         },
         {
             "name": "jwread/lib-allure",
-            "version": "8.3.0",
+            "version": "8.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jamesread/libAllure.git",
-                "reference": "95b640150547b2cc70412382e60d5b068fec1b2b"
+                "reference": "3ed24bdb8dd8e8a9d2f191d80aa77f11f10b1165"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jamesread/libAllure/zipball/95b640150547b2cc70412382e60d5b068fec1b2b",
-                "reference": "95b640150547b2cc70412382e60d5b068fec1b2b",
+                "url": "https://api.github.com/repos/jamesread/libAllure/zipball/3ed24bdb8dd8e8a9d2f191d80aa77f11f10b1165",
+                "reference": "3ed24bdb8dd8e8a9d2f191d80aa77f11f10b1165",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
             "require-dev": {
                 "phpstan/phpstan": "^2.1",
                 "phpunit/php-code-coverage": "^9",
-                "phpunit/phpunit": "^9.5",
+                "phpunit/phpunit": "^9.6",
                 "squizlabs/php_codesniffer": "^3.13"
             },
             "type": "library",
@@ -100,9 +100,9 @@
             "homepage": "https://github.com/jamesread/libAllure",
             "support": {
                 "issues": "https://github.com/jamesread/libAllure/issues",
-                "source": "https://github.com/jamesread/libAllure/tree/8.3.0"
+                "source": "https://github.com/jamesread/libAllure/tree/8.5.0"
             },
-            "time": "2025-12-03T09:27:54+00:00"
+            "time": "2026-07-13T19:36:55+00:00"
         },
         {
             "name": "jwread/olivetin-bindings-php",
@@ -555,16 +555,16 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v4.5.6",
+            "version": "v4.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "a8d77c86660ca0562ec2fb781fbbda737fb7a62b"
+                "reference": "838d6ad1c635f8a6bafc08d791b8af18d8304b3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/a8d77c86660ca0562ec2fb781fbbda737fb7a62b",
-                "reference": "a8d77c86660ca0562ec2fb781fbbda737fb7a62b",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/838d6ad1c635f8a6bafc08d791b8af18d8304b3a",
+                "reference": "838d6ad1c635f8a6bafc08d791b8af18d8304b3a",
                 "shasum": ""
             },
             "require": {
@@ -615,7 +615,7 @@
             "support": {
                 "forum": "https://github.com/smarty-php/smarty/discussions",
                 "issues": "https://github.com/smarty-php/smarty/issues",
-                "source": "https://github.com/smarty-php/smarty/tree/v4.5.6"
+                "source": "https://github.com/smarty-php/smarty/tree/v4.5.7"
             },
             "funding": [
                 {
@@ -623,7 +623,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-08-26T08:37:46+00:00"
+            "time": "2026-06-29T08:48:56+00:00"
         }
     ],
     "packages-dev": [
