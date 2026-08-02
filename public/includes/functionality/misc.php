@@ -975,7 +975,7 @@ function addHistoryLink($url, $title)
 function dataShowers() 
 {
     return [
-        null => 'Unknown',
+        '' => 'Unknown',
         0 => 'Not at venue',
         1 => 'Available at venue',
         2 => 'Included in private rooms',
@@ -985,7 +985,7 @@ function dataShowers()
 function dataSmoking() 
 {
     return [
-        null => 'Unknown',
+        '' => 'Unknown',
         0 => 'Outside venue',
         1 => 'Smoking area in venue',
     ];
@@ -993,7 +993,7 @@ function dataSmoking()
 
 function dataAlcohol() {
     return [
-        null => 'Unknown',
+        '' => 'Unknown',
         0 => 'Not allowed at the event',
         1 => 'Bring your own alcohol',
         2 => 'Bar at the venue',
@@ -1003,7 +1003,7 @@ function dataAlcohol() {
 
 function dataSleeping() {
     return [
-        null => 'Unknown',
+        '' => 'Unknown',
         0 => 'Not arranged by organizer',
         1 => 'Not an overnight Event',
         2 => 'Private rooms at venue',
@@ -1015,6 +1015,11 @@ function dataSleeping() {
 }
 
 function lookupField($key, $type) {
+    // PHP 8.1+ deprecates null array offsets; treat null as the "Unknown" key.
+    if ($key === null) {
+        $key = '';
+    }
+
     switch ($type) {
     case 'sleeping': return dataSleeping()[$key];
     case 'showers': return dataShowers()[$key];

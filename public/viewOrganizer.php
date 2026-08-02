@@ -4,18 +4,38 @@ require_once 'includes/common.php';
 
 use libAllure\Session;
 
-$organizer = fetchOrganizer(fromRequestRequireInt('id'));
-addHistoryLink('viewOrganizer.php?id=' . $organizer['id'], 'Viewed: ' . $organizer['title']);
+$organizerId = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
+$organizer = null;
 
-$canSeeOrganizerInternals = Session::isLoggedIn() && (
+if ($organizerId > 0) {
+    try {
+        $organizer = fetchOrganizer($organizerId);
+    } catch (Exception $e) {
+        $organizer = null;
+    }
+}
+
+$canSeeOrganizerInternals = $organizer !== null && Session::isLoggedIn() && (
     Session::getUser()->hasPriv('SUPERUSER')
     || Session::getUser()->hasPriv('MODERATOR')
     || Session::getUser()->getData('organization') == $organizer['id']
 );
 
-if (!lanlistOrganizerIsPubliclyVisible($organizer) && !$canSeeOrganizerInternals) {
-    throw new Exception('Organizer not found');
+if (
+    $organizer === null
+    || (!lanlistOrganizerIsPubliclyVisible($organizer) && !$canSeeOrganizerInternals)
+) {
+    http_response_code(404);
+    header('X-Robots-Tag: noindex, nofollow');
+    define('TITLE', 'Organizer not found');
+    define('META_DESCRIPTION', 'The requested LAN party organizer could not be found on lanlist.');
+    define('META_ROBOTS', 'noindex, nofollow');
+    require_once 'includes/widgets/header.php';
+    $tpl->display('organizerNotFound.tpl');
+    require_once 'includes/widgets/footer.php';
 }
+
+addHistoryLink('viewOrganizer.php?id=' . $organizer['id'], 'Viewed: ' . $organizer['title']);
 
 define('TITLE', 'Organizer: ' . $organizer['title']);
 define('META_DESCRIPTION', seoOrganizerMetaDescription($organizer));

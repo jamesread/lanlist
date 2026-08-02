@@ -13,6 +13,10 @@ class FormJoinOrganizer extends Form
     {
         parent::__construct('formJoinOrganizer', 'Join organization');
 
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before requesting to join an organizer.');
+        }
+
         $this->addElement(new ElementHtml('description', null, 'This will send a request to an administrator for you to join onto a LAN Party Organizer. We approve these manaully, but we will do it as quickly as possible.'));
         $this->addElement($this->getElementOrganization());
         $this->addElement(new ElementTextbox('comments', 'Comments', null, 'Use the comments if there is anything you want to let us know about.'));
@@ -23,7 +27,7 @@ class FormJoinOrganizer extends Form
     {
         global $db;
 
-        $sql = 'SELECT o.id, o.title FROM organizers o ORDER BY o.title ASC';
+        $sql = 'SELECT o.id, o.title FROM organizers o WHERE 1=1' . lanlistSqlPublicOrganizerVisible('o') . ' ORDER BY o.title ASC';
         $stmt = $db->query($sql);
 
         $el = new ElementSelect('organization', 'Organization');
@@ -39,8 +43,17 @@ class FormJoinOrganizer extends Form
     {
         global $db;
 
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before requesting to join an organizer.');
+        }
+
         $organizerId = (int) $this->getElementValue('organization');
         $organizer = fetchOrganizer($organizerId);
+
+        if (!lanlistOrganizerIsPubliclyVisible($organizer)) {
+            throw new Exception('Organizer not found');
+        }
+
         $user = Session::getUser();
 
         $sql = 'INSERT INTO organization_join_requests (user, organizer, comments) VALUES (:user, :organization, :comments) ';

@@ -22,10 +22,13 @@ Logger::open();
 Logger::addListener('logMessageToDatabase');
 
 require_once 'includes/functionality/misc.php';
+require_once 'includes/functionality/apprise.php';
 require_once 'includes/functionality/organizer_visibility.php';
 require_once 'includes/functionality/seo.php';
 require_once 'includes/functionality/dbal.php';
 require_once 'includes/functionality/useful_related_sites.php';
+
+$eh->addListener('notifyErrorViaApprise');
 
 use libAllure\Database;
 use libAllure\DatabaseFactory;

@@ -15,6 +15,10 @@ class FormNewVenue extends Form
     {
         parent::__construct('newVenue', 'New Venue');
 
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before creating a venue.');
+        }
+
         $this->addElement(new ElementHtml('desc', null, 'A venue is a physical place where an event will be hosted, this may be a convention centre, a hall or just your house. You can specify detail such as sleeping arangements when the event is created. <br /><br /><strong>Note</strong> that organizations do not "own" venues, and other organizers can schedule their events at a venue that they did not create. For this reason, once you create a venue, only an admin can edit it.'));
         $this->addElement(new ElementInput('title', 'Title', null, 'eg: Budleigh Salterton town hall, Cheltenham Racecourse, etc.'));
         $this->addElement(FormHelpers::getElementCountry('United Kingdom'));

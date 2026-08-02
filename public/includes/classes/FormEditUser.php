@@ -21,6 +21,10 @@ class FormEditUser extends Form
     {
         parent::__construct('formEditUser', 'Edit User');
 
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before editing a user profile.');
+        }
+
         $user = $this->getUser();
 
         $this->addElementReadOnly('Username', $user['username']);
@@ -84,7 +88,7 @@ class FormEditUser extends Form
             $this->addElement(new ElementHtml(null, null, 'Admin fields'));
 
             $this->addElement($this->getGroupSelectionElement($user['group']));
-            $this->addElement(FormHelpers::getOrganizerList(true));
+            $this->addElement(FormHelpers::getOrganizerList(true, true));
             $this->getElement('organizer')->setValue($user['organization']);
             $this->addElement(new ElementPassword('password', 'New Password'));
             $this->getElement('password')->setOptional(true);

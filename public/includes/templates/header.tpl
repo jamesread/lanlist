@@ -11,6 +11,10 @@
 
 	<meta name = "viewport" content = "width=device-width" />
 
+	{if !empty($metaRobots)}
+	<meta name = "robots" content = "{$metaRobots|escape:'htmlall':'UTF-8'}" />
+	{/if}
+
 	<link rel = "canonical" href = "{$canonicalUrl|escape:'htmlall':'UTF-8'}" />
 
 	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />

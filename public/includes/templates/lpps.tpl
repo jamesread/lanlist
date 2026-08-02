@@ -23,7 +23,7 @@
 <ol>
 	<li>You host a version <strong>2</strong> JSON document that follows the
 		<a href="{$lppsStandardUrl|escape:'html'}" target="_blank" rel="noopener noreferrer">published schema</a>.</li>
-	<li>In <a href="formHandler.php?formClazz=FormEditOrganizer">edit organizer</a>, paste the feed URL into <strong>LPPS feed URL</strong>
+	<li>In <a href="account.php">your account</a>, open your organizer and use <strong>edit organizer</strong> to paste the feed URL into <strong>LPPS feed URL</strong>
 		(if your account is linked to that organizer).</li>
 	<li>When the site’s LPPS crawl job runs, lanlist imports matching venues and events (matched by stable IDs in the feed).</li>
 </ol>

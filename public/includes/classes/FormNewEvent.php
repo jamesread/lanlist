@@ -52,7 +52,7 @@ class FormNewEvent extends Form
                 $organizerId = (int) $_REQUEST['formNewEvent-organizer'];
                 $this->addPresetOrganizerFields($organizerId);
             } else {
-                $this->addElement(FormHelpers::getOrganizerList(true));
+                $this->addElement(FormHelpers::getOrganizerList(true, true));
             }
         } elseif (Session::getUser()->getData('organization')) {
             $organizer = fetchOrganizer(Session::getUser()->getData('organization'));

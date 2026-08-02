@@ -63,16 +63,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </script>
 
-<template id = "tplEventPopup">
-    <div class = "infoPopup">';
-    <h2><a href = "viewEvent.php?id=">?</a></h2>';
-    <strong>Start:</strong><span id = "eventPopupStart"></span><br />
-    <strong>Finish:</strong><span id = "eventPopupFinish"></span><br /><br />
-    <strong>Seats:</strong><span id = "eventPopupSeats"></span><br />
-    <a href = "viewEvent.php?id=' + eventObject.id + '">more details...</a>';
-    </div>
-</template>
-
     <?php
 
     require_once 'includes/widgets/infoboxNextEvent.php';

@@ -274,11 +274,15 @@ abstract class FormHelpers
     }
 
 
-    public static function getOrganizerList($includeNull = false)
+    public static function getOrganizerList($includeNull = false, $includeNonPublic = false)
     {
         global $db;
 
-        $sql = 'SELECT id, title FROM organizers ORDER BY title ASC';
+        $sql = 'SELECT o.id, o.title FROM organizers o WHERE 1=1';
+        if (!$includeNonPublic) {
+            $sql .= lanlistSqlPublicOrganizerVisible('o');
+        }
+        $sql .= ' ORDER BY o.title ASC';
         $stmt = $db->prepare($sql);
         $stmt->execute();
 

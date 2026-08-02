@@ -29,6 +29,10 @@ $tpl->assign(
     defined('META_DESCRIPTION') ? META_DESCRIPTION : seoDefaultMetaDescription()
 );
 $tpl->assign('ogType', defined('META_OG_TYPE') ? META_OG_TYPE : 'website');
+$tpl->assign(
+    'metaRobots',
+    defined('META_ROBOTS') ? META_ROBOTS : null
+);
 $tpl->assign('isLoggedIn', Session::isLoggedIn());
 $tpl->assign('isModerator', Session::hasPriv('MODERATOR'));
 $tpl->assign(

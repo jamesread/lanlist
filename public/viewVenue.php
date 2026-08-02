@@ -5,11 +5,31 @@ require_once 'includes/common.php';
 use libAllure\Session;
 use libAllure\HtmlLinksCollection;
 
-$id = fromRequestRequireInt('id');
-$venue = fetchVenue($id);
+$venueId = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
+$venue = null;
+
+if ($venueId > 0) {
+    try {
+        $venue = fetchVenue($venueId);
+    } catch (Exception $e) {
+        $venue = null;
+    }
+}
+
+if ($venue === null) {
+    http_response_code(404);
+    header('X-Robots-Tag: noindex, nofollow');
+    define('TITLE', 'Venue not found');
+    define('META_DESCRIPTION', 'The requested LAN party venue could not be found on lanlist.');
+    define('META_ROBOTS', 'noindex, nofollow');
+    require_once 'includes/widgets/header.php';
+    $tpl->display('venueNotFound.tpl');
+    require_once 'includes/widgets/footer.php';
+}
+
 $venue['countryFlagHtml'] = empty($venue['country']) ? '' : getCountryFlagHtml((string) $venue['country']);
 
-addHistoryLink('viewVenue.php?id=' . $id, 'View venue: ' . $venue['title']);
+addHistoryLink('viewVenue.php?id=' . $venueId, 'View venue: ' . $venue['title']);
 
 define('INCLUDE_GOOGLE_MAPS', true);
 define('TITLE', 'Venue: ' . $venue['title']);
@@ -28,7 +48,7 @@ if (Session::isLoggedIn() && Session::hasPriv('SUPERUSER')) {
 }
 
 $tpl->assign('associatedOrganizers', $associatedOrganizers);
-$tpl->assign('eventsAtVenue', fetchEventsFromVenueId($id));
+$tpl->assign('eventsAtVenue', fetchEventsFromVenueId($venueId));
 $tpl->assign('venue', $venue);
 $tpl->display('viewVenue.tpl');
 startSidebar();

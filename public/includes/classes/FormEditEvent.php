@@ -20,15 +20,19 @@ class FormEditEvent extends Form
     {
         parent::__construct('formEditEvent', 'Edit Event');
 
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before editing an event.');
+        }
+
         $event = $this->getEvent();
 
-        $isAdmin = Session::getUser()->hasPriv('MODERATE_EVENTS');
+        $isAdmin = Session::hasPriv('MODERATE_EVENTS');
         $isOwner = Session::getUser()->getData('organization') == $event['organizer'];
 
         if (!$isAdmin && !$isOwner) {
-            throw new Exception('You do not have the privs for this.');
+            throw new libAllure\exceptions\SimpleFatalError('You do not have permission to edit this event.');
         } elseif ($isAdmin) {
-            $el = FormHelpers::getOrganizerList(true);
+            $el = FormHelpers::getOrganizerList(true, true);
             $el->setValue($event['organizer']);
             $this->addElement($el);
         }
@@ -102,13 +106,24 @@ EOF;
     {
         global $db;
 
+        $id = 0;
+        if (isset($_REQUEST['formEditEvent-id']) && $_REQUEST['formEditEvent-id'] !== '') {
+            $id = (int) $_REQUEST['formEditEvent-id'];
+        }
+
+        if ($id <= 0) {
+            throw new libAllure\exceptions\SimpleFatalError(
+                'Event id is required to edit an event. Open edit from the event page.'
+            );
+        }
+
         $sql = 'SELECT e.* FROM events e WHERE e.id = :id LIMIT 1';
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':id', $_REQUEST['formEditEvent-id']);
+        $stmt->bindValue(':id', $id);
         $stmt->execute();
 
         if ($stmt->numRows() === 0) {
-            throw new Exception('Event not found.');
+            throw new libAllure\exceptions\SimpleFatalError('Event not found.');
         }
 
         $event = $stmt->fetchRow();
@@ -119,6 +134,10 @@ EOF;
     public function process()
     {
         global $db;
+
+        if (!canEditEvent($this->getEvent()['organizer'])) {
+            throw new libAllure\exceptions\SimpleFatalError('You do not have permission to edit this event.');
+        }
 
         require_once __DIR__ . '/../functionality/edit_notifications.php';
 

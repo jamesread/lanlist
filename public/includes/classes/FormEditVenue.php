@@ -15,6 +15,14 @@ class FormEditVenue extends Form
     {
         parent::__construct('formEditVenue', 'Edit Venue');
 
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before editing a venue.');
+        }
+
+        if (!Session::hasPriv('EDIT_VENUE') && !Session::hasPriv('SUPERUSER')) {
+            throw new \libAllure\exceptions\SimpleFatalError('You do not have permission to edit venues.');
+        }
+
         $venue = $this->getVenue();
 
         $this->addElement(new ElementHidden('id', null, $venue['id']));
@@ -30,20 +38,27 @@ class FormEditVenue extends Form
 
     private function getVenue()
     {
-        if (isset($_REQUEST['formEditVenue-id'])) {
-            $id = intval($_REQUEST['formEditVenue-id']);
-        } else {
-            $id = intval($this->getElementValue('id'));
+        $id = 0;
+        if (isset($_REQUEST['formEditVenue-id']) && $_REQUEST['formEditVenue-id'] !== '') {
+            $id = (int) $_REQUEST['formEditVenue-id'];
         }
 
-        $venue = fetchVenue($id);
+        if ($id <= 0) {
+            throw new \libAllure\exceptions\SimpleFatalError(
+                'Venue id is required to edit a venue. Open edit from the venue page.'
+            );
+        }
 
-        return $venue;
+        return fetchVenue($id);
     }
 
     public function process()
     {
         global $db;
+
+        if (!Session::hasPriv('EDIT_VENUE') && !Session::hasPriv('SUPERUSER')) {
+            throw new \libAllure\exceptions\SimpleFatalError('You do not have permission to edit venues.');
+        }
 
         $sql = 'UPDATE venues SET title = :title, lat = :lat, lng = :lng, country = :country WHERE id = :id';
         $stmt = $db->prepare($sql);

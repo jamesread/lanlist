@@ -7,7 +7,7 @@
         }
     ],
     "require": {
-        "jwread/lib-allure": "^8.1.22",
+        "jwread/lib-allure": "^8.5.1",
         "smarty/smarty": "^4.3",
         "pear/mail": "^2.0",
         "pear/net_smtp": "^1.12",

@@ -2,6 +2,7 @@
 
 use \libAllure\ElementNumeric;
 use \libAllure\ElementInput;
+use \libAllure\Session;
 
 class FormEditTicket extends \libAllure\Form {
 	private $event;
@@ -9,15 +10,30 @@ class FormEditTicket extends \libAllure\Form {
 	public function __construct() {
 		parent::__construct('editTicket', 'Edit Ticket For Event');
 
-		$tid = $_REQUEST['editTicket-id'];
+		if (!Session::isLoggedIn()) {
+			redirect('login.php', 'You need to login before editing a ticket.');
+		}
+
+		$tid = 0;
+		if (isset($_REQUEST['editTicket-id']) && $_REQUEST['editTicket-id'] !== '') {
+			$tid = (int) $_REQUEST['editTicket-id'];
+		}
+
+		if ($tid <= 0) {
+			throw new \libAllure\exceptions\SimpleFatalError(
+				'Ticket id is required to edit a ticket. Open edit from the event page.'
+			);
+		}
 
 		$ticket = $this->getTicket($tid);
+		if ($ticket === false || empty($ticket['id'])) {
+			throw new \libAllure\exceptions\SimpleFatalError('Ticket not found.');
+		}
+
 		$this->event = $ticket['event'];
 
-		$canEditEvent = canEditEvent($ticket['organizerId']);
-
-		if (!$canEditEvent) {
-			throw new \Exception('You do not have permission to edit this ticket.');
+		if (!canEditEvent($ticket['organizerId'])) {
+			throw new \libAllure\exceptions\SimpleFatalError('You do not have permission to edit this ticket.');
 		}
 
 		$this->addElementReadOnly('Ticket', $ticket['id'], 'id'); 
@@ -32,6 +48,10 @@ class FormEditTicket extends \libAllure\Form {
 
 	public function process() {
 		global $db;
+
+		if (!canEditEvent($this->getTicket((int) $this->getElementValue('id'))['organizerId'] ?? null)) {
+			throw new \libAllure\exceptions\SimpleFatalError('You do not have permission to edit this ticket.');
+		}
 
 		$sql = 'UPDATE tickets t SET t.cost = :cost, t.currency := :currency, t.title = :title WHERE t.id = :id LIMIT 1';
 		$stmt = $db->prepare($sql);
@@ -55,5 +75,3 @@ class FormEditTicket extends \libAllure\Form {
 		return $stmt->fetch();
 	}
 }
-
-?>

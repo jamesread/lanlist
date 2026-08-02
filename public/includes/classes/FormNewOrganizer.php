@@ -13,6 +13,10 @@ class FormNewOrganizer extends Form
     {
         parent::__construct('newOrganizer', 'New Organizer');
 
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before creating an organizer.');
+        }
+
         if (Session::getUser()->hasPriv('CREATE_ORGANIZERS')) {
             $this->addElement(new ElementHtml('description', null, 'This will appear in the organizers list as soon as you submit the form.'));
         } else {

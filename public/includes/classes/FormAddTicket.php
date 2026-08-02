@@ -1,6 +1,7 @@
 <?php
 
 use libAllure\Form;
+use libAllure\Session;
 use libAllure\Shortcuts;
 use libAllure\ElementInput;
 
@@ -10,9 +11,26 @@ class FormAddTicket extends Form {
     public function __construct() {
         parent::__construct('addticket', 'Add Ticket');
 
-		$this->eventId = Shortcuts::san()->filterUint('addticket-eventId');
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before adding a ticket.');
+        }
 
-		$event = fetchEvent($this->eventId);
+        $this->eventId = 0;
+        if (isset($_REQUEST['addticket-eventId']) && $_REQUEST['addticket-eventId'] !== '') {
+            $this->eventId = (int) Shortcuts::san()->filterUint('addticket-eventId');
+        }
+
+        if ($this->eventId <= 0) {
+            throw new \libAllure\exceptions\SimpleFatalError(
+                'Event id is required to add a ticket. Open add ticket from the event page.'
+            );
+        }
+
+        $event = fetchEvent($this->eventId);
+
+        if (!canEditEvent($event['organizerId'] ?? null)) {
+            throw new \libAllure\exceptions\SimpleFatalError('You do not have permission to add tickets for this event.');
+        }
 
         $this->addElementReadOnly('Event title', $event['eventTitle']);
 
@@ -33,6 +51,10 @@ class FormAddTicket extends Form {
     }
 
     public function process() {
+        if (!canEditEvent(fetchEvent($this->eventId)['organizerId'] ?? null)) {
+            throw new \libAllure\exceptions\SimpleFatalError('You do not have permission to add tickets for this event.');
+        }
+
         $sql = 'INSERT INTO tickets (event, cost, currency, title) values (:event, :cost, :currency, :title)';
         $stmt = Shortcuts::stmt($sql);
         $stmt->bindValue(':event', $this->eventId);

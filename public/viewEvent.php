@@ -4,12 +4,32 @@ require_once 'includes/common.php';
 
 use libAllure\Session;
 
-$event = fetchEvent(fromRequestRequireInt('id'));
-$event['countryFlagHtml'] = empty($event['country']) ? '' : getCountryFlagHtml((string) $event['country']);
+$eventId = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
+$event = null;
 
-if (!lanlistEventIsPubliclyVisible($event) && !canEditEvent($event['organizerId'])) {
-    throw new Exception('Event not found.');
+if ($eventId > 0) {
+    try {
+        $event = fetchEvent($eventId);
+    } catch (Exception $e) {
+        $event = null;
+    }
 }
+
+if (
+    $event === null
+    || (!lanlistEventIsPubliclyVisible($event) && !canEditEvent($event['organizerId']))
+) {
+    http_response_code(404);
+    header('X-Robots-Tag: noindex, nofollow');
+    define('TITLE', 'Event not found');
+    define('META_DESCRIPTION', 'The requested LAN party event could not be found on lanlist.');
+    define('META_ROBOTS', 'noindex, nofollow');
+    require_once 'includes/widgets/header.php';
+    $tpl->display('eventNotFound.tpl');
+    require_once 'includes/widgets/footer.php';
+}
+
+$event['countryFlagHtml'] = empty($event['country']) ? '' : getCountryFlagHtml((string) $event['country']);
 
 require_once __DIR__ . '/includes/functionality/site_checks.php';
 

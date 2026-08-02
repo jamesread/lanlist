@@ -16,13 +16,24 @@ class FormEditOrganizer extends Form
     {
         parent::__construct('formEditOrganizer', 'Edit Organizer');
 
-        $organizer = fetchOrganizer($_REQUEST['formEditOrganizer-id']);
+        if (!Session::isLoggedIn()) {
+            redirect('login.php', 'You need to login before editing an organizer.');
+        }
+
+        require_once __DIR__ . '/../functionality/inline_edit.php';
+        require_once __DIR__ . '/../functionality/lpps.php';
+
+        $organizer = $this->getOrganizer();
+
+        if (!lanlistUserCanEditOrganizer((int) $organizer['id'])) {
+            throw new libAllure\exceptions\SimpleFatalError('You do not have permission to edit this organization.');
+        }
 
         if (Session::getUser()->hasPriv('PUBLISH_ORGANIZERS')) {
             $this->addElement(new ElementCheckbox('published', 'Published', $organizer['published']));
         }
 
-                $this->addElement(new ElementInput('title', 'Title', $organizer['title']));
+        $this->addElement(new ElementInput('title', 'Title', $organizer['title']));
         $this->addElement(new ElementHidden('id', null, $organizer['id']));
         $this->addElement(new ElementInput('websiteUrl', 'Website', $organizer['websiteUrl']));
         $this->getElement('websiteUrl')->setMinMaxLengths(0, 255);
@@ -32,7 +43,6 @@ class FormEditOrganizer extends Form
         $this->getElement('steamGroupUrl')->setMinMaxLengths(0, 255);
         $this->addElement(new ElementInput('discordInviteUrl', 'Discord invite URL', htmlify($organizer['discordInviteUrl'])));
         $this->getElement('discordInviteUrl')->setMinMaxLengths(0, 255);
-        require_once __DIR__ . '/../functionality/lpps.php';
 
         $this->addElement(new ElementInput(
             'lppsUrl',
@@ -52,22 +62,16 @@ class FormEditOrganizer extends Form
         }
 
         $this->addElement(new ElementTextbox('blurb', 'Blurb', $organizer['blurb']));
-                $this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG. Maximum size after upload is 810×306 (larger images are scaled). You can pick a file above or paste from the clipboard using the box below.'));
-                $this->getElement('banner')->tempDir = UPLOAD_TEMP_DIR;
+        $this->addElement(new ElementFile('banner', 'Banner image', null, 'Your organizer banner image. Preferably a PNG. Maximum size after upload is 810×306 (larger images are scaled). You can pick a file above or paste from the clipboard using the box below.'));
+        $this->getElement('banner')->tempDir = UPLOAD_TEMP_DIR;
         $this->getElement('banner')->destinationDir = 'resources/images/organizer-logos/';
         $this->getElement('banner')->destinationFilename = $organizer['id'] . '.jpg';
         $this->getElement('banner')->setMaxImageBounds(810, 306);
 
-                $this->addElement(new ElementCheckbox('useFavicon', 'Use site favicon', $organizer['useFavicon'], 'Favicons are collected periodically (about once per day). You can see which favicon the site collected for you at this URL: <a href = "resources/images/organizer-favicons/' . $organizer['id'] . '.png">HERE</a>'));
+        $this->addElement(new ElementCheckbox('useFavicon', 'Use site favicon', $organizer['useFavicon'], 'Favicons are collected periodically (about once per day). You can see which favicon the site collected for you at this URL: <a href = "resources/images/organizer-favicons/' . $organizer['id'] . '.png">HERE</a>'));
         $this->addElement(new ElementCheckbox('faviconRefetch', 'Refetch favicon on next crawl', !empty($organizer['faviconRefetch'] ?? 0), 'If checked: the nightly favicon job deletes the downloaded icon for this organizer and downloads it again. This flag turns off automatically after a successful fetch.'));
 
-        require_once __DIR__ . '/../functionality/inline_edit.php';
-
-        if (!lanlistUserCanEditOrganizer((int) $organizer['id'])) {
-            throw new libAllure\exceptions\SimpleFatalError('You do not have permission to edit this organization.');
-        }
-
-                $this->addDefaultButtons('Save');
+        $this->addDefaultButtons('Save');
 
         $this->addScript(<<<'JS'
 (function () {
@@ -214,6 +218,26 @@ class FormEditOrganizer extends Form
     }
 })();
 JS);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getOrganizer(): array
+    {
+        // GET uses ?formEditOrganizer-id=…; POST reuses the same key from the hidden id field.
+        $id = 0;
+        if (isset($_REQUEST['formEditOrganizer-id']) && $_REQUEST['formEditOrganizer-id'] !== '') {
+            $id = (int) $_REQUEST['formEditOrganizer-id'];
+        }
+
+        if ($id <= 0) {
+            throw new libAllure\exceptions\SimpleFatalError(
+                'Organizer id is required to edit an organizer. Open edit from the organizer page.'
+            );
+        }
+
+        return fetchOrganizer($id);
     }
 
     public function process()
