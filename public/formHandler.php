@@ -14,7 +14,7 @@ function getFormUsingMagic()
     }
 
     if (!isset($form)) {
-        throw new SimpleFatalError('Uh oh, form not specified!');
+        throw new \libAllure\exceptions\SimpleFatalError('Uh oh, form not specified!');
     }
 
     if (!preg_match('/^[a-z]{6,32}$/i', $form)) {
