@@ -2,7 +2,7 @@
 -- Migration 7: useful related sites (DB-backed usefulRelatedSites.php).
 -- Apply numbered scripts in order on existing deployments. Next migration: 8_*.sql
 
-CREATE TABLE useful_related_sites (
+CREATE TABLE IF NOT EXISTS useful_related_sites (
   id int(11) NOT NULL AUTO_INCREMENT,
   url varchar(512) NOT NULL,
   title varchar(128) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE useful_related_sites (
   PRIMARY KEY (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE useful_related_site_countries (
+CREATE TABLE IF NOT EXISTS useful_related_site_countries (
   site_id int(11) NOT NULL,
   country varchar(24) NOT NULL,
   PRIMARY KEY (site_id, country)
