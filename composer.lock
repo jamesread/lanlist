@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f6c11f9a1824fa4f0c88c844803036be",
+    "content-hash": "f5588d21788b3853ac461a95a749936d",
     "packages": [
         {
             "name": "iignatov/lightopenid",
@@ -58,16 +58,16 @@
         },
         {
             "name": "jwread/lib-allure",
-            "version": "8.6.0",
+            "version": "8.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jamesread/libAllure.git",
-                "reference": "099277da5116eca0d1c4fbcf10f744f3c45b9039"
+                "reference": "ba59f5564086c12091487f2c2734e3f48fe2515f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jamesread/libAllure/zipball/099277da5116eca0d1c4fbcf10f744f3c45b9039",
-                "reference": "099277da5116eca0d1c4fbcf10f744f3c45b9039",
+                "url": "https://api.github.com/repos/jamesread/libAllure/zipball/ba59f5564086c12091487f2c2734e3f48fe2515f",
+                "reference": "ba59f5564086c12091487f2c2734e3f48fe2515f",
                 "shasum": ""
             },
             "require": {
@@ -100,22 +100,22 @@
             "homepage": "https://github.com/jamesread/libAllure",
             "support": {
                 "issues": "https://github.com/jamesread/libAllure/issues",
-                "source": "https://github.com/jamesread/libAllure/tree/8.6.0"
+                "source": "https://github.com/jamesread/libAllure/tree/8.6.1"
             },
-            "time": "2026-08-01T00:51:06+00:00"
+            "time": "2026-08-09T08:54:15+00:00"
         },
         {
             "name": "jwread/olivetin-bindings-php",
-            "version": "1.1.0",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OliveTin/OliveTin-bindings-php.git",
-                "reference": "236ce8e3cbf25b1933f3effdd30439e43de2861c"
+                "reference": "9020bf6c13960a53d3ee7024707c7a2423bf2efa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OliveTin/OliveTin-bindings-php/zipball/236ce8e3cbf25b1933f3effdd30439e43de2861c",
-                "reference": "236ce8e3cbf25b1933f3effdd30439e43de2861c",
+                "url": "https://api.github.com/repos/OliveTin/OliveTin-bindings-php/zipball/9020bf6c13960a53d3ee7024707c7a2423bf2efa",
+                "reference": "9020bf6c13960a53d3ee7024707c7a2423bf2efa",
                 "shasum": ""
             },
             "require": {
@@ -124,9 +124,9 @@
                 "php": ">=8.1"
             },
             "require-dev": {
-                "phpstan/phpstan": "^2.1",
-                "phpunit/phpunit": "^10.5.62",
-                "squizlabs/php_codesniffer": "^3.13 || ^4.0"
+                "phpstan/phpstan": "^2.2.5",
+                "phpunit/phpunit": "^10.5.64",
+                "squizlabs/php_codesniffer": "^3.13 || ^4.0.1"
             },
             "type": "library",
             "autoload": {
@@ -141,9 +141,9 @@
             "description": "PHP client for the OliveTin Connect RPC API — start actions with bearer API-key style credentials",
             "support": {
                 "issues": "https://github.com/OliveTin/OliveTin-bindings-php/issues",
-                "source": "https://github.com/OliveTin/OliveTin-bindings-php/tree/1.1.0"
+                "source": "https://github.com/OliveTin/OliveTin-bindings-php/tree/1.1.2"
             },
-            "time": "2026-05-22T08:32:48+00:00"
+            "time": "2026-08-07T15:34:13+00:00"
         },
         {
             "name": "pear/auth_sasl",
@@ -682,16 +682,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.13.5",
+            "version": "3.13.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "0ca86845ce43291e8f5692c7356fccf3bcf02bf4"
+                "reference": "4c378e1a528ea066890fc2397cbdd2f94eb2fc91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/0ca86845ce43291e8f5692c7356fccf3bcf02bf4",
-                "reference": "0ca86845ce43291e8f5692c7356fccf3bcf02bf4",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/4c378e1a528ea066890fc2397cbdd2f94eb2fc91",
+                "reference": "4c378e1a528ea066890fc2397cbdd2f94eb2fc91",
                 "shasum": ""
             },
             "require": {
@@ -757,7 +757,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-11-04T16:30:35+00:00"
+            "time": "2026-08-06T00:17:32+00:00"
         }
     ],
     "aliases": [],
